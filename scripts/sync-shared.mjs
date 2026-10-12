@@ -16,6 +16,7 @@ export const SHARED = [
   ['src/lib/fechas-importantes.ts', 'fechas-importantes.ts'],
   ['src/lib/calendario.ts', 'calendario.ts'],
   ['src/lib/telegram.ts', 'telegram-texto.ts'],
+  ['src/lib/gcal.ts', 'gcal.ts'],
   ['src/types/db.ts', 'db.ts'],
 ]
 

@@ -188,3 +188,56 @@ mensaje `/start CÓDIGO` que aparece (o toca **Abrir Telegram**).
   curl -X POST https://PROJECT_REF.supabase.co/functions/v1/digest \
     -H "x-digest-secret: DIGEST_SECRET" -d '{"forzar":"diario"}'
   ```
+
+## 10. Google Calendar (fase 3)
+
+Usa el mismo proyecto de Google Cloud del paso 2.
+
+### 10.1 Habilitar la API y los permisos
+1. Google Cloud → **APIs & Services → Library** → busca **Google Calendar API** → **Enable**.
+2. **Google Auth Platform → Data Access → Add or remove scopes** y agrega (pega en "Manually add
+   scopes"):
+   - `https://www.googleapis.com/auth/calendar.events.readonly` (leer tus eventos)
+   - `https://www.googleapis.com/auth/calendar.app.created` (solo para el calendario compartido que
+     crea la app; no toca tus otros calendarios)
+   Guarda.
+3. **Audience:** confirma que dice **In production** (paso 2.4). En modo "Testing" Google caduca el
+   permiso cada 7 días.
+4. **Clients → Supabase → Authorized redirect URIs:** agrega
+   `https://PROJECT_REF.supabase.co/functions/v1/gcal-auth` y guarda.
+
+> Estos permisos son "sensibles" para Google. Sin verificar la app, al conectar verán
+> **"Google no ha verificado esta app"**: toquen **Configuración avanzada → Ir a Casa en Orden (no
+> seguro)**. Es normal en una app privada; el límite de Google sin verificar es de 100 usuarios en toda
+> la vida del proyecto y ustedes son dos. Verificarla no hace falta.
+
+### 10.2 Secretos y funciones
+```bash
+pnpm dlx supabase secrets set GOOGLE_CLIENT_ID=... GOOGLE_CLIENT_SECRET=...
+pnpm dlx supabase functions deploy gcal-auth --no-verify-jwt
+pnpm dlx supabase functions deploy gcal-sync --no-verify-jwt
+```
+(`DIGEST_SECRET` y `APP_URL` ya quedaron del paso 9.2; si te saltaste Telegram, defínelos igual.)
+
+La sincronización cada 15 minutos ya quedó programada por la migración y usa los secretos de Vault del
+paso 9.4. **Comprobación:** `select jobname, schedule from cron.job;` muestra también
+`casa-en-orden-google` con `*/15 * * * *`.
+
+### 10.3 Conectar (cada persona)
+App → avatar → **Ajustes · Telegram** → **Google Calendar** → **Conectar mi Google Calendar**.
+
+**Comprobación:** al volver aparece "Google Calendar conectado", y en **Calendario** hay una capa nueva
+**Google** con tus eventos (círculo hueco de tu color). Un evento nuevo en Google aparece en la app en
+15 minutos como máximo. Para no esperar:
+```bash
+curl -X POST https://PROJECT_REF.supabase.co/functions/v1/gcal-sync -H "x-digest-secret: DIGEST_SECRET"
+```
+
+### 10.4 Calendario compartido (opcional, una sola persona)
+1. En **Ajustes → Google Calendar** toca **Publicar los eventos de la app** y acepta el permiso extra.
+   La app crea en tu Google un calendario **Casa en Orden** y publica ahí todos los eventos de la app.
+2. En Google Calendar (web): **Casa en Orden → Configuración y compartir → Compartir con personas** →
+   agrega el correo de la otra persona con permiso "Ver todos los detalles".
+
+**Comprobación:** un evento creado en la app aparece en "Casa en Orden" de Google en 15 minutos como
+máximo, y no aparece duplicado en la capa Google de la app.

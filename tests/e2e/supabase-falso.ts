@@ -63,6 +63,8 @@ export function dbVacia(): Db {
     app_settings: [
       { id: true as unknown as string, telegram_digest_per_person: false, updated_at: '' },
     ],
+    google_accounts: [],
+    google_events: [],
     tasks: [],
     events: [],
     important_dates: [],
@@ -484,6 +486,14 @@ export class SupabaseFalso {
         return route.fulfill({ status: 204 })
       }
       return route.fulfill({ status: 405 })
+    })
+    await ctx.route(`${URL_SUPABASE}/functions/v1/**`, (route) => {
+      const u = new URL(route.request().url())
+      if (u.pathname.endsWith('/gcal-auth'))
+        return route.fulfill({
+          json: { url: 'https://accounts.google.com/o/oauth2/v2/auth?prueba=1' },
+        })
+      return route.fulfill({ status: 404 })
     })
     await ctx.routeWebSocket(/\/realtime\/v1\/websocket/, (ws) => this.realtime(ws))
   }

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEscritura, useConexion } from '@/app/datos'
 import { usePersonas } from '@/app/personas'
@@ -7,7 +8,7 @@ import { useToast } from '@/components/Toast'
 import { Boton, Interruptor } from '@/components/ui'
 import { es } from '@/i18n/es'
 import { supabase } from '@/lib/supabase'
-import type { AppSettings } from '@/types/db'
+import type { AppSettings, GoogleAccount } from '@/types/db'
 
 const t = es.ajustes
 const BOT = (import.meta.env.VITE_TELEGRAM_BOT as string | undefined)?.replace(/^@/, '')
@@ -116,6 +117,8 @@ export function AjustesPage() {
         )}
       </div>
 
+      <GoogleCalendar />
+
       <div className="flex flex-col gap-3 rounded-[18px] border border-line bg-surface p-4">
         <h2 className="font-display text-[22px] font-normal">{t.resumenes}</h2>
         <Interruptor checked={porPersona} onChange={(v) => void cambiarFlag(v)}>
@@ -160,5 +163,152 @@ export function AjustesPage() {
         )}
       </div>
     </section>
+  )
+}
+
+/* ---------- Google Calendar (fase 3) ---------- */
+
+function GoogleCalendar() {
+  const p = usePersonas()
+  const w = useEscritura()
+  const toast = useToast()
+  const qc = useQueryClient()
+  const [params, setParams] = useSearchParams()
+  const [yendo, setYendo] = useState(false)
+  const g = es.google
+
+  const cuentas = useQuery({
+    queryKey: ['google_accounts'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('google_accounts')
+        .select(
+          'member_id, google_email, can_write, status, last_error, last_sync_at, connected_at',
+        )
+      if (error) throw error
+      return (data ?? []) as GoogleAccount[]
+    },
+  })
+  const ajustes = useQuery<AppSettings | null>({ queryKey: ['ajustes'], enabled: false })
+
+  // Aviso al volver de Google (?google=ok|error|cancelado).
+  useEffect(() => {
+    const r = params.get('google')
+    if (!r) return
+    if (r === 'ok') toast.show(g.conectadoOk)
+    else if (r === 'cancelado') toast.show(g.cancelado)
+    else toast.error(g.errorConectar)
+    void qc.invalidateQueries({ queryKey: ['google_accounts'] })
+    void qc.invalidateQueries({ queryKey: ['ajustes'] })
+    params.delete('google')
+    setParams(params, { replace: true })
+  }, [params, setParams, toast, qc, g])
+
+  const conectar = async (escritura: boolean) => {
+    if (!w.puedeEscribir()) return
+    setYendo(true)
+    const { data, error } = await supabase.functions.invoke<{ url: string }>('gcal-auth', {
+      body: { escritura },
+    })
+    if (error || !data?.url) {
+      setYendo(false)
+      return toast.error(g.errorConectar)
+    }
+    window.location.href = data.url
+  }
+  const desconectar = async () => {
+    if (!w.puedeEscribir()) return
+    const { error } = await supabase.rpc('gcal_desconectar')
+    if (error) return toast.error(es.datos.noSeGuardo)
+    void qc.invalidateQueries({ queryKey: ['google_accounts'] })
+    void qc.invalidateQueries({ queryKey: ['tabla', 'google_events'] })
+    toast.show(g.desconectado)
+  }
+
+  const mia = cuentas.data?.find((c) => c.member_id === p.me?.id)
+  const otra = cuentas.data?.find((c) => c.member_id !== p.me?.id)
+  const escritor = ajustes.data?.gcal_writer_id
+
+  return (
+    <div className="flex flex-col gap-3 rounded-[18px] border border-line bg-surface p-4">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="font-display text-[22px] font-normal">Google Calendar</h2>
+        <span
+          className={`flex h-7 items-center gap-1 rounded-[14px] px-2.5 text-[13px] font-bold ${
+            mia?.status === 'error'
+              ? 'bg-danger-soft text-danger'
+              : mia
+                ? 'bg-ok-soft text-ok'
+                : 'bg-tint text-muted'
+          }`}
+        >
+          {mia?.status === 'ok' && <Icon name="palomita" size={12} stroke={3} />}
+          {mia?.status === 'error' && <Icon name="alerta" size={12} stroke={3} />}
+          {mia ? (mia.status === 'error' ? g.conError : t.conectado) : t.noConectado}
+        </span>
+      </div>
+      <p className="text-[14px] leading-[1.45] text-muted">{g.explicacion}</p>
+      {mia ? (
+        <>
+          <p className="text-[14px]">
+            {g.cuenta} <b>{mia.google_email}</b>
+            {mia.last_error && <span className="block text-danger">{mia.last_error}</span>}
+          </p>
+          <div className="flex flex-col gap-1 rounded-[14px] bg-tint p-3">
+            <span className="text-[15px] font-semibold">{g.compartido}</span>
+            <span className="text-[13px] text-muted">
+              {escritor === p.me?.id
+                ? g.compartidoActivo
+                : escritor
+                  ? g.compartidoOtro(p.partnerName)
+                  : g.compartidoAyuda}
+            </span>
+            {escritor === p.me?.id && (
+              <span className="text-[13px] text-muted">{g.compartir(p.partnerName)}</span>
+            )}
+            {!mia.can_write && escritor !== p.me?.id && (
+              <Boton
+                chico
+                variante="secundario"
+                className="mt-1 self-start"
+                disabled={yendo}
+                onClick={() => void conectar(true)}
+              >
+                {g.activarEscritura}
+              </Boton>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {mia.status === 'error' && (
+              <Boton chico disabled={yendo} onClick={() => void conectar(mia.can_write)}>
+                {g.reconectar}
+              </Boton>
+            )}
+            <Boton
+              chico
+              variante="fantasma"
+              className="text-danger"
+              onClick={() => void desconectar()}
+            >
+              {g.desconectar}
+            </Boton>
+          </div>
+        </>
+      ) : (
+        <>
+          <p className="rounded-[14px] bg-warn-soft px-3 py-2.5 text-[13px] leading-[1.45] text-ink">
+            {g.aviso}
+          </p>
+          <Boton className="self-start" disabled={yendo} onClick={() => void conectar(false)}>
+            {g.conectar}
+          </Boton>
+        </>
+      )}
+      {otra && (
+        <p className="text-[13px] text-muted">
+          {g.otra(p.partnerName)} {otra.status === 'error' ? g.conError.toLowerCase() : ''}
+        </p>
+      )}
+    </div>
   )
 }

@@ -221,6 +221,7 @@ export const es = {
       ninos: 'Niños',
       plan: 'Planes',
       comida: 'Comidas',
+      google: 'Google',
     },
   },
   pendientes: {
@@ -367,6 +368,31 @@ export const es = {
     diario: 'Resumen diario',
     hora: 'Hora',
     semanal: 'Resumen semanal (domingo 19:00)',
+  },
+  google: {
+    explicacion:
+      'Tus eventos de Google se ven en el calendario de la app como capa "Google", con tu color. Solo lectura: la app no cambia tu calendario.',
+    aviso:
+      'Google mostrará "Google no ha verificado esta app": es normal en una app privada. Toca "Configuración avanzada" y luego "Ir a Casa en Orden".',
+    conectar: 'Conectar mi Google Calendar',
+    reconectar: 'Volver a conectar',
+    desconectar: 'Desconectar Google',
+    desconectado: 'Google Calendar desconectado.',
+    conectadoOk: 'Google Calendar conectado.',
+    cancelado: 'No se conectó Google Calendar.',
+    errorConectar: 'No se pudo conectar Google Calendar. Inténtalo otra vez.',
+    conError: 'Con error',
+    cuenta: 'Cuenta:',
+    compartido: 'Calendario compartido de la casa',
+    compartidoAyuda:
+      'Opcional: la app crea el calendario "Casa en Orden" en tu Google y publica ahí los eventos de la app.',
+    compartidoActivo: 'Activo: los eventos de la app se publican en tu calendario "Casa en Orden".',
+    compartidoOtro: (n: string) =>
+      `Lo maneja ${n}: los eventos de la app se publican en su calendario "Casa en Orden".`,
+    compartir: (n: string) =>
+      `Para que ${n} lo vea, en Google Calendar abre "Casa en Orden" → Configuración y compartir → Compartir con personas.`,
+    activarEscritura: 'Publicar los eventos de la app',
+    otra: (n: string) => `${n} también tiene conectado su Google Calendar.`,
   },
   pwa: { nueva: 'Hay una versión nueva', actualizar: 'Actualizar', despues: 'Después' },
   cargando: 'Cargando…',

@@ -17,7 +17,7 @@
     "test:e2e": "playwright test",
     "sync:shared": "node scripts/sync-shared.mjs",
     "test:functions": "deno test --allow-env --allow-net=jsr.io supabase/functions/tests.test.ts",
-    "check:functions": "deno check supabase/functions/telegram-webhook/index.ts supabase/functions/digest/index.ts"
+    "check:functions": "deno check supabase/functions/telegram-webhook/index.ts supabase/functions/digest/index.ts supabase/functions/gcal-auth/index.ts supabase/functions/gcal-sync/index.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

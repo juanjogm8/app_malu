@@ -127,3 +127,34 @@ visual**. Donde chocan:
   recurrencias, calendario, fechas importantes, pendientes, súper y textos del bot, reescribiendo
   las importaciones para Deno. Las funciones se prueban con `pnpm test:functions` (Deno) y se revisan
   sus tipos con `pnpm check:functions`.
+
+## 2026-10-12 · Fase 3 · Google Calendar
+
+Verificado con la documentación vigente de Google:
+
+- **Alcances mínimos:** lectura con `calendar.events.readonly`; escritura con
+  `calendar.app.created`, que solo permite crear calendarios propios de la app y manejar sus eventos
+  (no toca los demás calendarios). Ambos son "sensibles".
+- **Publicación "In production" sin verificar:** en "Testing" los refresh tokens caducan a los 7 días
+  (salvo que solo se pidan nombre, correo y perfil). Sin verificar, Google muestra "Google no ha
+  verificado esta app" y aplica un tope de 100 usuarios nuevos en toda la vida del proyecto; para dos
+  personas basta. No se pide verificación.
+- **OAuth propio (no el de Supabase Auth):** `gcal-auth` arma la URL con `access_type=offline` y
+  `prompt=consent` (para recibir siempre el refresh token) y un `state` firmado con HMAC que liga la
+  vuelta a la persona. El refresh token se guarda cifrado en **Supabase Vault**
+  (`gcal_guardar_token` / `gcal_leer_token`, solo para la service_role) y nunca llega al navegador.
+- **Lectura:** solo el calendario principal de cada persona, `singleEvents=true` y sincronización
+  incremental con `syncToken`. La primera vez lee desde hace 30 días. Si Google responde 410 se borra lo
+  copiado y se hace una sincronización completa. No se guarda nada a más de un año (las repeticiones sin
+  fin se expanden mucho). Se ignoran los eventos que publicó la app (propiedad privada
+  `casaEnOrdenId`), así no hay duplicados.
+- **Escritura:** una persona habilita "Publicar los eventos de la app". La app crea el calendario
+  "Casa en Orden" en su cuenta y publica ahí todos los eventos. La otra persona lo ve compartiéndolo
+  desde Google Calendar (el alcance `calendar.app.created` no incluye permisos de compartir y no se
+  pide uno más amplio). Las repeticiones se traducen a RRULE con la misma regla de la app: día 31 →
+  último día del mes (`BYMONTHDAY=28,29,30,31;BYSETPOS=-1`). Los cambios en la app vuelven a marcar el
+  evento como pendiente (trigger) y los borrados se guardan en `google_pending_deletes`. Si alguien
+  borra a mano un evento en Google, se vuelve a crear.
+- **Capa "Google" en la app:** solo lectura, círculo hueco del color de la persona dueña de la cuenta.
+  Al tocar un evento se abre en Google Calendar. En los resúmenes de Telegram, a cada quien le llegan
+  solo sus eventos de Google.

@@ -15,3 +15,4 @@ supabase/functions/_shared/fechas-importantes.ts
 supabase/functions/_shared/calendario.ts
 supabase/functions/_shared/telegram-texto.ts
 supabase/functions/_shared/db.ts
+supabase/functions/_shared/gcal.ts

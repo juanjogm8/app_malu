@@ -28,7 +28,7 @@ import {
 
 const t = es.calendario
 type Modo = 'mes' | 'semana'
-const CAPAS: EntryKind[] = ['evento', 'pendiente', 'fecha', 'ninos', 'plan', 'comida']
+const CAPAS: EntryKind[] = ['evento', 'pendiente', 'fecha', 'ninos', 'plan', 'comida', 'google']
 const DIAS = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
 const esFecha = (s: string | null): s is string => !!s && /^\d{4}-\d{2}-\d{2}$/.test(s)
 
@@ -82,7 +82,7 @@ export function CalendarioPage() {
       />
 
       <div role="group" aria-label={t.capas} className="-mx-4 flex gap-1.5 overflow-x-auto px-4">
-        {CAPAS.map((k) => {
+        {CAPAS.filter((k) => k !== 'google' || (data.google?.length ?? 0) > 0).map((k) => {
           const on = capas[k]
           return (
             <button

@@ -86,6 +86,7 @@ export function useHojas() {
   const { rows: kids } = useRows('kid_items')
   const { rows: plans } = useRows('plans')
   const { rows: meals } = useRows('meals')
+  const { rows: google } = useRows('google_events')
 
   const quien = useCallback(
     (conNadie: boolean): Campo => {
@@ -610,6 +611,10 @@ export function useHojas() {
       } else if (e.kind === 'plan') {
         const r = plans.find((x) => x.id === e.id)
         if (r) editarPlan(r)
+      } else if (e.kind === 'google') {
+        // Los eventos de Google son de solo lectura: se abren en Google Calendar.
+        const r = google.find((x) => x.id === e.id)
+        if (r?.html_link) window.open(r.html_link, '_blank', 'noopener,noreferrer')
       } else {
         const r = meals.find((x) => x.id === e.id)
         if (r) abrirComida(r.date, r.meal)
@@ -619,6 +624,7 @@ export function useHojas() {
       events,
       tasks,
       dates,
+      google,
       kids,
       plans,
       meals,

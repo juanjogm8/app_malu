@@ -70,6 +70,8 @@ const filtrar = (data: CalendarData, memberId: string): CalendarData => ({
   ...data,
   events: data.events.filter((e) => esPara(e.owner_id, e.is_shared, memberId)),
   tasks: data.tasks.filter((t) => esPara(t.assignee_id, t.is_shared, memberId)),
+  // Lo de Google Calendar es de cada quien.
+  google: data.google?.filter((g) => g.member_id === memberId),
 })
 
 /* ---------- Textos ---------- */
@@ -97,9 +99,10 @@ function linea(e: Entry, quien: Quien, conDia = false): string {
   const cuando = partes.length ? `${partes.join(' ')} · ` : ''
   const extra: string[] = []
   if (e.kind === 'evento' || e.kind === 'pendiente') extra.push(quien(e.personId, e.shared))
+  if (e.kind === 'google') extra.push('Google')
   if (e.extra) extra.push(e.extra)
   if (e.repeat) extra.push(REPEAT_NAME[e.repeat].toLowerCase())
-  const etiqueta = e.kind === 'evento' ? '' : `${KIND_LABEL[e.kind]}: `
+  const etiqueta = e.kind === 'evento' || e.kind === 'google' ? '' : `${KIND_LABEL[e.kind]}: `
   return `• ${esc(cuando)}${esc(etiqueta)}<b>${esc(e.title)}</b>${extra.length ? ` <i>(${esc(extra.join(', '))})</i>` : ''}`
 }
 

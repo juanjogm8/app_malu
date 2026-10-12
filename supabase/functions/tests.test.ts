@@ -206,3 +206,144 @@ Deno.test('digest: manda a cada quien lo suyo y no repite el mismo día', async 
   await pedir()
   assertEquals(enviados.length, 2, 'no se repite el mismo día')
 })
+
+// ---------- Google Calendar ----------
+import { firmar, verificar } from './_shared/firma.ts'
+import { publicar, sincronizarLectura } from './_shared/gcal-sync-core.ts'
+import type { FilaGoogle, GoogleEvent } from './_shared/gcal.ts'
+import { GoogleError } from './_shared/google-api.ts'
+import type { CalendarApi, PaginaEventos } from './_shared/google-api.ts'
+import type { CalendarEvent } from './_shared/db.ts'
+
+Deno.test('firma: el state se verifica, caduca y no se puede alterar', async () => {
+  const t = await firmar({ m: 'yo', w: true }, 'k')
+  assertEquals(await verificar(t, 'k'), { m: 'yo', w: true })
+  assertEquals(await verificar(t, 'otra'), null)
+  assertEquals(await verificar(t.replace(/^./, 'x'), 'k'), null)
+  assertEquals(await verificar(await firmar({ m: 'yo' }, 'k', -1), 'k'), null)
+})
+
+function apiFalsa(paginas: (PaginaEventos | GoogleError)[]) {
+  const llamadas: Record<string, string | undefined>[] = []
+  const creados: GoogleEvent[] = []
+  const borrados: string[] = []
+  const api: CalendarApi = {
+    listar: async (_c, q) => {
+      llamadas.push(q)
+      const p = paginas.shift()!
+      if (p instanceof GoogleError) throw p
+      return p
+    },
+    crear: async (_c, ev) => (creados.push(ev), { ...ev, id: `g-${creados.length}`, etag: 'e1' }),
+    actualizar: async (_c, id, ev) => {
+      if (id === 'borrado-en-google') throw new GoogleError(404, 'no')
+      return { ...ev, id, etag: 'e2' }
+    },
+    borrar: async (_c, id) => void borrados.push(id),
+    crearCalendario: async () => ({ id: 'cal' }),
+  }
+  return { api, llamadas, creados, borrados }
+}
+
+function almacen(token: string | null) {
+  const filas = new Map<string, FilaGoogle>()
+  const estado = { token, vaciado: 0 }
+  return {
+    filas,
+    estado,
+    a: {
+      leerSyncToken: async () => estado.token,
+      guardarSyncToken: async (_m: string, _c: string, t: string | null) => void (estado.token = t),
+      vaciar: async () => void (filas.clear(), estado.vaciado++),
+      guardar: async (fs: FilaGoogle[]) => fs.forEach((f) => filas.set(f.google_event_id, f)),
+      borrar: async (_m: string, _c: string, ids: string[]) => ids.forEach((i) => filas.delete(i)),
+    },
+  }
+}
+
+Deno.test('google: sincronización completa con páginas y luego incremental', async () => {
+  const { api, llamadas } = apiFalsa([
+    { items: [{ id: 'a', summary: 'A', start: { date: '2026-10-13' } }], nextPageToken: 'p2' },
+    {
+      items: [{ id: 'b', summary: 'B', start: { dateTime: '2026-10-14T16:00:00Z' } }],
+      nextSyncToken: 's1',
+    },
+    {
+      items: [
+        { id: 'a', status: 'cancelled' },
+        { id: 'c', summary: 'C', start: { date: '2026-10-15' } },
+      ],
+      nextSyncToken: 's2',
+    },
+  ])
+  const s = almacen(null)
+  await sincronizarLectura(api, s.a, 'yo', 'primary', '2026-10-12')
+  assertEquals([...s.filas.keys()], ['a', 'b'])
+  assertEquals(s.estado.token, 's1')
+  assertEquals(llamadas[0], { timeMin: '2026-09-12T00:00:00Z', pageToken: undefined })
+  assertEquals(llamadas[1]!.pageToken, 'p2')
+  await sincronizarLectura(api, s.a, 'yo', 'primary', '2026-10-12')
+  assertEquals(llamadas[2], { syncToken: 's1', pageToken: undefined })
+  assertEquals([...s.filas.keys()].sort(), ['b', 'c'])
+  assertEquals(s.estado.token, 's2')
+})
+
+Deno.test('google: un 410 borra lo copiado y repite completa', async () => {
+  const { api, llamadas } = apiFalsa([
+    new GoogleError(410, 'gone'),
+    { items: [{ id: 'z', summary: 'Z', start: { date: '2026-10-13' } }], nextSyncToken: 'nuevo' },
+  ])
+  const s = almacen('viejo')
+  s.filas.set('x', { google_event_id: 'x' } as FilaGoogle)
+  await sincronizarLectura(api, s.a, 'yo', 'primary', '2026-10-12')
+  assertEquals([...s.filas.keys()], ['z'])
+  assertEquals(s.estado.token, 'nuevo')
+  assertEquals(llamadas[1]!.syncToken, undefined)
+})
+
+Deno.test(
+  'google: publica eventos pendientes, recrea los borrados a mano y aplica borrados',
+  async () => {
+    const { api, creados, borrados } = apiFalsa([])
+    const ev = (id: string, gid: string | null): CalendarEvent => ({
+      id,
+      created_by: null,
+      created_at: '',
+      updated_at: '',
+      title: `Ev ${id}`,
+      date: '2026-10-20',
+      time: null,
+      repeat: null,
+      owner_id: null,
+      is_shared: true,
+      place: null,
+      notes: null,
+      google_event_id: gid,
+    })
+    const publicados: [string, string][] = []
+    const pendientesBorrar = ['viejo']
+    const n = await publicar(
+      api,
+      {
+        pendientes: async () => [
+          ev('1', null),
+          ev('2', 'g-existente'),
+          ev('3', 'borrado-en-google'),
+        ],
+        marcarPublicado: async (id, gid) => void publicados.push([id, gid]),
+        borradosPendientes: async () => [...pendientesBorrar],
+        quitarBorrado: async (id) => void pendientesBorrar.splice(pendientesBorrar.indexOf(id), 1),
+      },
+      'cal',
+    )
+    assertEquals(n, 3)
+    assertEquals(borrados, ['viejo'])
+    assertEquals(pendientesBorrar, [])
+    assertEquals(publicados, [
+      ['1', 'g-1'],
+      ['2', 'g-existente'],
+      ['3', 'g-2'],
+    ])
+    assertEquals(creados.length, 2)
+  },
+)

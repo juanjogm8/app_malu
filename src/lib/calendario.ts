@@ -1,9 +1,17 @@
 /* Une todas las capas del calendario en un mapa fecha → entradas (entriesInRange del prototipo). */
-import type { CalendarEvent, ImportantDate, KidItem, Meal, Plan, Task } from '@/types/db'
+import type {
+  CalendarEvent,
+  GoogleEventRow,
+  ImportantDate,
+  KidItem,
+  Meal,
+  Plan,
+  Task,
+} from '@/types/db'
 import { dateTitle } from './fechas-importantes'
 import { occDates } from './recurrencia.ts'
 
-export type EntryKind = 'evento' | 'pendiente' | 'fecha' | 'ninos' | 'plan' | 'comida'
+export type EntryKind = 'evento' | 'pendiente' | 'fecha' | 'ninos' | 'plan' | 'comida' | 'google'
 
 export const KIND_LABEL: Record<EntryKind, string> = {
   evento: 'Evento',
@@ -12,6 +20,7 @@ export const KIND_LABEL: Record<EntryKind, string> = {
   ninos: 'Niños',
   plan: 'Plan',
   comida: 'Comida',
+  google: 'Google',
 }
 
 export type Layers = Record<EntryKind, boolean>
@@ -22,6 +31,7 @@ export const DEFAULT_LAYERS: Layers = {
   ninos: true,
   plan: true,
   comida: false,
+  google: true,
 }
 /** Capas de Inicio y Revisión: todas menos comidas. */
 export const ALL_BUT_MEALS: Layers = { ...DEFAULT_LAYERS }
@@ -49,6 +59,8 @@ export interface CalendarData {
   kids: KidItem[]
   plans: Plan[]
   meals: Meal[]
+  /** Fase 3: eventos leídos de Google Calendar (solo lectura). */
+  google?: GoogleEventRow[]
 }
 
 const MEAL_NAME = { desayuno: 'Desayuno', comida: 'Comida', cena: 'Cena' } as const
@@ -153,6 +165,20 @@ export function entriesInRange(
           time: '',
           personId: null,
           shared: true,
+        })
+
+  if (layers.google)
+    for (const g of data.google ?? [])
+      if (inRange(g.date))
+        push({
+          key: `google:${g.id}`,
+          kind: 'google',
+          id: g.id,
+          date: g.date,
+          title: g.title,
+          time: hhmm(g.time),
+          personId: g.member_id,
+          shared: false,
         })
 
   // Sin hora primero, luego por hora y luego por título.

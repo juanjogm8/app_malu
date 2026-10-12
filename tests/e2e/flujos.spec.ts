@@ -300,7 +300,7 @@ test('ajustes: conectar Telegram y el flag de resúmenes por persona', async ({ 
   await sb.instalar(page)
   await iniciarSesion(page)
   await page.goto('/mas/ajustes')
-  await expect(page.getByText('Sin conectar')).toBeVisible()
+  await expect(page.getByText('Sin conectar').first()).toBeVisible()
   await page.getByRole('button', { name: 'Conectar Telegram' }).click()
   await expect(page.getByText('/start AB12CD34')).toBeVisible()
 
@@ -311,4 +311,36 @@ test('ajustes: conectar Telegram y el flag de resúmenes por persona', async ({ 
   await expect.poll(() => sb.db.app_settings![0]!.telegram_digest_per_person).toBe(true)
   await page.getByRole('switch', { name: /Resumen semanal/ }).click()
   await expect.poll(() => sb.db.members![0]!.digest_weekly).toBe(false)
+})
+
+test('google: la capa Google muestra los eventos y Ajustes manda a conectar', async ({ page }) => {
+  const sb = new SupabaseFalso()
+  sb.db.google_events!.push({
+    id: 'g1',
+    member_id: '00000000-0000-0000-0000-00000000000b',
+    calendar_id: 'primary',
+    google_event_id: 'x',
+    etag: null,
+    title: 'Junta de trabajo de Malu',
+    date: today(),
+    time: '12:00:00',
+    html_link: 'https://calendar.google.com/x',
+    updated_at: '',
+  })
+  await sb.instalar(page)
+  await iniciarSesion(page)
+  await page.goto('/calendario')
+  await expect(page.getByRole('button', { name: 'Google', exact: true })).toBeVisible()
+  await expect(page.getByText('Junta de trabajo de Malu')).toBeVisible()
+  await expect(page.getByText('Google · Malu')).toBeVisible()
+  await page.getByRole('button', { name: 'Google', exact: true }).click()
+  await expect(page.getByText('Junta de trabajo de Malu')).toBeHidden()
+
+  await page.route('https://accounts.google.com/**', (r) =>
+    r.fulfill({ body: '<h1>Google</h1>', contentType: 'text/html' }),
+  )
+  await page.goto('/mas/ajustes')
+  await expect(page.getByText(/Google no ha verificado esta app/)).toBeVisible()
+  await page.getByRole('button', { name: 'Conectar mi Google Calendar' }).click()
+  await expect(page).toHaveURL(/accounts\.google\.com/)
 })

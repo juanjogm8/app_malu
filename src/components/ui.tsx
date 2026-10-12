@@ -195,6 +195,8 @@ const FORMAS: Record<EntryKind, CSSProperties> = {
     maskImage: 'radial-gradient(circle,transparent 3.5px,#000 4px)',
   },
   comida: { width: 16, height: 8, borderRadius: 4 },
+  // Google (solo lectura): círculo hueco del color de la persona
+  google: { width: 12, height: 12, borderRadius: '50%' },
 }
 
 /** Forma = tipo de entrada; color = quién. */
@@ -213,7 +215,13 @@ export function Marcador({
     <span className="grid w-4 flex-none place-items-center" aria-hidden="true">
       <span
         className="block"
-        style={{ ...FORMAS[kind], background: color ?? fillPersona(slot ?? null), ...style }}
+        style={{
+          ...FORMAS[kind],
+          ...(kind === 'google'
+            ? { boxShadow: `inset 0 0 0 2.5px ${color ?? fillPersona(slot ?? null)}` }
+            : { background: color ?? fillPersona(slot ?? null) }),
+          ...style,
+        }}
       />
     </span>
   )

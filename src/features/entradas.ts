@@ -44,7 +44,8 @@ export function useCompletarPendiente() {
 /** "Evento · Ambos", "Pendiente · Malu · Cada mes", "Niños · Emilia". */
 export function subtitulo(e: Entry, p: Personas): string {
   const partes: string[] = [KIND_LABEL[e.kind]]
-  if (e.kind === 'evento' || e.kind === 'pendiente') partes.push(p.label(e.personId, e.shared))
+  if (e.kind === 'evento' || e.kind === 'pendiente' || e.kind === 'google')
+    partes.push(p.label(e.personId, e.shared))
   if (e.extra) partes.push(e.extra)
   if (e.repeat) partes.push(REPEAT_NAME[e.repeat])
   return partes.join(' · ')
@@ -58,8 +59,10 @@ export function useDatosCalendario(): { data: CalendarData; loading: boolean } {
   const kids = useRows('kid_items')
   const plans = useRows('plans')
   const meals = useRows('meals')
+  const google = useRows('google_events')
   const data = useMemo(
     () => ({
+      google: google.rows,
       events: events.rows,
       tasks: tasks.rows,
       dates: dates.rows,
@@ -67,7 +70,7 @@ export function useDatosCalendario(): { data: CalendarData; loading: boolean } {
       plans: plans.rows,
       meals: meals.rows,
     }),
-    [events.rows, tasks.rows, dates.rows, kids.rows, plans.rows, meals.rows],
+    [events.rows, tasks.rows, dates.rows, kids.rows, plans.rows, meals.rows, google.rows],
   )
   const loading = [events, tasks, dates, kids, plans, meals].some((x) => x.loading)
   return { data, loading }

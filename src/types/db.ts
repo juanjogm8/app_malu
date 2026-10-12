@@ -40,6 +40,8 @@ export type Member = {
 export type AppSettings = {
   id: boolean
   telegram_digest_per_person: boolean
+  gcal_calendar_id?: string | null
+  gcal_writer_id?: string | null
   updated_at: string
 }
 
@@ -61,6 +63,10 @@ export type Task = Audit & {
 
 export type CalendarEvent = Audit & {
   title: string
+  /** Paso 2 de Google Calendar: evento publicado en el calendario compartido. */
+  google_event_id?: string | null
+  google_etag?: string | null
+  google_synced_at?: string | null
   date: string
   time: string | null
   repeat: Repeat | null
@@ -158,6 +164,29 @@ export type HomeImprovement = Audit & {
   status: 'idea' | 'planeado' | 'proceso' | 'listo'
 }
 
+export type GoogleAccount = {
+  member_id: string
+  google_email: string
+  can_write: boolean
+  status: 'ok' | 'error'
+  last_error: string | null
+  last_sync_at: string | null
+  connected_at: string
+}
+
+export type GoogleEventRow = {
+  id: string
+  member_id: string
+  calendar_id: string
+  google_event_id: string
+  etag: string | null
+  title: string
+  date: string
+  time: string | null
+  html_link: string | null
+  updated_at: string
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -174,6 +203,11 @@ export type Database = {
       shopping_items: Table<ShoppingItem, 'text'>
       purchases: Table<Purchase, 'text'>
       home_improvements: Table<HomeImprovement, 'text'>
+      google_accounts: Table<GoogleAccount, 'member_id' | 'google_email'>
+      google_events: Table<
+        GoogleEventRow,
+        'member_id' | 'calendar_id' | 'google_event_id' | 'title' | 'date'
+      >
     }
     Views: { [_ in never]: never }
     Functions: {
@@ -181,6 +215,7 @@ export type Database = {
       is_member: { Args: Record<string, never>; Returns: boolean }
       create_telegram_link_code: { Args: Record<string, never>; Returns: string }
       unlink_telegram: { Args: Record<string, never>; Returns: undefined }
+      gcal_desconectar: { Args: Record<string, never>; Returns: undefined }
     }
     Enums: { [_ in never]: never }
     CompositeTypes: { [_ in never]: never }
