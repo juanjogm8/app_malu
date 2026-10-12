@@ -13,6 +13,11 @@ export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
   { path: '/sin-acceso', element: <SinAccesoPage /> },
   {
+    path: '/privacidad',
+    lazy: () =>
+      import('@/features/legal/PrivacidadPage').then((m) => ({ Component: m.PrivacidadPage })),
+  },
+  {
     element: <Layout />,
     children: [
       { index: true, element: <InicioPage /> },

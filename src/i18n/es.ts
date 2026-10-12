@@ -326,6 +326,7 @@ export const es = {
   auth: {
     tagline: 'La casa, entre los dos. Pendientes, calendario y listas que se ven al momento.',
     soloCuentas: 'Solo para las dos cuentas de la casa.',
+    privacidad: 'Aviso de privacidad',
     entrarGoogle: 'Entrar con Google',
     entrando: 'Abriendo Google…',
     errorGenerico: 'No se pudo iniciar sesión. Intenta de nuevo.',

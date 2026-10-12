@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Navigate } from 'react-router'
+import { Link, Navigate } from 'react-router'
 import { useAuth } from '@/app/auth-context'
 import { Pantalla } from '@/components/Pantalla'
 import { es } from '@/i18n/es'
@@ -56,6 +56,12 @@ export function LoginPage() {
           </p>
         )}
         <p className="text-center text-[13px] text-muted">{es.auth.soloCuentas}</p>
+        <Link
+          to="/privacidad"
+          className="text-center text-[13px] text-muted underline underline-offset-2"
+        >
+          {es.auth.privacidad}
+        </Link>
       </div>
     </Pantalla>
   )

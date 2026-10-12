@@ -12,3 +12,9 @@ test('un rechazo del alta muestra "no autorizada"', async ({ page }) => {
   await expect(page).toHaveURL(/\/sin-acceso$/)
   await expect(page.getByRole('heading', { name: 'Esta cuenta no está autorizada' })).toBeVisible()
 })
+
+test('el aviso de privacidad es público', async ({ page }) => {
+  await page.goto('/privacidad')
+  await expect(page.getByRole('heading', { name: 'Aviso de privacidad' })).toBeVisible()
+  await expect(page.getByText(/uso limitado/)).toBeVisible()
+})
