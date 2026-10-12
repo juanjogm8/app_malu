@@ -218,10 +218,11 @@ Deno.test('digest: manda a cada quien lo suyo y no repite el mismo día', async 
 // ---------- Google Calendar ----------
 import { firmar, verificar } from './_shared/firma.ts'
 import { publicar, sincronizarLectura } from './_shared/gcal-sync-core.ts'
+import type { Publicable } from './_shared/gcal-sync-core.ts'
+import { conNino, eventoAGoogle, ninoAGoogle } from './_shared/gcal.ts'
 import type { FilaGoogle, GoogleEvent } from './_shared/gcal.ts'
 import { GoogleError } from './_shared/google-api.ts'
 import type { CalendarApi, PaginaEventos } from './_shared/google-api.ts'
-import type { CalendarEvent } from './_shared/db.ts'
 
 Deno.test('firma: el state se verifica, caduca y no se puede alterar', async () => {
   const t = await firmar({ m: 'yo', w: true }, 'k')
@@ -313,20 +314,19 @@ Deno.test(
   'google: publica eventos pendientes, recrea los borrados a mano y aplica borrados',
   async () => {
     const { api, creados, borrados } = apiFalsa([])
-    const ev = (id: string, gid: string | null): CalendarEvent => ({
+    const ev = (id: string, gid: string | null): Publicable => ({
+      tabla: 'events',
       id,
-      created_by: null,
-      created_at: '',
-      updated_at: '',
-      title: `Ev ${id}`,
-      date: '2026-10-20',
-      time: null,
-      repeat: null,
-      owner_id: null,
-      is_shared: true,
-      place: null,
-      notes: null,
       google_event_id: gid,
+      recurso: eventoAGoogle({
+        id,
+        title: `Ev ${id}`,
+        date: '2026-10-20',
+        time: null,
+        repeat: null,
+        place: null,
+        notes: null,
+      }),
     })
     const publicados: [string, string][] = []
     const pendientesBorrar = ['viejo']
@@ -338,7 +338,7 @@ Deno.test(
           ev('2', 'g-existente'),
           ev('3', 'borrado-en-google'),
         ],
-        marcarPublicado: async (id, gid) => void publicados.push([id, gid]),
+        marcarPublicado: async (p, gid) => void publicados.push([p.id, gid]),
         borradosPendientes: async () => [...pendientesBorrar],
         quitarBorrado: async (id) => void pendientesBorrar.splice(pendientesBorrar.indexOf(id), 1),
       },
@@ -355,3 +355,36 @@ Deno.test(
     assertEquals(creados.length, 2)
   },
 )
+
+Deno.test('google: lo de Niños se publica con el nombre del niño en el título', async () => {
+  assertEquals(conNino('Natación', 'Sofi'), 'Natación · Sofi')
+  assertEquals(conNino('Pediatra de Sofi', 'sofi'), 'Pediatra de Sofi')
+  assertEquals(conNino('Junta', null), 'Junta')
+  const g = ninoAGoogle({
+    id: 'k1',
+    text: 'Vacuna',
+    kid: 'Mateo',
+    date: '2026-10-20',
+    time: '09:30:00',
+    notes: 'Llevar cartilla',
+  })
+  assertEquals(g.summary, 'Vacuna · Mateo')
+  assertEquals(g.description, 'Llevar cartilla')
+  assertEquals(g.recurrence, undefined)
+  assertEquals(g.start, { dateTime: '2026-10-20T09:30:00', timeZone: 'America/Mexico_City' })
+  assertEquals(g.extendedProperties?.private?.casaEnOrdenId, 'k1')
+
+  const { api } = apiFalsa([])
+  const marcados: string[] = []
+  await publicar(
+    api,
+    {
+      pendientes: async () => [{ tabla: 'kid_items', id: 'k1', google_event_id: null, recurso: g }],
+      marcarPublicado: async (p) => void marcados.push(`${p.tabla}:${p.id}`),
+      borradosPendientes: async () => [],
+      quitarBorrado: async () => {},
+    },
+    'cal',
+  )
+  assertEquals(marcados, ['kid_items:k1'])
+})

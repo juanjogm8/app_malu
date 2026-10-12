@@ -193,3 +193,14 @@ Verificado con la documentación vigente de Google:
 - **Medición (Lighthouse en el login, 4G lenta simulada):** accesibilidad 100, buenas prácticas 100,
   rendimiento ≥ 90. Las tipografías se cargan sin bloquear el primer pintado. `robots.txt` y
   `noindex`: la app es privada y no debe aparecer en buscadores.
+
+## Niños ↔ calendario (después de la entrega)
+
+- **Campo "Niño" en los eventos** (`events.kid`, opcional, con sugerencias de los nombres ya usados).
+  Un evento con niño aparece también en **Niños**, en el grupo "En el calendario", con su próxima
+  fecha (los que se repiten muestran la siguiente). Se ve con el filtro "Todo" y se filtra por niño;
+  al tocarlo se edita como evento. En el calendario su subtítulo agrega el nombre ("Evento · Ambos · Sofi").
+- **Lo de Niños con fecha se publica en Google** (calendario "Casa en Orden"), igual que los eventos:
+  título "Vacuna · Mateo" (el nombre no se repite si el título ya lo trae), sin repetición. Marcarlo
+  hecho no lo quita de Google; quitarle la fecha o borrarlo, sí. Los eventos con niño también llevan
+  el nombre en el título que se publica.

@@ -1,6 +1,7 @@
 /* Reglas de Niños, Planes, Notas y Comidas (criterios del prototipo). */
-import type { Contact, KidItem, Meal, Note, Plan } from '@/types/db'
+import type { CalendarEvent, Contact, KidItem, Meal, Note, Plan } from '@/types/db'
 import { addDays } from './fechas.ts'
+import { occDates } from './recurrencia'
 import { norm } from './texto'
 
 const porFecha = (a: { date: string | null }, b: { date: string | null }) =>
@@ -19,11 +20,26 @@ export const KID_KIND_NAME: Record<KidItem['kind'], string> = {
   otro: 'Otro',
 }
 
-/** Nombres de niños ya usados (para filtros y sugerencias). */
-export const kidNames = (items: KidItem[]) =>
-  [...new Set(items.map((i) => i.kid).filter((k): k is string => !!k))].sort((a, b) =>
+/** Nombres de niños ya usados en Niños y en eventos (para filtros y sugerencias). */
+export const kidNames = (items: { kid?: string | null }[]) =>
+  [...new Set(items.map((i) => i.kid?.trim()).filter((k): k is string => !!k))].sort((a, b) =>
     a.localeCompare(b, 'es'),
   )
+
+/**
+ * Eventos del calendario marcados con un niño, en su próxima fecha (de hoy a un año).
+ * Los que ya pasaron y no se repiten no aparecen.
+ */
+export function kidEvents(events: CalendarEvent[], today: string, kid: string | null) {
+  return events
+    .filter((e) => e.kid?.trim() && (!kid || e.kid.trim() === kid))
+    .map((e) => ({ event: e, date: occDates(e.date, e.repeat, today, addDays(today, 366))[0] }))
+    .filter((x): x is { event: CalendarEvent; date: string } => !!x.date)
+    .sort(
+      (a, b) =>
+        a.date.localeCompare(b.date) || (a.event.time ?? '').localeCompare(b.event.time ?? ''),
+    )
+}
 
 /** Atrasados (con fecha pasada y sin hacer), Próximos, Sin fecha y Hechos. */
 export function kidGroups(

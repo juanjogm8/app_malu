@@ -13,6 +13,7 @@ import { parsePrice } from '@/lib/dinero'
 import { fLong, today } from '@/lib/fechas'
 import { defaultRemind, defaultYearly, KIND_NAME } from '@/lib/fechas-importantes'
 import { AREAS, STATUS_NAME, STATUS_ORDER } from '@/lib/listas'
+import { kidNames } from '@/lib/organizacion'
 import { whoFrom, whoToEvent, whoToTask } from '@/lib/personas'
 import type { WhoValue } from '@/lib/personas'
 import { REPEAT_NAME, REPEATS } from '@/lib/recurrencia'
@@ -183,11 +184,19 @@ export function useHojas() {
       { k: 'date', label: 'Fecha', t: 'date', req: true, mitad: true },
       { k: 'time', label: 'Hora', t: 'time', mitad: true },
       quien(false),
-      { k: 'repeat', label: 'Repetir', t: 'select', opts: REP_OPTS },
+      { k: 'repeat', label: 'Repetir', t: 'select', opts: REP_OPTS, mitad: true },
+      {
+        k: 'kid',
+        label: 'Niño (opcional)',
+        t: 'text',
+        ph: 'Nombre',
+        mitad: true,
+        sugerencias: kidNames([...kids, ...events]),
+      },
       { k: 'place', label: 'Lugar', t: 'text' },
       { k: 'notes', label: 'Notas', t: 'area' },
     ],
-    [quien],
+    [quien, kids, events],
   )
   const packEvento = (v: Valores) => ({
     title: s(v, 'title'),
@@ -197,6 +206,7 @@ export function useHojas() {
     repeat: orNull(s(v, 'repeat')) as Task['repeat'],
     place: orNull(s(v, 'place')),
     notes: orNull(s(v, 'notes')),
+    kid: orNull(s(v, 'kid')),
   })
   const nuevoEvento = useCallback(
     (date?: string) =>
@@ -219,6 +229,7 @@ export function useHojas() {
           time: hhmm(e.time),
           who: whoFrom(e.owner_id, e.is_shared),
           repeat: e.repeat ?? '',
+          kid: e.kid ?? '',
           place: e.place ?? '',
           notes: e.notes ?? '',
         },
@@ -307,13 +318,13 @@ export function useHojas() {
         t: 'text',
         ph: 'Nombre',
         mitad: true,
-        sugerencias: [...new Set(kids.map((k) => k.kid).filter((x): x is string => !!x))],
+        sugerencias: kidNames([...kids, ...events]),
       },
       { k: 'date', label: 'Fecha', t: 'date', mitad: true },
       { k: 'time', label: 'Hora', t: 'time', mitad: true },
       { k: 'notes', label: 'Notas (regalo, lugar, teléfono…)', t: 'area' },
     ],
-    [kids],
+    [kids, events],
   )
   const packNino = (v: Valores) => ({
     text: s(v, 'text'),

@@ -2,7 +2,7 @@
  * Google Calendar (fase 3): conversión entre eventos de la app y de Google. Puro: lo usan las Edge
  * Functions (copia en supabase/functions/_shared/gcal.ts) y se prueba con Vitest.
  */
-import type { CalendarEvent } from '@/types/db'
+import type { CalendarEvent, KidItem } from '@/types/db'
 import { addDays, parse, ZONA } from './fechas'
 import type { Repeat } from './recurrencia'
 
@@ -56,12 +56,19 @@ export interface GoogleEvent {
   extendedProperties?: { private?: Record<string, string> }
 }
 
+/** "Natación" + "Sofi" → "Natación · Sofi" (sin repetir el nombre si el título ya lo trae). */
+export function conNino(titulo: string, kid: string | null | undefined): string {
+  const k = kid?.trim()
+  if (!k || titulo.toLocaleLowerCase('es').includes(k.toLocaleLowerCase('es'))) return titulo
+  return `${titulo} · ${k}`
+}
+
 /** Evento de la app → recurso de Google (todo el día o de una hora, en hora de la Ciudad de México). */
 export function eventoAGoogle(
-  ev: Pick<CalendarEvent, 'id' | 'title' | 'date' | 'time' | 'repeat' | 'place' | 'notes'>,
+  ev: Pick<CalendarEvent, 'id' | 'title' | 'date' | 'time' | 'repeat' | 'place' | 'notes' | 'kid'>,
 ): GoogleEvent {
   const g: GoogleEvent = {
-    summary: ev.title,
+    summary: conNino(ev.title, ev.kid),
     location: ev.place ?? undefined,
     description: ev.notes ?? undefined,
     recurrence: rrule(ev.repeat, ev.date),
@@ -82,6 +89,22 @@ export function eventoAGoogle(
     g.end = { date: addDays(ev.date, 1) }
   }
   return g
+}
+
+/** Algo de Niños con fecha → recurso de Google (no se repite ni tiene lugar). */
+export function ninoAGoogle(
+  k: Pick<KidItem, 'id' | 'text' | 'kid' | 'date' | 'time' | 'notes'> & { date: string },
+): GoogleEvent {
+  return eventoAGoogle({
+    id: k.id,
+    title: k.text,
+    kid: k.kid,
+    date: k.date,
+    time: k.time,
+    repeat: null,
+    place: null,
+    notes: k.notes,
+  })
 }
 
 const partesCdmx = new Intl.DateTimeFormat('en-CA', {

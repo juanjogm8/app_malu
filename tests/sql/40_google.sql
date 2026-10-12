@@ -40,11 +40,32 @@ do $$ declare n int; begin
   update public.events set title = 'Cena con amigos' where google_event_id = 'ge1';
   assert (select google_synced_at from public.events where google_event_id = 'ge1') is null, 'pendiente de publicar';
   delete from public.events where google_event_id = 'ge1';
+
+  -- Cambiar el niño de un evento también lo vuelve a publicar.
+  insert into public.events (title, date, google_event_id, google_synced_at)
+    values ('Natación', '2026-10-20', 'ge2', now());
+  update public.events set kid = 'Sofi' where google_event_id = 'ge2';
+  assert (select google_synced_at from public.events where google_event_id = 'ge2') is null, 'evento con niño pendiente';
+
+  -- Niños: un cambio lo vuelve a publicar; marcarlo hecho no; quitarle la fecha lo quita de Google.
+  insert into public.kid_items (text, kid, date, google_event_id, google_synced_at)
+    values ('Vacuna', 'Mateo', '2026-10-21', 'gk1', now()),
+           ('Pediatra', 'Sofi', '2026-10-22', 'gk2', now()),
+           ('Festival', 'Sofi', '2026-10-23', 'gk3', now());
+  update public.kid_items set done = true where google_event_id = 'gk1';
+  assert (select google_synced_at from public.kid_items where google_event_id = 'gk1') is not null, 'hecho no republica';
+  update public.kid_items set time = '10:00' where google_event_id = 'gk1';
+  assert (select google_synced_at from public.kid_items where google_event_id = 'gk1') is null, 'niños pendiente';
+  update public.kid_items set date = null where google_event_id = 'gk2';
+  assert not exists (select 1 from public.kid_items where google_event_id = 'gk2'), 'sin fecha suelta el id de Google';
+  delete from public.kid_items where google_event_id = 'gk3';
 end $$;
 reset role;
 
 do $$ begin
   assert exists (select 1 from public.google_pending_deletes where google_event_id = 'ge1'), 'borrado pendiente en Google';
+  assert exists (select 1 from public.google_pending_deletes where google_event_id = 'gk2'), 'niños sin fecha se borra de Google';
+  assert exists (select 1 from public.google_pending_deletes where google_event_id = 'gk3'), 'niños borrado se borra de Google';
 end $$;
 
 set role authenticated;

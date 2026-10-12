@@ -75,6 +75,8 @@ export type CalendarEvent = Audit & {
   is_shared: boolean
   place: string | null
   notes: string | null
+  /** Niño al que corresponde (opcional): el evento aparece también en Niños. */
+  kid?: string | null
 }
 
 export type ImportantDate = Audit & {
@@ -94,6 +96,10 @@ export type KidItem = Audit & {
   time: string | null
   notes: string | null
   done: boolean
+  /** Lo que tiene fecha se publica en el calendario compartido de Google. */
+  google_event_id?: string | null
+  google_etag?: string | null
+  google_synced_at?: string | null
 }
 
 export type Meal = Audit & {

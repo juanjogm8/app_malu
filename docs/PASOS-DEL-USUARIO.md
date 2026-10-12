@@ -255,6 +255,7 @@ curl -X POST https://PROJECT_REF.supabase.co/functions/v1/gcal-sync -H "x-digest
 
 **Comprobación:** un evento creado en la app aparece en "Casa en Orden" de Google en un minuto como
 máximo, y no aparece duplicado en la capa Google de la app.
+También se publica lo de **Niños** que tenga fecha (por ejemplo "Vacuna · Mateo").
 
 ## 11. Notificaciones push (fase 4, opcional)
 

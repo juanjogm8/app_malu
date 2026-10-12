@@ -1,6 +1,7 @@
 import { dateGroups, whenLabel } from '@/lib/fechas-importantes'
 import {
   isHttpLink,
+  kidEvents,
   kidGroups,
   kidNames,
   planGroups,
@@ -9,7 +10,7 @@ import {
   searchNotes,
   surprise,
 } from '@/lib/organizacion'
-import type { Contact, ImportantDate, KidItem, Meal, Note, Plan } from '@/types/db'
+import type { CalendarEvent, Contact, ImportantDate, KidItem, Meal, Note, Plan } from '@/types/db'
 
 const T = '2026-10-12'
 let n = 0
@@ -162,5 +163,42 @@ describe('fechas y comidas', () => {
         '2026-10-12',
       ),
     ).toBe(2)
+  })
+})
+
+describe('eventos de los niños', () => {
+  const ev = (o: Partial<CalendarEvent>): CalendarEvent => ({
+    ...a(),
+    title: 'e',
+    date: T,
+    time: null,
+    repeat: null,
+    owner_id: null,
+    is_shared: true,
+    place: null,
+    notes: null,
+    kid: null,
+    ...o,
+  })
+  const events = [
+    ev({ title: 'sin niño', date: '2026-10-13' }),
+    ev({ title: 'natación', date: '2026-09-01', repeat: 'semanal', kid: 'Emilia' }),
+    ev({ title: 'ya pasó', date: '2026-10-01', kid: 'Santi' }),
+    ev({ title: 'festival', date: '2026-10-20', kid: 'Santi' }),
+  ]
+
+  it('muestra la próxima fecha de cada evento con niño, en orden', () => {
+    expect(kidEvents(events, T, null).map((x) => [x.event.title, x.date])).toEqual([
+      ['natación', '2026-10-13'],
+      ['festival', '2026-10-20'],
+    ])
+    expect(kidEvents(events, T, 'Santi').map((x) => x.event.title)).toEqual(['festival'])
+  })
+
+  it('junta los nombres de Niños y de los eventos', () => {
+    expect(kidNames([{ kid: 'Santi' }, { kid: ' Emilia ' }, { kid: null }, ...events])).toEqual([
+      'Emilia',
+      'Santi',
+    ])
   })
 })

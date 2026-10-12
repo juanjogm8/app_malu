@@ -93,6 +93,7 @@ export function entriesInRange(
           personId: ev.owner_id,
           shared: ev.is_shared,
           repeat: ev.repeat,
+          extra: ev.kid ?? undefined,
         })
 
   if (layers.pendiente)

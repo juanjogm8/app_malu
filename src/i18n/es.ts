@@ -62,6 +62,8 @@ export const es = {
     sinFecha: 'Sin fecha',
     vencio: (f: string) => `Venció ${f}`,
     sinFiltro: 'No hay nada con este filtro.',
+    eventos: 'En el calendario',
+    evento: 'Evento',
     vacioTitulo: 'Todo de los niños, en un lugar',
     vacioTexto:
       'Citas del pediatra, vacunas, clases y actividades, útiles escolares, fiestas de amigos y sus regalos. Lo que tenga fecha aparece también en el calendario.',

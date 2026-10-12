@@ -3,12 +3,14 @@ import type { Row } from '@/app/datos'
 import { usePreferencia } from '@/app/preferencias'
 import { Esqueleto } from '@/components/Esqueleto'
 import { fila } from '@/components/estilos'
+import { Icon } from '@/components/Icon'
 import { Casilla, Chip, ChipFiltro, GrupoTitulo, Tarjeta, Vacio } from '@/components/ui'
 import { useHojas } from '@/features/hojas'
 import { es } from '@/i18n/es'
 import { addDays, fShort, fTime, fWdShort, today } from '@/lib/fechas'
-import { KID_KIND_NAME, kidGroups, kidNames } from '@/lib/organizacion'
-import type { KidItem } from '@/types/db'
+import { KID_KIND_NAME, kidEvents, kidGroups, kidNames } from '@/lib/organizacion'
+import { REPEAT_NAME } from '@/lib/recurrencia'
+import type { CalendarEvent, KidItem } from '@/types/db'
 import { Filtros, TituloConAgregar } from './comun'
 
 const t = es.ninos
@@ -16,13 +18,17 @@ type Tipo = KidItem['kind']
 
 export function NinosPage() {
   const { rows, loading } = useRows('kid_items')
+  const { rows: events, loading: cargandoEventos } = useRows('events')
   const hojas = useHojas()
   const [tipo, setTipo] = usePreferencia<Tipo | null>('ninos:tipo', null)
   const [nino, setNino] = usePreferencia<string | null>('ninos:nino', null)
   const hoy = today()
-  const nombres = kidNames(rows)
+  const nombres = kidNames([...rows, ...events])
   const ninoActivo = nino && nombres.includes(nino) ? nino : null
   const grupos = kidGroups(rows, hoy, tipo, ninoActivo)
+  // Los eventos con niño no tienen tipo de Niños: se ven solo con el filtro "Todo".
+  const eventos = tipo ? [] : kidEvents(events, hoy, ninoActivo)
+  const hayEventos = events.some((e) => e.kid?.trim())
 
   return (
     <section aria-labelledby="titulo-vista" className="flex flex-col gap-3.5">
@@ -30,9 +36,9 @@ export function NinosPage() {
         titulo={es.titulos.ninos}
         onAgregar={() => hojas.nuevoNino(ninoActivo ? { kid: ninoActivo } : {})}
       />
-      {loading ? (
+      {loading || cargandoEventos ? (
         <Esqueleto />
-      ) : !rows.length ? (
+      ) : !rows.length && !hayEventos ? (
         <Vacio icon="ninos" titulo={t.vacioTitulo} texto={t.vacioTexto} />
       ) : (
         <>
@@ -73,10 +79,68 @@ export function NinosPage() {
               </Tarjeta>
             </div>
           ))}
-          {!grupos.length && <p className="px-1 text-muted">{t.sinFiltro}</p>}
+          {eventos.length > 0 && (
+            <div>
+              <GrupoTitulo titulo={t.eventos} conteo={eventos.length} tam={22} />
+              <Tarjeta>
+                {eventos.map(({ event, date }, i) => (
+                  <FilaEvento key={event.id} ev={event} date={date} i={i} hoy={hoy} />
+                ))}
+              </Tarjeta>
+            </div>
+          )}
+          {!grupos.length && !eventos.length && <p className="px-1 text-muted">{t.sinFiltro}</p>}
         </>
       )}
     </section>
+  )
+}
+
+/** Evento del calendario marcado con un niño: se abre para editar como cualquier evento. */
+function FilaEvento({
+  ev,
+  date,
+  i,
+  hoy,
+}: {
+  ev: CalendarEvent
+  date: string
+  i: number
+  hoy: string
+}) {
+  const hojas = useHojas()
+  const hora = ev.time ? ` · ${fTime(ev.time)}` : ''
+  return (
+    <div className={`flex gap-3 px-[14px] py-3 ${fila(i)}`}>
+      <span className="grid size-[30px] flex-none place-items-center text-muted" aria-hidden>
+        <Icon name="calendario" size={20} />
+      </span>
+      <div className="flex min-w-0 flex-1 flex-col gap-[7px] pt-1">
+        <button
+          type="button"
+          onClick={() => hojas.editarEvento(ev)}
+          className="text-left text-[16px] leading-[1.3] font-semibold"
+        >
+          {ev.title}
+        </button>
+        <div className="flex flex-wrap gap-1.5">
+          <Chip>{t.evento}</Chip>
+          {ev.kid && <Chip tono="persona">{ev.kid}</Chip>}
+          {date <= addDays(hoy, 7) ? (
+            <Chip tono="pronto" icon="reloj">
+              {fWdShort(date)}
+              {hora}
+            </Chip>
+          ) : (
+            <Chip icon="calendario">
+              {fShort(date)}
+              {hora}
+            </Chip>
+          )}
+          {ev.repeat && <Chip icon="repetir">{REPEAT_NAME[ev.repeat]}</Chip>}
+        </div>
+      </div>
+    </div>
   )
 }
 
