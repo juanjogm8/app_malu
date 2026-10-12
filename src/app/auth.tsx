@@ -2,7 +2,7 @@ import type { Session } from '@supabase/supabase-js'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import { persister } from '@/app/cache'
+import { bloquearCache, persister } from '@/app/cache'
 import { borrarCola } from '@/app/datos'
 import { supabase } from '@/lib/supabase'
 import { AuthContext } from '@/app/auth-context'
@@ -19,6 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSessionReady(true)
     })
     const { data } = supabase.auth.onAuthStateChange((_event, next) => {
+      if (next) bloquearCache(false)
       setSession(next)
       setSessionReady(true)
     })
@@ -50,6 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signOut = useCallback(async () => {
+    bloquearCache(true)
     await supabase.auth.signOut()
     queryClient.clear()
     // Lo guardado en el dispositivo es de la casa: no se queda al cerrar sesión.

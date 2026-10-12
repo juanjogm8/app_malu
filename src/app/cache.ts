@@ -16,12 +16,23 @@ export const queryClient = new QueryClient({
   },
 })
 
+/**
+ * Sin sesión no se guarda nada: al cerrar sesión se bloquea antes de borrar, para que una escritura
+ * ya programada (el guardado va con retraso) no vuelva a dejar los datos en el dispositivo.
+ */
+let guardar = true
+export const bloquearCache = (bloqueado: boolean) => {
+  guardar = !bloqueado
+}
+
 /** Caché de TanStack Query en IndexedDB: sin conexión se ve lo último que se cargó. */
 export const persister = createAsyncStoragePersister({
   key: 'casa-en-orden:cache',
   storage: {
     getItem: async (k) => (await get<string>(k)) ?? null,
-    setItem: (k, v) => set(k, v),
+    setItem: async (k, v) => {
+      if (guardar) await set(k, v)
+    },
     removeItem: (k) => del(k),
   },
   throttleTime: 1000,
