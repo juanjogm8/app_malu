@@ -49,3 +49,44 @@ Registro de decisiones relevantes: qué, por qué y qué alternativas había.
 ### Tokens de diseño provisionales
 - **Qué:** `src/styles/tokens.css` tiene una paleta provisional (verde `#0A6B58` y naranja `#C2410C` como colores de persona, de la SPEC). Tailwind v4 lee esos tokens con `@theme inline`.
 - **Por qué:** el prototipo y la entrega de Claude Design aún no están en el repositorio. Al llegar se reemplaza `tokens.css`.
+
+## 2026-10-12 · Fase 1b · Pantallas principales (diseño 2b)
+
+Criterio general (lo pide el README del diseño): **la SPEC manda en lo funcional y el diseño en lo
+visual**. Donde chocan:
+
+| Tema | Diseño | SPEC | Se hizo |
+|---|---|---|---|
+| Navegación | Barra con Más; Mejoras como 3.ª pestaña de Listas | Barra con **Casa**; Más en el encabezado; Listas = Súper y Compras | SPEC. Mejoras vive en `/casa` con el aspecto de la pantalla "Mejoras" del diseño. Más es un botón de 44 px (⋯) entre el estado de conexión y el avatar. |
+| Ícono de Casa | — (no existe) | — | Llave de herramienta, mismo trazo que los demás. |
+| Encabezado en Listas | Súper y Compras no lo muestran | — | Se muestra en todas las vistas para no perder Más, el estado de conexión ni la cuenta. |
+| Duración del aviso con Deshacer | 4 s | 6 s | 6 s (SPEC). |
+| Aviso "Sin conexión" | "Pueden seguir anotando; se envía solo al volver la señal" | Fase 1 bloquea la escritura; la cola llega en la fase 4 | Texto cambiado: "Pueden ver todo; para guardar cambios esperen a que vuelva la señal". |
+| Color de entradas sin responsable (fechas, niños, planes, comidas) | Punto partido "Ambos" | Acento | Diseño (punto partido). Pendientes "Sin asignar": punto gris (`--muted`). |
+| Próximos 7 días en Inicio | El ejemplo incluye una comida | Todas las capas menos comidas (prototipo) | SPEC/prototipo: sin comidas. |
+| Semana del calendario | Sin botón por día | "+" por día | Botón "+" de 44 px bajo el número del día. |
+| Compras | Solo se ven pendientes | "Por comprar" y "Comprado" | Ambos grupos; los comprados van tachados y sin píldora de prioridad. |
+| Chip de "Fechas que se acercan" | Ámbar a 5 días, neutro a 12 | — | Ámbar si faltan 7 días o menos; neutro si faltan más. |
+
+### Colores de persona
+- `members.color` guarda el id de la paleta (`azul`, `ciruela`, `jade`, `teja`, `ocre`, `rosa`),
+  no un hex: cada color tiene versión clara y oscura en `tokens.css`. La app copia el color de cada
+  quien a `--person-a` / `--person-b` (A = la cuenta que entró primero).
+- Por defecto A = Azul y B = Teja. En el menú de la cuenta cada quien elige su color, limitado al
+  grupo contrario al de la otra persona (frío / cálido), como pide el diseño para deuteranopía.
+
+### Capa de datos
+- Cada tabla se lee completa (son pocos registros) y se mantiene al día con un canal de Realtime
+  para todas las tablas. Al reconectar se vuelve a leer todo.
+- Escrituras optimistas con reversión si fallan y aviso "No se pudo guardar · Reintentar".
+- Eliminar siempre deja "Eliminado · Deshacer", que vuelve a insertar con el mismo `id` (también
+  al limpiar comprados o hechos).
+
+### Pruebas E2E sin Supabase
+- `tests/e2e/supabase-falso.ts` simula PostgREST en memoria, `complete_task` y el WebSocket de
+  Realtime (incluida la retransmisión entre pestañas). Cubre los flujos 1, 2, 3 y 5 de la SPEC
+  §16. El flujo 4 (comidas → súper) llega con la pantalla de Comidas.
+
+### Tamaño del paquete
+- Las vistas (salvo Inicio) se cargan al abrirlas. El paquete principal pesa ~185 KB comprimido,
+  casi todo React, supabase-js y React Router. La PWA (siguiente entrega) lo deja en caché.

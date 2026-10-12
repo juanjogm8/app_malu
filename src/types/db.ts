@@ -8,7 +8,7 @@ type Repeat =
   'semanal' | 'quincenal' | 'mensual' | 'bimestral' | 'trimestral' | 'semestral' | 'anual'
 type Priority = 'alta' | 'media' | 'baja'
 
-interface Audit {
+type Audit = {
   id: string
   created_by: string | null
   created_at: string
@@ -23,7 +23,7 @@ type Table<R, Req extends keyof R = never> = {
   Relationships: []
 }
 
-export interface Member {
+export type Member = {
   id: string
   email: string
   name: string
@@ -33,13 +33,13 @@ export interface Member {
   created_at: string
 }
 
-export interface AppSettings {
+export type AppSettings = {
   id: boolean
   telegram_digest_per_person: boolean
   updated_at: string
 }
 
-export interface Task extends Audit {
+export type Task = Audit & {
   text: string
   assignee_id: string | null
   is_shared: boolean
@@ -55,7 +55,7 @@ export interface Task extends Audit {
   last_done_by: string | null
 }
 
-export interface CalendarEvent extends Audit {
+export type CalendarEvent = Audit & {
   title: string
   date: string
   time: string | null
@@ -66,7 +66,7 @@ export interface CalendarEvent extends Audit {
   notes: string | null
 }
 
-export interface ImportantDate extends Audit {
+export type ImportantDate = Audit & {
   name: string
   kind: 'cumple' | 'aniversario' | 'vence' | 'otro'
   date: string
@@ -75,7 +75,7 @@ export interface ImportantDate extends Audit {
   notes: string | null
 }
 
-export interface KidItem extends Audit {
+export type KidItem = Audit & {
   text: string
   kind: 'cita' | 'vacuna' | 'actividad' | 'escuela' | 'fiesta' | 'otro'
   kid: string | null
@@ -85,14 +85,14 @@ export interface KidItem extends Audit {
   done: boolean
 }
 
-export interface Meal extends Audit {
+export type Meal = Audit & {
   date: string
   meal: 'desayuno' | 'comida' | 'cena'
   text: string | null
   ingredients: string | null
 }
 
-export interface Plan extends Audit {
+export type Plan = Audit & {
   text: string
   kind: 'restaurante' | 'finde' | 'pareja' | 'viaje' | 'otro'
   status: 'idea' | 'planeado' | 'hecho'
@@ -102,12 +102,12 @@ export interface Plan extends Audit {
   notes: string | null
 }
 
-export interface Note extends Audit {
+export type Note = Audit & {
   title: string
   body: string | null
 }
 
-export interface Contact extends Audit {
+export type Contact = Audit & {
   name: string
   role: string | null
   phone: string | null
@@ -126,13 +126,13 @@ export type ShoppingCategory =
   | 'cuidado'
   | 'otros'
 
-export interface ShoppingItem extends Audit {
+export type ShoppingItem = Audit & {
   text: string
   category: ShoppingCategory
   done: boolean
 }
 
-export interface Purchase extends Audit {
+export type Purchase = Audit & {
   text: string
   price: number | null
   store: string | null
@@ -140,7 +140,7 @@ export interface Purchase extends Audit {
   done: boolean
 }
 
-export interface HomeImprovement extends Audit {
+export type HomeImprovement = Audit & {
   text: string
   area:
     | 'Cocina'

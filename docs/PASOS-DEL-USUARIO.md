@@ -77,8 +77,8 @@ pnpm dlx supabase link --project-ref PROJECT_REF   # te pide la contraseña de l
 pnpm dlx supabase db push                     # muestra las migraciones y pide confirmación
 ```
 
-**Qué deberías ver:** la lista de 5 migraciones (`acceso`, `tablas`, `rls_realtime`,
-`complete_task`, `ajustes`) y "Finished supabase db push".
+**Qué deberías ver:** la lista de 6 migraciones (`acceso`, `tablas`, `rls_realtime`,
+`complete_task`, `ajustes`, `paleta_persona`) y "Finished supabase db push".
 **Comprobación:** en **Table Editor** aparecen `tasks`, `events`, `members`, etc., y cada tabla dice
 "RLS enabled". En **SQL Editor**, `select * from allowed_emails;` muestra los dos correos.
 

@@ -14,8 +14,12 @@ export function App() {
   if (!supabaseConfigured) {
     return (
       <Pantalla>
-        <h1 className="text-2xl font-semibold">{es.config.faltaTitulo}</h1>
-        <p className="mt-3 text-muted">{es.config.faltaTexto}</p>
+        <div className="flex flex-1 flex-col justify-center gap-3 px-7">
+          <h1 className="font-display text-[30px] leading-[1.1] font-normal">
+            {es.config.faltaTitulo}
+          </h1>
+          <p className="text-muted">{es.config.faltaTexto}</p>
+        </div>
       </Pantalla>
     )
   }

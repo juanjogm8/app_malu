@@ -37,30 +37,33 @@ export function LoginPage() {
   }
 
   return (
-    <Pantalla>
-      <h1 className="text-3xl font-semibold">{es.app.name}</h1>
-      <p className="mt-3 text-muted">{es.auth.tagline}</p>
-      <button
-        type="button"
-        onClick={() => void entrar()}
-        disabled={busy}
-        className="mt-8 inline-flex min-h-tap w-full items-center justify-center gap-3 rounded-md border border-border bg-surface px-4 font-medium shadow-card hover:bg-surface-2 disabled:opacity-60"
-      >
-        <GoogleLogo />
-        {busy ? es.auth.entrando : es.auth.entrarGoogle}
-      </button>
-      {error && (
-        <p role="alert" className="mt-4 text-sm text-danger">
-          {error}
-        </p>
-      )}
+    <Pantalla sol>
+      <div className="flex flex-1 flex-col justify-end gap-3.5 px-6 pb-14">
+        <h1 className="font-display text-[48px] leading-none font-normal">{es.app.name}</h1>
+        <p className="text-[17px] leading-[1.45] text-muted">{es.auth.tagline}</p>
+        <button
+          type="button"
+          onClick={() => void entrar()}
+          disabled={busy}
+          className="press mt-[18px] flex h-[54px] items-center justify-center gap-3 rounded-[27px] border border-line bg-surface text-[16px] font-semibold disabled:opacity-60"
+        >
+          <GoogleLogo />
+          {busy ? es.auth.entrando : es.auth.entrarGoogle}
+        </button>
+        {error && (
+          <p role="alert" className="text-center text-[14px] font-semibold text-danger">
+            {error}
+          </p>
+        )}
+        <p className="text-center text-[13px] text-muted">{es.auth.soloCuentas}</p>
+      </div>
     </Pantalla>
   )
 }
 
 function GoogleLogo() {
   return (
-    <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+    <svg width="22" height="22" viewBox="0 0 48 48" aria-hidden="true">
       <path
         fill="#FFC107"
         d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"

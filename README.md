@@ -3,7 +3,8 @@
 App web instalable (PWA) y privada para organizar la casa entre dos personas: pendientes, calendario,
 súper, compras, mejoras del hogar, comidas, niños, fechas importantes, planes y notas.
 
-- Especificación: [`docs/SPEC.md`](docs/SPEC.md) · Decisiones: [`docs/DECISIONES.md`](docs/DECISIONES.md)
+- Decisiones: [`docs/DECISIONES.md`](docs/DECISIONES.md) · Prototipo de referencia: [`docs/prototipo.html`](docs/prototipo.html)
+- Diseño (Claude Design, dirección 2b): [`design/`](design/README.md); `src/styles/tokens.css` es copia de `design/tokens.css`
 - Configurar cuentas (Supabase, Google, Vercel): [`docs/PASOS-DEL-USUARIO.md`](docs/PASOS-DEL-USUARIO.md)
 
 **Stack:** Vite + React 19 + TypeScript estricto · Tailwind CSS v4 sobre tokens CSS · TanStack Query ·

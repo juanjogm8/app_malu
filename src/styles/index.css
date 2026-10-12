@@ -33,35 +33,37 @@
   --spacing-tap: var(--tap);
 }
 
-html,
-body,
-#root {
-  min-height: 100%;
-}
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font: var(--text-body);
-  -webkit-font-smoothing: antialiased;
-  -webkit-tap-highlight-color: transparent;
-}
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: var(--text-body);
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-input,
-select,
-textarea,
-button {
-  font: inherit;
-  color: inherit;
-}
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+    color: inherit;
+  }
 
-/* Foco de teclado: anillo de 2 px en --focus separado 3 px (Sistema 2b). */
-:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 3px var(--bg),
-    0 0 0 5px var(--focus);
+  /* Foco de teclado: anillo de 2 px en --focus separado 3 px (Sistema 2b). */
+  :focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 3px var(--bg),
+      0 0 0 5px var(--focus);
+  }
 }
 
 @layer components {
@@ -144,4 +146,53 @@ button {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+:root {
+  /* Alto de la navegación inferior, incluida el área segura */
+  --nav-h: calc(74px + env(safe-area-inset-bottom));
+}
+
+.toast-in {
+  animation: subir var(--dur) var(--ease-out);
+}
+@keyframes subir {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+}
+
+/* Hoja: el velo pasa de 0 a 1 en 200 ms y la hoja sube en 280 ms; al cerrar, 200 ms ease-in. */
+.hoja-velo-in {
+  animation: fundido var(--dur) var(--ease-out);
+}
+.hoja-velo-out {
+  animation: fundido var(--dur) var(--ease-in) reverse forwards;
+}
+.hoja-in {
+  animation: hoja-sube var(--dur-sheet) var(--ease-out);
+}
+.hoja-out {
+  animation: hoja-sube var(--dur) var(--ease-in) reverse forwards;
+}
+@keyframes fundido {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes hoja-sube {
+  from {
+    transform: translateY(100%);
+  }
+}
+@media (min-width: 768px) {
+  .hoja-in,
+  .hoja-out {
+    animation-name: fundido;
+  }
+}
+/* Cambiar de día o mes: fundido de la cuadrícula en 120 ms */
+.fundido-rapido {
+  animation: fundido var(--dur-fast) var(--ease-out);
 }

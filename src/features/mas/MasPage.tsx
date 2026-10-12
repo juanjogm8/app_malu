@@ -13,22 +13,22 @@ const opciones = [
 
 export function MasPage() {
   return (
-    <section aria-labelledby="titulo-vista" className="px-4 py-6">
-      <h1 id="titulo-vista" className="text-2xl font-semibold">
+    <section aria-labelledby="titulo-vista" className="pt-1.5">
+      <h1 id="titulo-vista" className="font-display text-[30px] leading-none font-normal">
         {es.titulos.mas}
       </h1>
-      <ul className="mt-4 divide-y divide-border overflow-hidden rounded-lg border border-border bg-surface">
+      <ul className="mt-4 divide-y divide-tint overflow-hidden rounded-[18px] border border-line bg-surface">
         {opciones.map((o) => (
           <li key={o.to}>
             <Link
               to={o.to}
-              className="flex min-h-tap items-center gap-3 px-4 py-3 hover:bg-surface-2"
+              className="flex min-h-[62px] items-center gap-3 px-[14px] py-2.5 active:bg-tint"
             >
               <span className="flex-1">
-                <span className="block font-medium">{o.titulo}</span>
-                <span className="block text-sm text-muted">{o.desc}</span>
+                <span className="block text-[16px] font-semibold">{o.titulo}</span>
+                <span className="block text-[13px] text-muted">{o.desc}</span>
               </span>
-              <Icon name="chevron" size={20} />
+              <Icon name="derecha" size={18} className="text-muted" />
             </Link>
           </li>
         ))}

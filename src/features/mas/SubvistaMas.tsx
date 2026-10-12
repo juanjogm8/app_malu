@@ -8,7 +8,7 @@ export function SubvistaMas({ titulo }: { titulo: string }) {
     <>
       <Link
         to="/mas"
-        className="ml-2 mt-2 inline-flex min-h-tap items-center px-2 text-sm font-medium text-accent"
+        className="-ml-1 inline-flex h-11 items-center px-1 text-[16px] font-semibold text-accent"
       >
         {es.mas.volver}
       </Link>
