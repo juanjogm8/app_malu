@@ -90,3 +90,20 @@ visual**. Donde chocan:
 ### Tamaño del paquete
 - Las vistas (salvo Inicio) se cargan al abrirlas. El paquete principal pesa ~185 KB comprimido,
   casi todo React, supabase-js y React Router. La PWA (siguiente entrega) lo deja en caché.
+
+## 2026-10-12 · Fase 1c · Organización y PWA
+
+- **Subvistas de Más:** siguen el diseño y cambian el encabezado por "‹ Más". La Revisión lleva su
+  propio encabezado (cerrar · fecha).
+- **Revisión:** en domingo planea la semana que empieza mañana; otro día, la semana en curso.
+  "Lo que se atoró" incluye pendientes y cosas de los niños vencidas, ambos con Hecho y +1 semana.
+  El cierre "Semana en orden" resume lo hecho en esa sesión.
+- **Notas:** el pie dice "De {persona} · {fecha de la última edición}". La tabla no guarda quién
+  editó por última vez, solo quién creó la nota.
+- **Ícono de la app provisional** (`public/icons/icono.svg`, se regenera con `node scripts/iconos.mjs`):
+  el diseño final del ícono quedó para la tercera ronda de Claude Design.
+- **Sin conexión (fase 1):** la caché de TanStack Query se guarda en IndexedDB (`idb-keyval`, una
+  semana) y se borra al cerrar sesión. El service worker guarda el shell y las tipografías. La
+  escritura se bloquea con aviso; la cola de escrituras llega en la fase 4.
+- **Actualizaciones:** `registerType: 'prompt'` con el aviso "Hay una versión nueva · Actualizar";
+  revisa cada hora mientras la app está abierta.

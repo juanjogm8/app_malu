@@ -22,6 +22,7 @@ interface Base {
 export type Campo = Base &
   (
     | { t: 'text'; req?: boolean; ph?: string; sugerencias?: string[] }
+    | { t: 'tel' }
     | { t: 'area'; rows?: number; ph?: string }
     | { t: 'date'; req?: boolean }
     | { t: 'time' }
@@ -444,7 +445,7 @@ function CampoUI({
       </span>
     )
   } else {
-    const type = c.t === 'date' ? 'date' : c.t === 'time' ? 'time' : 'text'
+    const type = c.t === 'date' ? 'date' : c.t === 'time' ? 'time' : c.t === 'tel' ? 'tel' : 'text'
     const dl = c.t === 'text' && c.sugerencias?.length ? `${id}-dl` : undefined
     control = (
       <>
@@ -452,7 +453,8 @@ function CampoUI({
           {...comunes}
           className={`field ${c.t === 'time' ? 'tnum' : ''}`}
           type={type}
-          maxLength={type === 'text' ? 120 : undefined}
+          maxLength={type === 'text' || type === 'tel' ? 120 : undefined}
+          inputMode={c.t === 'tel' ? 'tel' : undefined}
           placeholder={c.t === 'text' ? c.ph : undefined}
           list={dl}
           value={str}

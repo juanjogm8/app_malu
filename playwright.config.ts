@@ -2,7 +2,8 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: 'tests/e2e',
-  use: { baseURL: 'http://localhost:4173' },
+  // El service worker de la PWA se salta las rutas simuladas: se bloquea en las pruebas.
+  use: { baseURL: 'http://localhost:4173', serviceWorkers: 'block' },
   projects: [
     {
       name: 'movil',

@@ -196,3 +196,14 @@
 .fundido-rapido {
   animation: fundido var(--dur-fast) var(--ease-out);
 }
+
+/* Cierre de la revisión: el sol escala .9 → 1 con fundido (400 ms) */
+.sol-cierre {
+  animation: sol 400ms var(--ease-out);
+}
+@keyframes sol {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}

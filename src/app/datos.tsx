@@ -50,7 +50,6 @@ export function useRows<T extends TableName>(table: T) {
   const q = useQuery({
     queryKey: tableKey(table),
     enabled: Boolean(session),
-    staleTime: Infinity,
     queryFn: async () => {
       const { data, error } = await from(table).select('*')
       if (error) throw error

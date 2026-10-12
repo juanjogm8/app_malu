@@ -2,6 +2,7 @@ import type { Session } from '@supabase/supabase-js'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
+import { persister } from '@/app/cache'
 import { supabase } from '@/lib/supabase'
 import { AuthContext } from '@/app/auth-context'
 import type { AuthState } from '@/app/auth-context'
@@ -50,6 +51,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     await supabase.auth.signOut()
     queryClient.clear()
+    // Lo guardado en el dispositivo es de la casa: no se queda al cerrar sesión.
+    await persister.removeClient()
   }, [queryClient])
 
   const value = useMemo<AuthState>(

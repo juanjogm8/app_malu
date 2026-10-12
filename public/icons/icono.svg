@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Ícono provisional: el diseño final llega en la tercera ronda de Claude Design -->
+  <rect width="512" height="512" fill="#1E6B4A"/>
+  <circle cx="356" cy="156" r="70" fill="#F2A23A"/>
+  <path d="M120 262 248 156l128 106v126a14 14 0 0 1-14 14h-74v-92h-80v92h-74a14 14 0 0 1-14-14z" fill="#F1F5F1"/>
+</svg>

@@ -1,15 +1,11 @@
 import { createBrowserRouter, Link, Navigate } from 'react-router'
 import { Layout } from '@/app/Layout'
-import { EnConstruccion } from '@/components/EnConstruccion'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { SinAccesoPage } from '@/features/auth/SinAccesoPage'
 import { InicioPage } from '@/features/inicio/InicioPage'
 import { ListasLayout } from '@/features/listas/ListasLayout'
-import { MasPage } from '@/features/mas/MasPage'
-import { SubvistaMas } from '@/features/mas/SubvistaMas'
+import { MasPage } from '@/features/organizacion/MasPage'
 import { es } from '@/i18n/es'
-
-const t = es.titulos
 
 // Inicio va en el paquete principal; las demás vistas se cargan al abrirlas.
 
@@ -56,12 +52,38 @@ export const router = createBrowserRouter([
         lazy: () => import('@/features/casa/CasaPage').then((m) => ({ Component: m.CasaPage })),
       },
       { path: 'mas', element: <MasPage /> },
-      { path: 'mas/comidas', element: <SubvistaMas titulo={t.comidas} /> },
-      { path: 'mas/ninos', element: <SubvistaMas titulo={t.ninos} /> },
-      { path: 'mas/fechas', element: <SubvistaMas titulo={t.fechas} /> },
-      { path: 'mas/planes', element: <SubvistaMas titulo={t.planes} /> },
-      { path: 'mas/notas', element: <SubvistaMas titulo={t.notas} /> },
-      { path: 'revision', element: <EnConstruccion titulo={t.revision} /> },
+      {
+        path: 'mas/comidas',
+        lazy: () =>
+          import('@/features/organizacion/ComidasPage').then((m) => ({ Component: m.ComidasPage })),
+      },
+      {
+        path: 'mas/ninos',
+        lazy: () =>
+          import('@/features/organizacion/NinosPage').then((m) => ({ Component: m.NinosPage })),
+      },
+      {
+        path: 'mas/fechas',
+        lazy: () =>
+          import('@/features/organizacion/FechasPage').then((m) => ({ Component: m.FechasPage })),
+      },
+      {
+        path: 'mas/planes',
+        lazy: () =>
+          import('@/features/organizacion/PlanesPage').then((m) => ({ Component: m.PlanesPage })),
+      },
+      {
+        path: 'mas/notas',
+        lazy: () =>
+          import('@/features/organizacion/NotasPage').then((m) => ({ Component: m.NotasPage })),
+      },
+      {
+        path: 'revision',
+        lazy: () =>
+          import('@/features/organizacion/RevisionPage').then((m) => ({
+            Component: m.RevisionPage,
+          })),
+      },
       {
         path: '*',
         element: (

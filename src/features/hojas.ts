@@ -55,6 +55,20 @@ const PST: [string, string][] = [
   ['planeado', 'Planeado'],
   ['hecho', 'Hecho'],
 ]
+const ROLES = [
+  'Plomero',
+  'Electricista',
+  'Pediatra',
+  'Dentista',
+  'Veterinario',
+  'Cerrajero',
+  'Jardinero',
+  'Mecánico',
+  'Pintor',
+  'Carpintero',
+  'Escuela',
+  'Otro',
+]
 const MEAL_NAME = { desayuno: 'Desayuno', comida: 'Comida', cena: 'Cena' } as const
 
 const s = (v: Valores, k: string) => (typeof v[k] === 'string' ? (v[k] as string) : '')
@@ -308,6 +322,16 @@ export function useHojas() {
     time: orNull(s(v, 'time')),
     notes: orNull(s(v, 'notes')),
   })
+  const nuevoNino = useCallback(
+    (pre: Partial<Valores> = {}) =>
+      hoja.abrir({
+        titulo: 'Nuevo de los niños',
+        campos: camposNino(),
+        valores: { kind: 'cita', ...pre } as Valores,
+        onSave: async (v) => !!(await w.insert('kid_items', packNino(v))),
+      }),
+    [hoja, camposNino, w],
+  )
   const editarNino = useCallback(
     (k: Row<'kid_items'>) =>
       hoja.abrir({
@@ -346,8 +370,27 @@ export function useHojas() {
     ],
     [],
   )
+  const packPlan = (v: Valores) => ({
+    text: s(v, 'text'),
+    kind: s(v, 'kind') as Row<'plans'>['kind'],
+    status: s(v, 'status') as Row<'plans'>['status'],
+    date: orNull(s(v, 'date')),
+    place: orNull(s(v, 'place')),
+    link: orNull(s(v, 'link')),
+    notes: orNull(s(v, 'notes')),
+  })
+  const nuevoPlan = useCallback(
+    (pre: Partial<Valores> = {}) =>
+      hoja.abrir({
+        titulo: 'Nueva idea',
+        campos: camposPlan,
+        valores: { kind: 'restaurante', status: 'idea', ...pre } as Valores,
+        onSave: async (v) => !!(await w.insert('plans', packPlan(v))),
+      }),
+    [hoja, camposPlan, w],
+  )
   const editarPlan = useCallback(
-    (pl: Row<'plans'>) =>
+    (pl: Row<'plans'>, pre: Partial<Valores> = {}) =>
       hoja.abrir({
         titulo: 'Editar idea',
         campos: camposPlan,
@@ -359,17 +402,9 @@ export function useHojas() {
           place: pl.place ?? '',
           link: pl.link ?? '',
           notes: pl.notes ?? '',
-        },
-        onSave: (v) =>
-          w.update('plans', pl.id, {
-            text: s(v, 'text'),
-            kind: s(v, 'kind') as Row<'plans'>['kind'],
-            status: s(v, 'status') as Row<'plans'>['status'],
-            date: orNull(s(v, 'date')),
-            place: orNull(s(v, 'place')),
-            link: orNull(s(v, 'link')),
-            notes: orNull(s(v, 'notes')),
-          }),
+          ...pre,
+        } as Valores,
+        onSave: (v) => w.update('plans', pl.id, packPlan(v)),
         onDelete: () => void w.remove('plans', [pl]),
       }),
     [hoja, camposPlan, w],
@@ -482,6 +517,81 @@ export function useHojas() {
     [hoja, w],
   )
 
+  /* ---------- Notas y contactos ---------- */
+  const camposNota: Campo[] = useMemo(
+    () => [
+      { k: 'title', label: 'Título', t: 'text', req: true },
+      { k: 'body', label: 'Nota', t: 'area', rows: 8 },
+    ],
+    [],
+  )
+  const nuevaNota = useCallback(
+    () =>
+      hoja.abrir({
+        titulo: 'Nueva nota',
+        campos: camposNota,
+        valores: {},
+        onSave: async (v) =>
+          !!(await w.insert('notes', { title: s(v, 'title'), body: orNull(s(v, 'body')) })),
+      }),
+    [hoja, camposNota, w],
+  )
+  const editarNota = useCallback(
+    (n: Row<'notes'>) =>
+      hoja.abrir({
+        titulo: 'Editar nota',
+        campos: camposNota,
+        valores: { title: n.title, body: n.body ?? '' },
+        onSave: (v) =>
+          w.update('notes', n.id, { title: s(v, 'title'), body: orNull(s(v, 'body')) }),
+        onDelete: () => void w.remove('notes', [n]),
+      }),
+    [hoja, camposNota, w],
+  )
+  const camposContacto: Campo[] = useMemo(
+    () => [
+      { k: 'name', label: 'Nombre', t: 'text', req: true },
+      {
+        k: 'role',
+        label: 'A qué se dedica',
+        t: 'text',
+        ph: 'Plomero, pediatra…',
+        sugerencias: ROLES,
+        mitad: true,
+      },
+      { k: 'phone', label: 'Teléfono', t: 'tel', mitad: true },
+      { k: 'notes', label: 'Notas', t: 'area' },
+    ],
+    [],
+  )
+  const packContacto = (v: Valores) => ({
+    name: s(v, 'name'),
+    role: orNull(s(v, 'role')),
+    phone: orNull(s(v, 'phone')),
+    notes: orNull(s(v, 'notes')),
+  })
+  const nuevoContacto = useCallback(
+    () =>
+      hoja.abrir({
+        titulo: 'Nuevo contacto',
+        campos: camposContacto,
+        valores: {},
+        onSave: async (v) => !!(await w.insert('contacts', packContacto(v))),
+      }),
+    [hoja, camposContacto, w],
+  )
+  const editarContacto = useCallback(
+    (c: Row<'contacts'>) =>
+      hoja.abrir({
+        titulo: 'Editar contacto',
+        campos: camposContacto,
+        valores: { name: c.name, role: c.role ?? '', phone: c.phone ?? '', notes: c.notes ?? '' },
+        onSave: (v) => w.update('contacts', c.id, packContacto(v)),
+        onDelete: () => void w.remove('contacts', [c]),
+      }),
+    [hoja, camposContacto, w],
+  )
+
   /** Abre la hoja de cualquier entrada del calendario o de Inicio. */
   const abrirEntrada = useCallback(
     (e: Entry) => {
@@ -528,8 +638,14 @@ export function useHojas() {
     editarEvento,
     nuevaFecha,
     editarFecha,
+    nuevoNino,
     editarNino,
+    nuevoPlan,
     editarPlan,
+    nuevaNota,
+    editarNota,
+    nuevoContacto,
+    editarContacto,
     abrirComida,
     editarProducto,
     editarCompra,

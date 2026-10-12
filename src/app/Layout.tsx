@@ -1,4 +1,4 @@
-import { Navigate, Outlet, useLocation } from 'react-router'
+import { Link, Navigate, Outlet, useLocation } from 'react-router'
 import { BarraInferior } from '@/app/BarraInferior'
 import { Encabezado } from '@/app/Encabezado'
 import { useAuth } from '@/app/auth-context'
@@ -41,7 +41,19 @@ function Marco() {
           className="pointer-events-none absolute -top-[70px] -right-[60px] size-[230px] rounded-full bg-sun-soft"
         />
       )}
-      <Encabezado />
+      {pathname.startsWith('/mas/') ? (
+        <div className="pt-[env(safe-area-inset-top)]">
+          <Link
+            to="/mas"
+            className="ml-[max(4px,env(safe-area-inset-left))] inline-flex h-11 items-center gap-1.5 pr-3 pl-2 text-[15px] font-semibold text-accent"
+          >
+            <Icon name="izquierda" size={22} />
+            {es.nav.mas}
+          </Link>
+        </div>
+      ) : pathname !== '/revision' ? (
+        <Encabezado />
+      ) : null}
       {conexion === 'sin-conexion' && (
         <div
           role="status"

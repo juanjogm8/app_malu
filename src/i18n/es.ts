@@ -27,15 +27,130 @@ export const es = {
     revision: 'Revisión de la semana',
   },
   mas: {
-    volver: '‹ Más',
-    descripcion: {
-      comidas: 'Menú de la semana e ingredientes',
-      ninos: 'Citas, vacunas, escuela y actividades',
-      fechas: 'Cumpleaños, aniversarios y vencimientos',
-      planes: 'Restaurantes, fines de semana y viajes',
-      notas: 'Datos útiles y teléfonos',
-      revision: 'Diez minutos para dejar la semana en orden',
+    agregar: '+ Agregar',
+    revisionSub: '10 minutos, el domingo, juntos',
+    comidas: 'Comidas de la semana',
+    comidasSub: 'Desayuno, comida y cena',
+    deVeintiuno: (n: number) => `${n} de 21`,
+    ninosSub: 'Citas, vacunas, escuela y fiestas',
+    proximos: (n: number) => (n === 1 ? '1 próximo' : `${n} próximos`),
+    fechasSub: 'Cumpleaños, aniversarios y vencimientos',
+    esteMes: (n: number) => `${n} este mes`,
+    planes: 'Planes y citas',
+    planesSub: 'Ideas para salir juntos',
+    ideas: (n: number) => (n === 1 ? '1 idea' : `${n} ideas`),
+    notasSub: 'Claves, medidas y proveedores',
+  },
+  comidas: {
+    anterior: 'Semana anterior',
+    siguiente: 'Semana siguiente',
+    irHoy: 'Volver a esta semana',
+    pasar: (n: number) =>
+      n ? `Pasar ingredientes al súper (${n})` : 'Pasar ingredientes al súper',
+    agregados: (n: number) =>
+      n === 1 ? 'Agregué 1 ingrediente al súper.' : `Agregué ${n} ingredientes al súper.`,
+    yaEstaban: 'Esos ingredientes ya estaban en el súper.',
+    sinPlanear: 'Sin planear',
+    ingredientes: (n: number) => (n === 1 ? '1 ingrediente' : `${n} ingredientes`),
+    planeadas: (n: number) => `${n} de 21 comidas planeadas`,
+  },
+  ninos: {
+    filtroTipo: 'Filtrar por tipo',
+    filtroNino: 'Filtrar por niño',
+    todo: 'Todo',
+    todos: 'Los dos',
+    sinFecha: 'Sin fecha',
+    vencio: (f: string) => `Venció ${f}`,
+    sinFiltro: 'No hay nada con este filtro.',
+    vacioTitulo: 'Todo de los niños, en un lugar',
+    vacioTexto:
+      'Citas del pediatra, vacunas, clases y actividades, útiles escolares, fiestas de amigos y sus regalos. Lo que tenga fecha aparece también en el calendario.',
+  },
+  fechas: {
+    titulo: 'Fechas',
+    vacioTitulo: 'Que no se les pase nada',
+    vacioTexto:
+      'Cumpleaños, aniversarios y vencimientos como el seguro del coche, la verificación o los pasaportes. Cada fecha avisa en el Inicio con la anticipación que elijan.',
+  },
+  planes: {
+    filtro: 'Filtrar por tipo',
+    todo: 'Todo',
+    estado: 'Estado',
+    sorprendeme: 'Sorpréndeme con una idea',
+    guardadaPor: (q: string) => `Idea guardada por ${q === 'Yo' ? 'ti' : q}`,
+    planearlo: 'Planearlo',
+    otra: 'Otra idea',
+    abrirEnlace: 'Abrir enlace',
+    sinFiltro: 'No hay nada con este filtro.',
+    vacioTitulo: 'Ideas para cuando haya tiempo',
+    vacioTexto:
+      'Guarden restaurantes por probar, planes de fin de semana, noches de pareja y viajes. Cuando no sepan qué hacer, pidan una idea al azar.',
+  },
+  notas: {
+    notas: 'Notas',
+    contactos: 'Contactos',
+    buscarNotas: 'Buscar notas',
+    buscarContactos: 'Buscar por nombre u oficio',
+    meta: (quien: string, dia: string) => (dia ? `De ${quien} · ${dia}` : `De ${quien}`),
+    copiar: 'Copiar',
+    copiarDe: (n: string) => `Copiar el teléfono de ${n}`,
+    copiado: 'Teléfono copiado.',
+    noCopiado: 'No se pudo copiar. Selecciona el número.',
+    sinResultados: 'Sin resultados.',
+    vacioNotas: 'Sin notas todavía',
+    vacioNotasTexto:
+      'Ideas de regalo, medidas de la casa, claves de contratos, lo que no quieren olvidar. Todo queda compartido.',
+    vacioContactos: 'Sin contactos todavía',
+    vacioContactosTexto:
+      'Plomero, electricista, pediatra, veterinario, la escuela. Con su teléfono a la mano cuando hace falta.',
+  },
+  revision: {
+    cerrar: 'Cerrar la revisión',
+    subtitulo: 'Unos 10 minutos. Vayan en orden.',
+    atoro: 'Lo que se atoró',
+    nadaAtorado: 'Nada atrasado.',
+    masSemana: '+1 semana',
+    viene: 'Lo que viene',
+    nadaViene: 'Nada programado. Si falta algo, agréguenlo.',
+    comidas: 'Comidas',
+    comidasNota: (n: number) => `Hay ${n} de 21 planeadas para la semana.`,
+    planearComidas: 'Planear comidas',
+    super: 'Súper',
+    superNota: (faltan: number, ing: number) =>
+      [
+        faltan
+          ? faltan === 1
+            ? 'Falta 1 producto.'
+            : `Faltan ${faltan} productos.`
+          : 'La lista está vacía.',
+        ing
+          ? ing === 1
+            ? '1 ingrediente de las comidas aún no está en la lista.'
+            : `${ing} ingredientes de las comidas aún no están en la lista.`
+          : '',
+      ]
+        .filter(Boolean)
+        .join(' '),
+    pasar: (n: number) => `Pasar ingredientes (${n})`,
+    abrirSuper: 'Abrir el súper',
+    fechas: 'Fechas del mes',
+    nadaFechas: 'Nada en los próximos 30 días.',
+    listo: 'Listo, hasta la próxima semana',
+    enOrden: 'Semana en orden',
+    resumen: (resueltos: number, comidas: number, superListo: boolean) => {
+      const partes = [
+        resueltos
+          ? `Resolvieron ${resueltos === 1 ? '1 pendiente atorado' : `${resueltos} pendientes atorados`}`
+          : 'Revisaron la semana',
+        comidas ? `planearon ${comidas === 1 ? '1 comida' : `${comidas} comidas`}` : '',
+        superListo ? 'dejaron el súper listo' : '',
+      ].filter(Boolean)
+      return partes.length > 1
+        ? `${partes.slice(0, -1).join(', ')} y ${partes[partes.length - 1]}.`
+        : `${partes[0]}.`
     },
+    proxima: (f: string) => `Próxima revisión: ${f}`,
+    volver: 'Volver a Inicio',
   },
   conexion: {
     enVivo: 'En vivo',
@@ -228,7 +343,7 @@ export const es = {
     faltaTexto:
       'Copia .env.example a .env.local y llena VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY. Luego reinicia el servidor.',
   },
-  enConstruccion: 'Esta vista llega en la siguiente entrega.',
+  pwa: { nueva: 'Hay una versión nueva', actualizar: 'Actualizar', despues: 'Después' },
   cargando: 'Cargando…',
   noEncontrado: 'Esta página no existe.',
   irInicio: 'Ir a Inicio',

@@ -26,11 +26,10 @@ const usuario = {
 }
 
 let n = 0
-const audit = (by: string = YO) => ({
-  created_by: by,
-  created_at: new Date(Date.UTC(2026, 9, 1, 0, n++)).toISOString(),
-  updated_at: '',
-})
+const audit = (by: string = YO) => {
+  const ts = new Date(Date.UTC(2026, 9, 1, 0, n++)).toISOString()
+  return { created_by: by, created_at: ts, updated_at: ts }
+}
 const uid = () => crypto.randomUUID()
 
 export function dbVacia(): Db {
@@ -215,6 +214,111 @@ export function dbEjemplo(): Db {
       notes: null,
     },
   ]
+  db.kid_items.push(
+    {
+      id: uid(),
+      ...audit(),
+      text: 'Comprar útiles escolares',
+      kind: 'escuela',
+      kid: 'Santi',
+      date: d(-2),
+      time: null,
+      notes: null,
+      done: false,
+    },
+    {
+      id: uid(),
+      ...audit(),
+      text: 'Revisión con el pediatra',
+      kind: 'cita',
+      kid: 'Emilia',
+      date: d(10),
+      time: null,
+      notes: null,
+      done: false,
+    },
+    {
+      id: uid(),
+      ...audit(),
+      text: 'Inscribir a natación de invierno',
+      kind: 'actividad',
+      kid: 'Santi',
+      date: null,
+      time: null,
+      notes: null,
+      done: false,
+    },
+  )
+  db.plans.push(
+    {
+      id: uid(),
+      ...audit(MALU),
+      text: 'Probar la fonda nueva de Coyoacán',
+      kind: 'restaurante',
+      status: 'idea',
+      date: null,
+      place: 'Coyoacán',
+      link: 'https://example.com/fonda',
+      notes: null,
+    },
+    {
+      id: uid(),
+      ...audit(),
+      text: 'Picnic en Chapultepec',
+      kind: 'finde',
+      status: 'idea',
+      date: null,
+      place: null,
+      link: null,
+      notes: null,
+    },
+  )
+  const lunes = addDays(h, -((new Date(`${h}T12:00:00Z`).getUTCDay() + 6) % 7))
+  const comida = (k: number, meal: string, text: string, ingredients: string | null) => ({
+    id: uid(),
+    ...audit(),
+    date: addDays(lunes, k),
+    meal,
+    text,
+    ingredients,
+  })
+  db.meals = [
+    comida(0, 'comida', 'Sopa de lentejas', 'Lentejas, jitomate, cebolla'),
+    comida(1, 'comida', 'Tacos de pollo', 'Pechuga de pollo, tortillas, aguacate, limón'),
+    comida(3, 'cena', 'Pozole', 'Maíz pozolero, carne de cerdo, rábanos'),
+  ]
+  db.notes = [
+    {
+      id: uid(),
+      ...audit(MALU),
+      title: 'Clave del wifi',
+      body: 'Red CasaOrden_5G. La clave está en la etiqueta del módem, atrás de la tele.',
+    },
+    {
+      id: uid(),
+      ...audit(),
+      title: 'Medidas de la sala',
+      body: 'Ventana grande 2.40 × 1.60 m. Pared de la tele 3.10 m.',
+    },
+  ]
+  db.contacts = [
+    {
+      id: uid(),
+      ...audit(),
+      name: 'Don Pedro',
+      role: 'Plomero',
+      phone: '55 1234 5678',
+      notes: null,
+    },
+    {
+      id: uid(),
+      ...audit(),
+      name: 'Dra. Ramírez',
+      role: 'Pediatra',
+      phone: '55 8765 4321',
+      notes: null,
+    },
+  ]
   const s = (text: string, category: string, by: string, done = false) => ({
     id: uid(),
     ...audit(by),
@@ -297,6 +401,8 @@ export class SupabaseFalso {
   oyentes = new Set<Oyente>()
   /** Si es true, toda escritura responde 500. */
   fallar = false
+  /** Si es true, la API no responde (simula estar sin red). */
+  caido = false
   constructor(public db: Db = dbEjemplo()) {}
 
   private emitir(table: string, type: 'INSERT' | 'UPDATE' | 'DELETE', row: Fila) {
@@ -311,6 +417,7 @@ export class SupabaseFalso {
       return route.fulfill({ json: {} })
     })
     await ctx.route(`${URL_SUPABASE}/rest/v1/**`, async (route) => {
+      if (this.caido) return route.abort('internetdisconnected')
       const req = route.request()
       const u = new URL(req.url())
       const partes = u.pathname.split('/').filter(Boolean) // rest, v1, tabla | rpc, fn

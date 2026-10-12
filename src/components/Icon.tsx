@@ -23,6 +23,16 @@ const paths = {
   candado: 'M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3',
   sinSenal:
     'M3 9a14 14 0 0 1 18 0M6.5 12.5a9 9 0 0 1 11 0M10 16a4 4 0 0 1 4 0M12 19.5h.01M4 4l16 16',
+  comidas: 'M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 3c-2 0-3 3-3 6s1 4 3 4v8',
+  ninos: 'M12 4a3 3 0 1 0 0 6 3 3 0 1 0 0-6zM6 20v-2a6 6 0 0 1 12 0v2',
+  fechas: 'M12 3l2.6 5.6 6 .6-4.5 4 1.3 6L12 16.3 6.6 19.2l1.3-6-4.5-4 6-.6z',
+  planes: 'M12 21s-7-4.5-7-11a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 6.5-7 11-7 11z',
+  notas: 'M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5',
+  buscar: 'M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 1 0 0-13zM15.5 15.5 20 20',
+  copiar: 'M8 8h11v12H8zM5 16V4h11',
+  externo: 'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6',
+  azar: 'M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5',
+  flecha: 'M5 12h14M13 6l6 6-6 6',
 } as const
 
 export type IconName = keyof typeof paths

@@ -1,14 +1,12 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { RouterProvider } from 'react-router'
 import { AuthProvider } from '@/app/auth'
+import { CACHE_BUSTER, persister, queryClient } from '@/app/cache'
 import { router } from '@/app/router'
+import { ActualizarApp } from '@/components/ActualizarApp'
 import { Pantalla } from '@/components/Pantalla'
 import { es } from '@/i18n/es'
 import { supabaseConfigured } from '@/lib/supabase'
-
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
-})
 
 export function App() {
   if (!supabaseConfigured) {
@@ -24,10 +22,19 @@ export function App() {
     )
   }
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister,
+        buster: CACHE_BUSTER,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        dehydrateOptions: { shouldDehydrateQuery: (q) => q.state.status === 'success' },
+      }}
+    >
       <AuthProvider>
         <RouterProvider router={router} />
+        <ActualizarApp />
       </AuthProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   )
 }

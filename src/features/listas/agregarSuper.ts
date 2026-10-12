@@ -15,15 +15,16 @@ export function useAgregarAlSuper() {
   return async (
     text: string,
     category?: ShoppingCategory | null,
+    silencioso = false,
   ): Promise<'nuevo' | 'ya-esta' | 'volvio' | 'error'> => {
     const dup = superDuplicate(rows, text)
     if (dup.kind === 'ya-esta') {
-      toast.show(t.yaEsta)
+      if (!silencioso) toast.show(t.yaEsta)
       return 'ya-esta'
     }
     if (dup.kind === 'volvio') {
       if (!(await w.update('shopping_items', dup.item.id, { done: false }))) return 'error'
-      toast.show(t.volvio)
+      if (!silencioso) toast.show(t.volvio)
       return 'volvio'
     }
     const ok = await w.insert('shopping_items', { text, category: category ?? guessCat(text) })

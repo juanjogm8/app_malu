@@ -29,6 +29,16 @@ export interface DateInfo {
 }
 
 /** Fechas con su próxima ocurrencia, ordenadas. */
+/** Vencidas (no anuales en el pasado), Próximos 30 días y Más adelante. */
+export function dateGroups(items: ImportantDate[], today: string) {
+  const infos = dateInfos(items, today)
+  return [
+    { name: 'Vencidas' as const, items: infos.filter((x) => x.days < 0) },
+    { name: 'Próximos 30 días' as const, items: infos.filter((x) => x.days >= 0 && x.days <= 30) },
+    { name: 'Más adelante' as const, items: infos.filter((x) => x.days > 30) },
+  ].filter((g) => g.items.length)
+}
+
 export function dateInfos(items: ImportantDate[], today: string): DateInfo[] {
   return items
     .map((item) => {
@@ -52,5 +62,9 @@ export function whenLabel(days: number): string {
   if (days === 0) return 'Hoy'
   if (days === 1) return 'Mañana'
   if (days < 0) return `Hace ${-days} ${days === -1 ? 'día' : 'días'}`
+  if (days > 45) {
+    const meses = Math.round(days / 30)
+    return `En ${meses} ${meses === 1 ? 'mes' : 'meses'}`
+  }
   return `En ${days} días`
 }
