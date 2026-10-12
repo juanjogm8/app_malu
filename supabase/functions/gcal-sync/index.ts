@@ -1,4 +1,4 @@
-// Sincronización con Google Calendar. La llama pg_cron cada 15 minutos (encabezado x-digest-secret).
+// Sincronización con Google Calendar. La llama pg_cron cada minuto (encabezado x-digest-secret).
 // Secretos: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, DIGEST_SECRET.
 import { clienteAdmin } from '../_shared/admin.ts'
 import { mismoSecreto } from '../_shared/telegram-api.ts'

@@ -233,16 +233,16 @@ pnpm dlx supabase functions deploy gcal-sync --no-verify-jwt
 ```
 (`DIGEST_SECRET` y `APP_URL` ya quedaron del paso 9.2; si te saltaste Telegram, defínelos igual.)
 
-La sincronización cada 15 minutos ya quedó programada por la migración y usa los secretos de Vault del
+La sincronización cada minuto ya quedó programada por la migración y usa los secretos de Vault del
 paso 9.4. **Comprobación:** `select jobname, schedule from cron.job;` muestra también
-`casa-en-orden-google` con `*/15 * * * *`.
+`casa-en-orden-google` con `* * * * *`.
 
 ### 10.3 Conectar (cada persona)
 App → avatar → **Ajustes · Telegram** → **Google Calendar** → **Conectar mi Google Calendar**.
 
 **Comprobación:** al volver aparece "Google Calendar conectado", y en **Calendario** hay una capa nueva
 **Google** con tus eventos (círculo hueco de tu color). Un evento nuevo en Google aparece en la app en
-15 minutos como máximo. Para no esperar:
+un minuto como máximo. Para no esperar:
 ```bash
 curl -X POST https://PROJECT_REF.supabase.co/functions/v1/gcal-sync -H "x-digest-secret: DIGEST_SECRET"
 ```
@@ -253,7 +253,7 @@ curl -X POST https://PROJECT_REF.supabase.co/functions/v1/gcal-sync -H "x-digest
 2. En Google Calendar (web): **Casa en Orden → Configuración y compartir → Compartir con personas** →
    agrega el correo de la otra persona con permiso "Ver todos los detalles".
 
-**Comprobación:** un evento creado en la app aparece en "Casa en Orden" de Google en 15 minutos como
+**Comprobación:** un evento creado en la app aparece en "Casa en Orden" de Google en un minuto como
 máximo, y no aparece duplicado en la capa Google de la app.
 
 ## 11. Notificaciones push (fase 4, opcional)
