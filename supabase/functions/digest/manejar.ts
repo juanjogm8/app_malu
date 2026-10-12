@@ -27,6 +27,7 @@ export interface Deps {
 }
 
 export const HORA_SEMANAL = 19
+export const TITULO_DIARIO = 'Revisa tu día'
 export const HORA_DIARIO = 8
 
 /** Hora (0–23) en la Ciudad de México. */
@@ -88,6 +89,8 @@ export async function manejarDigest(req: Request, d: Deps): Promise<Response> {
     if (push.has(m.id))
       await d.push(m.id, {
         ...avisoPush(html),
+        // El diario se anuncia corto; la lista de lo de hoy va en el cuerpo.
+        ...(tipo === 'diario' && { title: TITULO_DIARIO }),
         url: tipo === 'semanal' ? '/revision' : '/',
         tag: `resumen-${tipo}`,
       })

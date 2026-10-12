@@ -209,7 +209,7 @@ Deno.test('digest: manda a cada quien lo suyo y no repite el mismo día', async 
   assertStringIncludes(paraMi, 'Junta')
   // Push: a quien tiene dispositivos suscritos, aunque no tenga Telegram.
   assertEquals(avisos.map(([id]) => id).sort(), ['malu', 'sinTelegram'])
-  assertStringIncludes(avisos[0]![1], 'Buenos días')
+  assertEquals(avisos[0]![1], 'Revisa tu día')
   await pedir()
   assertEquals(enviados.length, 2, 'no se repite el mismo día')
   assertEquals(avisos.length, 2)
