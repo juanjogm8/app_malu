@@ -188,6 +188,16 @@ export type GoogleEventRow = {
   updated_at: string
 }
 
+export type PushSubscriptionRow = {
+  id: string
+  member_id: string
+  endpoint: string
+  p256dh: string
+  auth: string
+  user_agent: string | null
+  created_at: string
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -205,6 +215,7 @@ export type Database = {
       purchases: Table<Purchase, 'text'>
       home_improvements: Table<HomeImprovement, 'text'>
       google_accounts: Table<GoogleAccount, 'member_id' | 'google_email'>
+      push_subscriptions: Table<PushSubscriptionRow, 'endpoint' | 'p256dh' | 'auth'>
       google_events: Table<
         GoogleEventRow,
         'member_id' | 'calendar_id' | 'google_event_id' | 'title' | 'date'

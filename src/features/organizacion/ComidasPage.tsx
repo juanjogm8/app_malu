@@ -72,11 +72,55 @@ export function ComidasPage() {
         {t.pasar(ingredientes.length)}
       </Boton>
 
+      {!loading && (
+        // Tableta: tabla de día × 3 comidas.
+        <div className="hidden overflow-hidden rounded-[18px] border border-line bg-surface md:block">
+          <div className="grid grid-cols-[120px_repeat(3,minmax(0,1fr))] border-b border-line">
+            <span />
+            {COMIDAS.map(([meal, label]) => (
+              <span key={meal} className="eyebrow px-3 pt-3 pb-2.5 text-muted">
+                {label}
+              </span>
+            ))}
+          </div>
+          {Array.from({ length: 7 }, (_, i) => addDays(lunes, i)).map((d, i) => (
+            <div
+              key={d}
+              className={`grid grid-cols-[120px_repeat(3,minmax(0,1fr))] ${i ? 'border-t border-tint' : ''} ${d === hoy ? 'bg-sun-soft' : ''}`}
+            >
+              <span className="px-3.5 py-3 font-display text-[17px]">
+                {fDay(d).replace(/^(\S{3})\S*/, '$1')}
+              </span>
+              {COMIDAS.map(([meal, label]) => {
+                const m = meals.find((x) => x.date === d && x.meal === meal)
+                const n = splitIng(m?.ingredients).length
+                return (
+                  <button
+                    key={meal}
+                    type="button"
+                    aria-label={`${label}, ${fDay(d)}: ${m?.text || t.sinPlanear}`}
+                    onClick={() => hojas.abrirComida(d, meal)}
+                    className="flex min-w-0 flex-col items-start gap-0.5 px-3 py-2.5 text-left"
+                  >
+                    <span
+                      className={`w-full truncate text-[15px] ${m?.text ? 'font-semibold' : 'text-muted italic'}`}
+                    >
+                      {m?.text || t.sinPlanear}
+                    </span>
+                    {n > 0 && <span className="text-[12px] text-muted">{t.ingredientes(n)}</span>}
+                  </button>
+                )
+              })}
+            </div>
+          ))}
+        </div>
+      )}
+
       {loading ? (
         <Esqueleto />
       ) : (
         Array.from({ length: 7 }, (_, i) => addDays(lunes, i)).map((d) => (
-          <div key={d} className="flex flex-col gap-1.5">
+          <div key={d} className="flex flex-col gap-1.5 md:hidden">
             <div className="flex items-center gap-2 px-1">
               <h2 className="font-display text-[19px] font-normal">{fDay(d)}</h2>
               {d === hoy && (

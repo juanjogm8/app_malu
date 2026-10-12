@@ -216,7 +216,7 @@ function Panel({
         role="dialog"
         aria-modal="true"
         aria-labelledby={`${uid}-t`}
-        className={`absolute inset-x-0 mx-auto flex max-h-[calc(100dvh-24px)] max-w-[560px] flex-col rounded-t-[26px] bg-surface shadow-sheet md:inset-x-4 md:rounded-[26px] ${
+        className={`hoja-panel absolute inset-x-0 mx-auto flex max-h-[calc(100dvh-24px)] max-w-[560px] flex-col rounded-t-[26px] bg-surface shadow-sheet md:inset-x-4 md:rounded-[26px] ${
           saliendo ? 'hoja-out' : 'hoja-in'
         }`}
         style={{

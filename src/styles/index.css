@@ -191,6 +191,13 @@
   .hoja-out {
     animation-name: fundido;
   }
+  /* En tableta la hoja es un diálogo centrado de 560 px */
+  .hoja-panel {
+    top: 50% !important;
+    bottom: auto !important;
+    transform: translateY(-50%) !important;
+    max-height: calc(100dvh - 48px) !important;
+  }
 }
 /* Cambiar de día o mes: fundido de la cuadrícula en 120 ms */
 .fundido-rapido {

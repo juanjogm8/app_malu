@@ -1,10 +1,12 @@
-// Resúmenes programados. Secretos: TELEGRAM_BOT_TOKEN, DIGEST_SECRET, APP_URL.
+// Resúmenes programados por Telegram y notificaciones push.
+// Secretos: DIGEST_SECRET, APP_URL; TELEGRAM_BOT_TOKEN y/o VAPID_* según los canales que usen.
 import { cargarAjustes, cargarCalendario, cargarMiembros, clienteAdmin } from '../_shared/admin.ts'
+import { conPush, enviarPush } from '../_shared/push.ts'
 import { enviarTelegram } from '../_shared/telegram-api.ts'
 import { manejarDigest } from './manejar.ts'
 
 const admin = clienteAdmin()
-const token = Deno.env.get('TELEGRAM_BOT_TOKEN')!
+const token = Deno.env.get('TELEGRAM_BOT_TOKEN')
 
 Deno.serve((req) =>
   manejarDigest(req, {
@@ -18,6 +20,9 @@ Deno.serve((req) =>
       const { error } = await admin.from('telegram_digest_log').insert({ member_id, kind, sent_on })
       return !error // la llave primaria rechaza el segundo envío del día
     },
-    enviar: (chatId, html) => enviarTelegram(token, chatId, html),
+    enviar: (chatId, html) =>
+      token ? enviarTelegram(token, chatId, html) : Promise.resolve(false),
+    conPush: () => conPush(admin),
+    push: (memberId, aviso) => enviarPush(admin, memberId, aviso),
   }),
 )

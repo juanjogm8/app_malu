@@ -18,5 +18,6 @@
     "allowImportingTsExtensions": true,
     "paths": { "@/*": ["./src/*"] }
   },
-  "include": ["src", "tests/unit"]
+  "include": ["src", "tests/unit"],
+  "exclude": ["src/sw.ts"]
 }

@@ -8,6 +8,7 @@ import { useToast } from '@/components/Toast'
 import { Boton, Interruptor } from '@/components/ui'
 import { es } from '@/i18n/es'
 import { supabase } from '@/lib/supabase'
+import { Notificaciones } from './Notificaciones'
 import type { AppSettings, GoogleAccount } from '@/types/db'
 
 const t = es.ajustes
@@ -118,6 +119,8 @@ export function AjustesPage() {
       </div>
 
       <GoogleCalendar />
+
+      <Notificaciones />
 
       <div className="flex flex-col gap-3 rounded-[18px] border border-line bg-surface p-4">
         <h2 className="font-display text-[22px] font-normal">{t.resumenes}</h2>

@@ -224,3 +224,19 @@ export const AYUDA = [
   '/agregar leche — agrega al súper (también /super leche)',
   '/pendiente pagar predial 15/11 — crea un pendiente (la fecha es opcional)',
 ].join('\n')
+
+/** Texto plano para una notificación push a partir del HTML del resumen. */
+export function avisoPush(html: string, maxLineas = 4): { title: string; body: string } {
+  const plano = html
+    .replace(/<[^>]+>/g, '')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+  const [primera, ...resto] = plano.split('\n').filter((l) => l.trim())
+  const lineas = resto.filter((l) => l.startsWith('•'))
+  const extra = lineas.length > maxLineas ? `\n…y ${lineas.length - maxLineas} más` : ''
+  return {
+    title: (primera ?? 'Casa en Orden').trim(),
+    body: lineas.slice(0, maxLineas).join('\n') + extra || resto.slice(0, maxLineas).join('\n'),
+  }
+}

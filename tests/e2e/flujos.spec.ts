@@ -188,7 +188,7 @@ test('4 · planear una comida con ingredientes y pasarlos al súper sin duplicar
   await page.getByLabel('Qué se come').fill('Sopa de lentejas')
   await page.getByLabel(/Ingredientes/).fill('Lentejas, jitomate, cebolla')
   await page.getByRole('button', { name: 'Guardar' }).click()
-  await expect(page.getByText('3 ingredientes')).toBeVisible()
+  await expect(page.getByText('3 ingredientes').filter({ visible: true })).toBeVisible()
   await expect(page.getByText('1 de 21 comidas planeadas')).toBeVisible()
 
   await page.getByRole('button', { name: 'Pasar ingredientes al súper (3)' }).click()

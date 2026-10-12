@@ -175,3 +175,21 @@ Verificado con la documentación vigente de Google:
   aviso sin conexión vuelve al texto del diseño: "Pueden seguir anotando; se envía solo al volver la
   señal".
 - La cola se borra al cerrar sesión, junto con la caché.
+
+## 2026-10-12 · Fase 4 · Notificaciones push y tableta
+
+- **Web Push con VAPID** (`web-push` en la Edge Function `digest`). Los mismos resúmenes que
+  Telegram llegan como notificación a cada dispositivo suscrito (`push_subscriptions`, una fila por
+  dispositivo, cada quien maneja solo las suyas). Reciben resúmenes quienes tengan Telegram o push.
+  Las suscripciones que el navegador da por muertas (404/410) se borran solas. Al tocar el aviso se
+  abre la app (el semanal abre la Revisión).
+- El service worker pasó a ser propio (`src/sw.ts`, estrategia `injectManifest`): misma caché de
+  Workbox más los eventos `push` y `notificationclick`.
+- **iPhone:** solo con la app instalada en la pantalla de inicio y iOS 16.4 o más reciente; Ajustes
+  lo explica si no se cumple.
+- **Tableta (768 px o más), según "Estados y tablet":** contenido centrado de 720 px como máximo y
+  navegación de 520 px. El calendario muestra celdas de 96 px con hasta 2 títulos y "+N más". Comidas
+  se vuelve una tabla de día × 3 comidas. La hoja de captura es un diálogo centrado de 560 px.
+- **Medición (Lighthouse en el login, 4G lenta simulada):** accesibilidad 100, buenas prácticas 100,
+  rendimiento ≥ 90. Las tipografías se cargan sin bloquear el primer pintado. `robots.txt` y
+  `noindex`: la app es privada y no debe aparecer en buscadores.

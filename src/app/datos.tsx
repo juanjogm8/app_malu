@@ -21,7 +21,10 @@ import type { Database } from '@/types/db'
 
 type Tables = Database['public']['Tables']
 /** Tablas con `id` que la app lee completas (google_accounts se consulta aparte). */
-export type TableName = Exclude<keyof Tables, 'app_settings' | 'google_accounts'>
+export type TableName = Exclude<
+  keyof Tables,
+  'app_settings' | 'google_accounts' | 'push_subscriptions'
+>
 export type Row<T extends TableName> = Tables[T]['Row']
 export type Insert<T extends TableName> = Tables[T]['Insert']
 export type Update<T extends TableName> = Tables[T]['Update']

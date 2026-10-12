@@ -12,7 +12,7 @@ export default defineConfig({
     VitePWA({
       // Avisa "Hay una versión nueva · Actualizar" en lugar de recargar sola.
       registerType: 'prompt',
-      includeAssets: ['favicon.svg', 'icons/apple-touch-icon.png'],
+      includeAssets: ['favicon.svg', 'icons/apple-touch-icon.png', 'robots.txt'],
       manifest: {
         name: 'Casa en Orden',
         short_name: 'Casa',
@@ -35,21 +35,11 @@ export default defineConfig({
           },
         ],
       },
-      workbox: {
-        navigateFallback: '/index.html',
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
-        runtimeCaching: [
-          {
-            // Tipografías de Google: se guardan para que la app abra sin conexión con su letra.
-            urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'fuentes',
-              expiration: { maxEntries: 20, maxAgeSeconds: 31536000 },
-            },
-          },
-        ],
-      },
+      // Service worker propio (src/sw.ts): caché del shell y notificaciones push.
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
+      injectManifest: { globPatterns: ['**/*.{js,css,html,svg,png,woff2}'] },
     }),
   ],
   resolve: {

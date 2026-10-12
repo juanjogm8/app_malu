@@ -241,3 +241,28 @@ curl -X POST https://PROJECT_REF.supabase.co/functions/v1/gcal-sync -H "x-digest
 
 **Comprobación:** un evento creado en la app aparece en "Casa en Orden" de Google en 15 minutos como
 máximo, y no aparece duplicado en la capa Google de la app.
+
+## 11. Notificaciones push (fase 4, opcional)
+
+Telegram es el canal principal; las notificaciones del teléfono son un extra con los mismos
+resúmenes.
+
+1. Genera las llaves (una sola vez):
+   ```bash
+   pnpm exec web-push generate-vapid-keys
+   ```
+   Te da una **Public Key** y una **Private Key**.
+2. Guárdalas:
+   ```bash
+   pnpm dlx supabase secrets set VAPID_PUBLIC_KEY=... VAPID_PRIVATE_KEY=... VAPID_SUBJECT=mailto:juanjogamur@gmail.com
+   pnpm dlx supabase functions deploy digest --no-verify-jwt
+   ```
+   En Vercel agrega `VITE_VAPID_PUBLIC_KEY` = la **Public Key** y vuelve a publicar.
+3. En cada teléfono: avatar → **Ajustes · Telegram** → **Notificaciones en este teléfono** → **Activar**.
+   - **iPhone:** solo funciona con la app instalada en la pantalla de inicio (Safari → Compartir →
+     Agregar a pantalla de inicio) y con iOS 16.4 o más reciente. Abre la app desde el ícono y activa
+     ahí.
+   - **Android:** funciona en Chrome, instalada o no.
+
+**Comprobación:** con el `curl` de prueba del paso 9.6 (`{"forzar":"diario"}`) llega una notificación
+"Buenos días, …". Al tocarla se abre la app.

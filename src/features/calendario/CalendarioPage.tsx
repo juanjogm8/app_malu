@@ -144,9 +144,64 @@ function Mes({
 
   return (
     <>
+      {/* Tableta (768 px o más): celdas de 96 px con hasta 2 títulos y "+N más". */}
+      <div
+        key={`t-${inicioMes}`}
+        className="fundido-rapido hidden grid-cols-7 overflow-hidden rounded-[22px] border border-line bg-surface md:grid"
+      >
+        {DIAS.map((d, i) => (
+          <div
+            key={i}
+            aria-hidden="true"
+            className="grid h-8 place-items-center border-b border-tint text-[12px] font-semibold text-muted"
+          >
+            {d}
+          </div>
+        ))}
+        {Array.from({ length: 42 }, (_, n) => {
+          const d = addDays(desde, n)
+          const fuera = d.slice(0, 7) !== inicioMes.slice(0, 7)
+          const es_ = fuera ? [] : (mapa.get(d) ?? [])
+          const esHoy = d === hoy
+          return (
+            <button
+              key={d}
+              type="button"
+              onClick={() => setSel(d)}
+              aria-pressed={d === sel}
+              aria-label={`${fLong(d)}${es_.length ? `, ${t.elementos(es_.length)}` : ''}`}
+              className={`flex h-24 min-w-0 flex-col gap-1 border-r border-b border-tint p-1.5 text-left ${fuera ? 'bg-bg' : ''}`}
+            >
+              <span
+                className={`grid size-[30px] flex-none place-items-center rounded-full font-display text-[15px] ${
+                  esHoy ? 'bg-sun text-sun-ink' : fuera ? 'text-muted' : ''
+                }`}
+                style={d === sel ? { boxShadow: 'inset 0 0 0 2px var(--ink)' } : undefined}
+              >
+                {parse(d).getUTCDate()}
+              </span>
+              {es_.slice(0, 2).map((e) => (
+                <span
+                  key={e.key}
+                  className="flex min-w-0 items-center gap-1 text-[11.5px] leading-[1.2] font-semibold"
+                >
+                  <i
+                    className="size-1.5 flex-none rounded-full"
+                    style={{ background: colorEntrada(p, e) }}
+                  />
+                  <span className="truncate">{e.title}</span>
+                </span>
+              ))}
+              {es_.length > 2 && (
+                <span className="text-[11px] text-muted">+{es_.length - 2} más</span>
+              )}
+            </button>
+          )
+        })}
+      </div>
       <div
         key={inicioMes}
-        className="fundido-rapido grid grid-cols-7 gap-y-0.5 rounded-[22px] border border-line bg-surface px-1.5 pt-2.5 pb-1.5"
+        className="fundido-rapido grid grid-cols-7 gap-y-0.5 rounded-[22px] border border-line bg-surface px-1.5 pt-2.5 pb-1.5 md:hidden"
       >
         {DIAS.map((d, i) => (
           <div

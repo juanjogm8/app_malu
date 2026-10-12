@@ -1,5 +1,6 @@
 import type { CalendarData } from '@/lib/calendario'
 import {
+  avisoPush,
   esPara,
   esc,
   parseCommand,
@@ -172,5 +173,16 @@ describe('resúmenes', () => {
     expect(txt).toContain('faltan 2')
     expect(txt).not.toContain('dulce')
     expect(esc('<b>&')).toBe('&lt;b&gt;&amp;')
+  })
+})
+
+describe('aviso push', () => {
+  it('título y hasta 4 líneas en texto plano', () => {
+    const html =
+      '<b>Buenos días, Juanjo</b> · Lunes\n\n<b>Hoy</b>\n• <b>A &amp; B</b>\n• b\n• c\n• d\n• e'
+    expect(avisoPush(html)).toEqual({
+      title: 'Buenos días, Juanjo · Lunes',
+      body: '• A & B\n• b\n• c\n• d\n…y 1 más',
+    })
   })
 })

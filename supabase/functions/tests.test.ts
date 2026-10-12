@@ -175,12 +175,13 @@ Deno.test('digest: manda a cada quien lo suyo y no repite el mismo día', async 
   }
   const log = new Set<string>()
   const enviados: [number, string][] = []
+  const avisos: [string, string][] = []
   const deps = {
     secreto: 'k',
     ahora: () => LUNES_8,
     appUrl: 'https://casa.vercel.app',
     ajustes: async () => null,
-    miembros: async () => [YO, MALU],
+    miembros: async () => [YO, MALU, miembro('sinTelegram', 'Sin Telegram', null)],
     calendario: async () => data,
     marcar: async (id: string, tipo: Tipo, dia: string) => {
       const k = `${id}:${tipo}:${dia}`
@@ -189,6 +190,9 @@ Deno.test('digest: manda a cada quien lo suyo y no repite el mismo día', async 
       return true
     },
     enviar: async (c: number, h: string) => void enviados.push([c, h]),
+    conPush: async () => new Set(['malu', 'sinTelegram']),
+    push: async (id: string, aviso: { title: string; body: string }) =>
+      void avisos.push([id, aviso.title]),
   }
   const pedir = (secreto = 'k') =>
     manejarDigest(
@@ -203,8 +207,12 @@ Deno.test('digest: manda a cada quien lo suyo y no repite el mismo día', async 
   assert(!paraMi.includes('Dentista de Malu'))
   assertStringIncludes(paraMalu, 'Dentista de Malu')
   assertStringIncludes(paraMi, 'Junta')
+  // Push: a quien tiene dispositivos suscritos, aunque no tenga Telegram.
+  assertEquals(avisos.map(([id]) => id).sort(), ['malu', 'sinTelegram'])
+  assertStringIncludes(avisos[0]![1], 'Buenos días')
   await pedir()
   assertEquals(enviados.length, 2, 'no se repite el mismo día')
+  assertEquals(avisos.length, 2)
 })
 
 // ---------- Google Calendar ----------

@@ -49,6 +49,12 @@
         "npm:vite-plugin-pwa@2",
         "npm:vite@^8.3.4",
         "npm:vitest@^5.0.4",
+        "npm:web-push@3.6.7",
+        "npm:workbox-core@^7.4.1",
+        "npm:workbox-expiration@^7.4.1",
+        "npm:workbox-precaching@^7.4.1",
+        "npm:workbox-routing@^7.4.1",
+        "npm:workbox-strategies@^7.4.1",
         "npm:workbox-window@^7.4.1"
       ]
     }

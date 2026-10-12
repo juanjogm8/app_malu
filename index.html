@@ -14,10 +14,20 @@
     <meta name="description" content="Pendientes, calendario y listas de la casa, entre los dos." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Tipografías sin bloquear el primer pintado (con display=swap se ve la alternativa mientras cargan) -->
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Instrument+Sans:wght@400..700&display=swap"
+      media="print"
+      onload="this.media = 'all'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Instrument+Sans:wght@400..700&display=swap"
+      />
+    </noscript>
+    <meta name="robots" content="noindex, nofollow" />
     <title>Casa en Orden</title>
     <script>
       // Aplica el tema guardado antes de pintar, para evitar un parpadeo.

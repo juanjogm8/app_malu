@@ -4,7 +4,7 @@ import type { CalendarData } from '../_shared/calendario.ts'
 import type { AppSettings, Member } from '../_shared/db.ts'
 import { dow, today, ZONA } from '../_shared/fechas.ts'
 import { mismoSecreto } from '../_shared/telegram-api.ts'
-import { resumenDiario, resumenSemanal } from '../_shared/telegram-texto.ts'
+import { avisoPush, resumenDiario, resumenSemanal } from '../_shared/telegram-texto.ts'
 
 export type Tipo = 'diario' | 'semanal'
 
@@ -18,6 +18,12 @@ export interface Deps {
   /** Registra el envío; devuelve false si ya se había mandado ese día (evita duplicados). */
   marcar: (memberId: string, tipo: Tipo, dia: string) => Promise<boolean>
   enviar: (chatId: number, html: string) => Promise<unknown>
+  /** Personas con notificaciones push en algún dispositivo. */
+  conPush: () => Promise<Set<string>>
+  push: (
+    memberId: string,
+    aviso: { title: string; body: string; url: string; tag: string },
+  ) => Promise<unknown>
 }
 
 export const HORA_SEMANAL = 19
@@ -33,11 +39,17 @@ export function horaLocal(d: Date): number {
 }
 
 /** A quién le toca cada resumen en esta hora. */
-export function quienRecibe(miembros: Member[], ajustes: AppSettings | null, ahora: Date) {
+export function quienRecibe(
+  miembros: Member[],
+  ajustes: AppSettings | null,
+  ahora: Date,
+  conPush: Set<string> = new Set(),
+) {
   const hora = horaLocal(ahora)
   const domingo = dow(today(ahora)) === 6
   const porPersona = ajustes?.telegram_digest_per_person ?? false
-  const vinculados = miembros.filter((m) => m.telegram_chat_id)
+  // Reciben quienes tienen Telegram conectado o notificaciones push en algún dispositivo.
+  const vinculados = miembros.filter((m) => m.telegram_chat_id || conPush.has(m.id))
   return {
     diario: vinculados.filter((m) =>
       porPersona ? m.digest_daily && m.digest_daily_hour === hora : hora === HORA_DIARIO,
@@ -63,13 +75,23 @@ export async function manejarDigest(req: Request, d: Deps): Promise<Response> {
 
   const ahora = d.ahora()
   const dia = today(ahora)
-  const [miembros, ajustes] = await Promise.all([d.miembros(), d.ajustes()])
+  const [miembros, ajustes, push] = await Promise.all([d.miembros(), d.ajustes(), d.conPush()])
+  const alcanzables = miembros.filter((m) => m.telegram_chat_id || push.has(m.id))
   const toca = forzar
     ? {
-        diario: forzar === 'diario' ? miembros.filter((m) => m.telegram_chat_id) : [],
-        semanal: forzar === 'semanal' ? miembros.filter((m) => m.telegram_chat_id) : [],
+        diario: forzar === 'diario' ? alcanzables : [],
+        semanal: forzar === 'semanal' ? alcanzables : [],
       }
-    : quienRecibe(miembros, ajustes, ahora)
+    : quienRecibe(miembros, ajustes, ahora, push)
+  const mandar = async (m: Member, html: string, tipo: Tipo) => {
+    if (m.telegram_chat_id) await d.enviar(m.telegram_chat_id, html)
+    if (push.has(m.id))
+      await d.push(m.id, {
+        ...avisoPush(html),
+        url: tipo === 'semanal' ? '/revision' : '/',
+        tag: `resumen-${tipo}`,
+      })
+  }
 
   const enviados: string[] = []
   if (toca.diario.length || toca.semanal.length) {
@@ -77,13 +99,13 @@ export async function manejarDigest(req: Request, d: Deps): Promise<Response> {
     for (const m of toca.diario) {
       const texto = resumenDiario(ctx, m)
       if (texto && (forzar || (await d.marcar(m.id, 'diario', dia)))) {
-        await d.enviar(m.telegram_chat_id!, texto)
+        await mandar(m, texto, 'diario')
         enviados.push(`diario:${m.id}`)
       }
     }
     for (const m of toca.semanal) {
       if (forzar || (await d.marcar(m.id, 'semanal', dia))) {
-        await d.enviar(m.telegram_chat_id!, resumenSemanal(ctx, m, d.appUrl))
+        await mandar(m, resumenSemanal(ctx, m, d.appUrl), 'semanal')
         enviados.push(`semanal:${m.id}`)
       }
     }
