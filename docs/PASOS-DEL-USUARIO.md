@@ -6,6 +6,16 @@ Al final de cada paso viene **qué deberías ver** y **cómo comprobarlo**.
 > Los nombres de menús de Supabase, Google Cloud y Vercel cambian a veces. Si algo no coincide,
 > busca la opción con un nombre parecido o pregúntale a Claude.
 
+## Resumen: qué hacer y en qué orden
+
+| # | Qué | Para qué | ¿Obligatorio? |
+|---|---|---|---|
+| 1–7 | Supabase, Google (inicio de sesión), migraciones, Vercel | Que la app funcione | Sí |
+| 8 | Instalar en los celulares | Usarla como app | Recomendado |
+| 9 | Bot de Telegram | Resúmenes y `/agregar leche` | Opcional |
+| 10 | Google Calendar | Ver sus calendarios de Google en la app | Opcional |
+| 11 | Notificaciones push | Avisos del teléfono además de Telegram | Opcional |
+
 Valores que vas a ir juntando (guárdalos en un lugar seguro, **nunca** en el repositorio):
 
 | Nombre | De dónde sale |
@@ -115,9 +125,13 @@ User Signups** → apaga **Allow new users to sign up**.
 
 ## 8. Instalar la app en el celular
 
-La instalación como app llega con la fase 1 (PWA). Cuando esté:
 - **iPhone:** abre `URL_VERCEL` en **Safari** → botón **Compartir** → **Agregar a pantalla de inicio**.
-- **Android:** abre `URL_VERCEL` en **Chrome** → menú ⋮ → **Instalar app**.
+- **Android:** abre `URL_VERCEL` en **Chrome** → menú ⋮ → **Instalar app** (o "Agregar a pantalla
+  principal").
+
+**Comprobación:** el ícono "Casa" aparece en la pantalla de inicio y la app abre sin la barra del
+navegador. Con el modo avión puesto, sigue abriendo y muestra lo último que se cargó; lo que anoten
+queda "Por enviar" y se manda solo al volver la señal.
 
 ## 9. Telegram (fase 2)
 
