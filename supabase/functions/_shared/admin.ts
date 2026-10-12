@@ -19,15 +19,14 @@ async function todo<T>(admin: Admin, tabla: string): Promise<T[]> {
 }
 
 export async function cargarCalendario(admin: Admin): Promise<CalendarData> {
-  const [events, tasks, dates, kids, plans, meals] = await Promise.all([
+  const [events, tasks, dates, plans, meals] = await Promise.all([
     todo(admin, 'events'),
     todo(admin, 'tasks'),
     todo(admin, 'important_dates'),
-    todo(admin, 'kid_items'),
     todo(admin, 'plans'),
     todo(admin, 'meals'),
   ])
-  return { events, tasks, dates, kids, plans, meals } as CalendarData
+  return { events, tasks, dates, plans, meals } as CalendarData
 }
 
 export const cargarMiembros = (admin: Admin) => todo<Member>(admin, 'members')
