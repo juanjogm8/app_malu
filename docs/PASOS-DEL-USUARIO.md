@@ -279,4 +279,4 @@ resúmenes.
    - **Android:** funciona en Chrome, instalada o no.
 
 **Comprobación:** con el `curl` de prueba del paso 9.6 (`{"forzar":"diario"}`) llega una notificación
-"Buenos días, …". Al tocarla se abre la app.
+"Revisa tu día". Al tocarla se abre la app.
