@@ -78,6 +78,11 @@ export const router = createBrowserRouter([
           import('@/features/organizacion/NotasPage').then((m) => ({ Component: m.NotasPage })),
       },
       {
+        path: 'mas/ajustes',
+        lazy: () =>
+          import('@/features/organizacion/AjustesPage').then((m) => ({ Component: m.AjustesPage })),
+      },
+      {
         path: 'revision',
         lazy: () =>
           import('@/features/organizacion/RevisionPage').then((m) => ({

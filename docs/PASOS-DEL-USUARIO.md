@@ -121,5 +121,70 @@ La instalación como app llega con la fase 1 (PWA). Cuando esté:
 
 ## 9. Telegram (fase 2)
 
-Se detallará al empezar la fase 2: crear el bot con @BotFather, guardar `TELEGRAM_BOT_TOKEN` y
-`TELEGRAM_WEBHOOK_SECRET` como secretos de Supabase y registrar el webhook.
+Necesitas el paso 4 hecho (migraciones aplicadas) y la app publicada (paso 5).
+
+### 9.1 Crear el bot
+1. En Telegram abre **@BotFather** y mándale `/newbot`.
+2. Nombre: `Casa en Orden`. Usuario: uno libre que termine en `bot` (p. ej. `casa_en_orden_tuapellido_bot`).
+3. BotFather te da un **token** (`123456:ABC…`) → `TELEGRAM_BOT_TOKEN`. Guárdalo.
+4. (Opcional) Mándale `/setcommands`, elige tu bot y pega:
+   ```
+   hoy - Lo de hoy y lo atrasado
+   semana - Los próximos 7 días
+   super - La lista del súper (o /super leche para agregar)
+   agregar - Agrega al súper: /agregar leche
+   pendiente - Crea un pendiente: /pendiente pagar predial 15/11
+   ```
+
+### 9.2 Secretos y funciones
+Genera dos secretos al azar (uno para el webhook y otro para los resúmenes):
+```bash
+openssl rand -hex 32   # → TELEGRAM_WEBHOOK_SECRET
+openssl rand -hex 32   # → DIGEST_SECRET
+```
+Guárdalos en Supabase y publica las funciones:
+```bash
+pnpm dlx supabase secrets set TELEGRAM_BOT_TOKEN=... TELEGRAM_WEBHOOK_SECRET=... DIGEST_SECRET=... APP_URL=URL_VERCEL
+pnpm dlx supabase functions deploy telegram-webhook --no-verify-jwt
+pnpm dlx supabase functions deploy digest --no-verify-jwt
+```
+**Qué deberías ver:** "Deployed Functions … telegram-webhook" y "… digest". En el panel, **Edge Functions**
+muestra las dos.
+
+### 9.3 Conectar el webhook
+```bash
+curl "https://api.telegram.org/botTELEGRAM_BOT_TOKEN/setWebhook" \
+  -d url=https://PROJECT_REF.supabase.co/functions/v1/telegram-webhook \
+  -d secret_token=TELEGRAM_WEBHOOK_SECRET \
+  -d 'allowed_updates=["message"]'
+```
+**Comprobación:** `curl "https://api.telegram.org/botTELEGRAM_BOT_TOKEN/getWebhookInfo"` muestra tu URL
+y `"pending_update_count": 0`, sin `last_error_message`.
+
+### 9.4 Programar los resúmenes
+La migración ya programó una llamada cada hora con `pg_cron`. Solo falta decirle a dónde llamar. En
+**SQL Editor** de Supabase:
+```sql
+select vault.create_secret('https://PROJECT_REF.supabase.co', 'casa_project_url');
+select vault.create_secret('DIGEST_SECRET', 'casa_digest_secret');
+```
+**Comprobación:** `select jobname, schedule from cron.job;` muestra `casa-en-orden-resumenes` con
+`0 * * * *`. Una hora después, `select status, return_message from cron.job_run_details order by
+start_time desc limit 3;` muestra `succeeded`.
+
+### 9.5 Botón "Abrir Telegram" en la app (opcional)
+En Vercel → **Settings → Environment Variables** agrega `VITE_TELEGRAM_BOT` = el usuario del bot (sin
+@) y vuelve a publicar (**Deployments → Redeploy**).
+
+### 9.6 Vincular a cada persona
+Cada quien, en la app: avatar → **Ajustes · Telegram** → **Conectar Telegram**, y le manda al bot el
+mensaje `/start CÓDIGO` que aparece (o toca **Abrir Telegram**).
+
+**Comprobación:**
+- El bot responde "Listo, Juanjo. Este chat ya está conectado…".
+- `/agregar leche` en el chat → la leche aparece en el súper de la otra persona al instante.
+- Para probar el resumen sin esperar a las 8:00:
+  ```bash
+  curl -X POST https://PROJECT_REF.supabase.co/functions/v1/digest \
+    -H "x-digest-secret: DIGEST_SECRET" -d '{"forzar":"diario"}'
+  ```

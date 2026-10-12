@@ -58,6 +58,13 @@ export function MasPage() {
       icon: 'notas',
       dato: notes.length + contacts.length ? String(notes.length + contacts.length) : '',
     },
+    {
+      to: '/mas/ajustes',
+      titulo: es.ajustes.titulo,
+      sub: es.ajustes.sub,
+      icon: 'ajustes',
+      dato: '',
+    },
   ]
 
   return (

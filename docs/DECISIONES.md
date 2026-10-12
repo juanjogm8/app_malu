@@ -107,3 +107,23 @@ visual**. Donde chocan:
   escritura se bloquea con aviso; la cola de escrituras llega en la fase 4.
 - **Actualizaciones:** `registerType: 'prompt'` con el aviso "Hay una versión nueva · Actualizar";
   revisa cada hora mientras la app está abierta.
+
+## 2026-10-12 · Fase 2 · Telegram
+
+- **Vinculación:** la app genera un código de 8 caracteres (RPC `create_telegram_link_code`, dura 15
+  minutos, uno vigente por persona). `/start CÓDIGO` guarda el `telegram_chat_id`; un chat solo puede
+  pertenecer a una persona. Los chats no vinculados se ignoran (salvo `/start`, que explica cómo
+  conectar).
+- **A quién llega qué:** lo de una persona solo a esa persona; lo de "Ambos" o sin responsable, a
+  las dos. Los comandos `/hoy` y `/semana` muestran lo de los dos (quien pregunta ve todo).
+- **Resúmenes:** `pg_cron` llama a `digest` cada hora en punto (UTC); la función calcula la hora de
+  la Ciudad de México y decide. Con el flag apagado: diario 8:00 y semanal domingo 19:00 para los
+  dos. Encendido: cada quien elige en Ajustes. El diario no se manda si no hay nada que contar.
+  `telegram_digest_log` impide duplicados en el mismo día. La URL y el secreto que usa `pg_cron` se
+  guardan en Supabase Vault.
+- **Seguridad:** las funciones no usan el JWT de Supabase (Telegram no lo manda); validan su propio
+  encabezado secreto comparándolo en tiempo constante. La `service_role` solo vive en las funciones.
+- **Lógica compartida:** `pnpm sync:shared` copia a `supabase/functions/_shared` las fechas,
+  recurrencias, calendario, fechas importantes, pendientes, súper y textos del bot, reescribiendo
+  las importaciones para Deno. Las funciones se prueban con `pnpm test:functions` (Deno) y se revisan
+  sus tipos con `pnpm check:functions`.

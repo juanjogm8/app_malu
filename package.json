@@ -15,7 +15,9 @@
     "test:watch": "vitest",
     "test:sql": "bash tests/sql/run.sh",
     "test:e2e": "playwright test",
-    "sync:shared": "node scripts/sync-shared.mjs"
+    "sync:shared": "node scripts/sync-shared.mjs",
+    "test:functions": "deno test --allow-env --allow-net=jsr.io supabase/functions/tests.test.ts",
+    "check:functions": "deno check supabase/functions/telegram-webhook/index.ts supabase/functions/digest/index.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",
@@ -38,6 +40,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "deno": "2.9.6",
     "eslint": "^10.12.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",

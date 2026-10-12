@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { NavLink } from 'react-router'
+import { Link, NavLink } from 'react-router'
 import { useAuth } from '@/app/auth-context'
 import { useConexion, useEscritura } from '@/app/datos'
 import { usePersonas } from '@/app/personas'
@@ -140,10 +140,18 @@ function MenuCuenta() {
             ))}
           </div>
 
+          <Link
+            to="/mas/ajustes"
+            onClick={() => setOpen(false)}
+            className="mt-4 flex h-11 items-center gap-2 rounded-full px-1 text-[15px] font-semibold text-accent"
+          >
+            <Icon name="ajustes" size={18} />
+            {es.ajustes.titulo} · Telegram
+          </Link>
           <button
             type="button"
             onClick={() => void signOut()}
-            className="press mt-4 h-11 w-full rounded-full border-[1.5px] border-line text-[15px] font-semibold"
+            className="press mt-2 h-11 w-full rounded-full border-[1.5px] border-line text-[15px] font-semibold"
           >
             {es.auth.cerrarSesion}
           </button>

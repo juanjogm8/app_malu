@@ -42,3 +42,11 @@ enabled = true
 client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
 secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
 skip_nonce_check = false
+
+# Edge Functions: Telegram no manda JWT y pg_cron usa un secreto propio, así que cada función
+# valida su propio encabezado secreto en lugar del JWT de Supabase.
+[functions.telegram-webhook]
+verify_jwt = false
+
+[functions.digest]
+verify_jwt = false

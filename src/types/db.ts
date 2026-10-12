@@ -31,6 +31,10 @@ export type Member = {
   avatar_url: string | null
   telegram_chat_id: number | null
   created_at: string
+  /** Resúmenes de Telegram (solo cuentan si app_settings.telegram_digest_per_person). */
+  digest_daily: boolean
+  digest_daily_hour: number
+  digest_weekly: boolean
 }
 
 export type AppSettings = {
@@ -175,6 +179,8 @@ export type Database = {
     Functions: {
       complete_task: { Args: { p_id: string }; Returns: Task }
       is_member: { Args: Record<string, never>; Returns: boolean }
+      create_telegram_link_code: { Args: Record<string, never>; Returns: string }
+      unlink_telegram: { Args: Record<string, never>; Returns: undefined }
     }
     Enums: { [_ in never]: never }
     CompositeTypes: { [_ in never]: never }

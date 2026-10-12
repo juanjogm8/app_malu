@@ -1,0 +1,208 @@
+// Pruebas de las Edge Functions (Deno). Uso: pnpm test:functions
+import { assert, assertEquals, assertStringIncludes } from 'jsr:@std/assert@1'
+import type { CalendarData } from './_shared/calendario.ts'
+import type { AppSettings, Member } from './_shared/db.ts'
+import { horaLocal, manejarDigest, quienRecibe } from './digest/manejar.ts'
+import type { Tipo } from './digest/manejar.ts'
+import { manejar } from './telegram-webhook/manejar.ts'
+import type { Deps } from './telegram-webhook/manejar.ts'
+
+const miembro = (
+  id: string,
+  name: string,
+  chat: number | null,
+  o: Partial<Member> = {},
+): Member => ({
+  id,
+  email: `${id}@x.com`,
+  name,
+  color: 'azul',
+  avatar_url: null,
+  telegram_chat_id: chat,
+  created_at: '',
+  digest_daily: true,
+  digest_daily_hour: 8,
+  digest_weekly: true,
+  ...o,
+})
+const YO = miembro('yo', 'Juanjo Gamur', 111)
+const MALU = miembro('malu', 'Malu Ramírez', 222)
+const vacio: CalendarData = { events: [], tasks: [], dates: [], kids: [], plans: [], meals: [] }
+const a = { created_by: null, created_at: '', updated_at: '' }
+
+function webhook(over: Partial<Deps> = {}) {
+  const enviados: [number, string][] = []
+  const agregados: string[] = []
+  const pendientes: [string, string | null][] = []
+  const deps: Deps = {
+    secreto: 's3cr3t',
+    hoy: () => '2026-10-12',
+    miembroPorChat: async (id) => [YO, MALU].find((m) => m.telegram_chat_id === id) ?? null,
+    vincular: async (codigo) => (codigo === 'ABC12345' ? YO : null),
+    miembros: async () => [YO, MALU],
+    calendario: async () => vacio,
+    superItems: async () => [],
+    agregarSuper: async (t) => (agregados.push(t), 'nuevo'),
+    crearPendiente: async (t, d) => void pendientes.push([t, d]),
+    enviar: async (c, h) => void enviados.push([c, h]),
+    ...over,
+  }
+  const enviar = (text: string, chat = 111, secreto = 's3cr3t') =>
+    manejar(
+      new Request('https://x/telegram-webhook', {
+        method: 'POST',
+        headers: { 'x-telegram-bot-api-secret-token': secreto },
+        body: JSON.stringify({ message: { chat: { id: chat }, text } }),
+      }),
+      deps,
+    )
+  return { enviar, enviados, agregados, pendientes }
+}
+
+Deno.test('webhook: rechaza peticiones sin el secreto', async () => {
+  const w = webhook()
+  assertEquals((await w.enviar('/hoy', 111, 'otro')).status, 401)
+  assertEquals(w.enviados.length, 0)
+})
+
+Deno.test('webhook: /start con código vincula; con código malo avisa', async () => {
+  const w = webhook({ miembroPorChat: async () => null })
+  await w.enviar('/start abc12345', 999)
+  assertStringIncludes(w.enviados[0]![1], 'Listo, Juanjo')
+  await w.enviar('/start NOSIRVE', 999)
+  assertStringIncludes(w.enviados[1]![1], 'no sirve')
+})
+
+Deno.test('webhook: ignora chats no vinculados', async () => {
+  const w = webhook()
+  await w.enviar('/agregar leche', 555)
+  assertEquals(w.enviados.length, 0)
+  assertEquals(w.agregados.length, 0)
+})
+
+Deno.test('webhook: /agregar y /super con texto agregan al súper', async () => {
+  const w = webhook()
+  await w.enviar('/agregar leche')
+  await w.enviar('/super@CasaBot huevo')
+  assertEquals(w.agregados, ['leche', 'huevo'])
+  assertStringIncludes(w.enviados[0]![1], 'Agregué <b>leche</b>')
+})
+
+Deno.test('webhook: /pendiente con fecha', async () => {
+  const w = webhook()
+  await w.enviar('/pendiente pagar predial 15/11')
+  assertEquals(w.pendientes, [['pagar predial', '2026-11-15']])
+  assertStringIncludes(w.enviados[0]![1], 'para el 15/11')
+})
+
+Deno.test('webhook: /hoy sin nada', async () => {
+  const w = webhook()
+  await w.enviar('/hoy')
+  assertStringIncludes(w.enviados[0]![1], 'Nada para hoy')
+})
+
+// 14:00 UTC = 8:00 en la Ciudad de México (UTC−6, sin horario de verano)
+const LUNES_8 = new Date('2026-10-12T14:00:00Z')
+const DOMINGO_19 = new Date('2026-10-19T01:00:00Z') // domingo 18 oct, 19:00 local
+
+Deno.test('digest: hora local de la Ciudad de México', () => {
+  assertEquals(horaLocal(LUNES_8), 8)
+  assertEquals(horaLocal(DOMINGO_19), 19)
+})
+
+Deno.test(
+  'digest: con el flag apagado, diario a las 8 y semanal el domingo a las 19 para los dos',
+  () => {
+    const ajustes: AppSettings = { id: true, telegram_digest_per_person: false, updated_at: '' }
+    const sinChat = miembro('x', 'X', null)
+    const malu9 = { ...MALU, digest_daily_hour: 9, digest_weekly: false }
+    const t1 = quienRecibe([YO, malu9, sinChat], ajustes, LUNES_8)
+    assertEquals(
+      t1.diario.map((m) => m.id),
+      ['yo', 'malu'],
+    )
+    assertEquals(t1.semanal.length, 0)
+    const t2 = quienRecibe([YO, malu9], ajustes, DOMINGO_19)
+    assertEquals(
+      t2.semanal.map((m) => m.id),
+      ['yo', 'malu'],
+    )
+  },
+)
+
+Deno.test('digest: con el flag encendido, cada quien su hora y su semanal', () => {
+  const ajustes: AppSettings = { id: true, telegram_digest_per_person: true, updated_at: '' }
+  const malu9 = { ...MALU, digest_daily_hour: 9, digest_weekly: false }
+  assertEquals(
+    quienRecibe([YO, malu9], ajustes, LUNES_8).diario.map((m) => m.id),
+    ['yo'],
+  )
+  assertEquals(
+    quienRecibe([YO, malu9], ajustes, DOMINGO_19).semanal.map((m) => m.id),
+    ['yo'],
+  )
+})
+
+Deno.test('digest: manda a cada quien lo suyo y no repite el mismo día', async () => {
+  const data: CalendarData = {
+    ...vacio,
+    events: [
+      {
+        ...a,
+        id: 'e1',
+        title: 'Dentista de Malu',
+        date: '2026-10-12',
+        time: '10:00:00',
+        repeat: null,
+        owner_id: 'malu',
+        is_shared: false,
+        place: null,
+        notes: null,
+      },
+      {
+        ...a,
+        id: 'e2',
+        title: 'Junta',
+        date: '2026-10-12',
+        time: '08:30:00',
+        repeat: null,
+        owner_id: null,
+        is_shared: true,
+        place: null,
+        notes: null,
+      },
+    ],
+  }
+  const log = new Set<string>()
+  const enviados: [number, string][] = []
+  const deps = {
+    secreto: 'k',
+    ahora: () => LUNES_8,
+    appUrl: 'https://casa.vercel.app',
+    ajustes: async () => null,
+    miembros: async () => [YO, MALU],
+    calendario: async () => data,
+    marcar: async (id: string, tipo: Tipo, dia: string) => {
+      const k = `${id}:${tipo}:${dia}`
+      if (log.has(k)) return false
+      log.add(k)
+      return true
+    },
+    enviar: async (c: number, h: string) => void enviados.push([c, h]),
+  }
+  const pedir = (secreto = 'k') =>
+    manejarDigest(
+      new Request('https://x/digest', { method: 'POST', headers: { 'x-digest-secret': secreto } }),
+      deps,
+    )
+  assertEquals((await pedir('mal')).status, 401)
+  await pedir()
+  assertEquals(enviados.length, 2)
+  const paraMi = enviados.find(([c]) => c === 111)![1]
+  const paraMalu = enviados.find(([c]) => c === 222)![1]
+  assert(!paraMi.includes('Dentista de Malu'))
+  assertStringIncludes(paraMalu, 'Dentista de Malu')
+  assertStringIncludes(paraMi, 'Junta')
+  await pedir()
+  assertEquals(enviados.length, 2, 'no se repite el mismo día')
+})

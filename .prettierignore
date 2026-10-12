@@ -4,3 +4,14 @@ pnpm-lock.yaml
 docs
 design
 supabase/.temp
+# Copias generadas por `pnpm sync:shared` (se comparan byte a byte con su original)
+supabase/functions/_shared/fechas.ts
+supabase/functions/_shared/recurrencia.ts
+supabase/functions/_shared/texto.ts
+supabase/functions/_shared/categorias.ts
+supabase/functions/_shared/listas.ts
+supabase/functions/_shared/pendientes.ts
+supabase/functions/_shared/fechas-importantes.ts
+supabase/functions/_shared/calendario.ts
+supabase/functions/_shared/telegram-texto.ts
+supabase/functions/_shared/db.ts

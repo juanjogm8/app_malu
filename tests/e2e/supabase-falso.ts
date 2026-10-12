@@ -43,6 +43,9 @@ export function dbVacia(): Db {
         avatar_url: null,
         telegram_chat_id: null,
         created_at: '2026-10-01T00:00:00Z',
+        digest_daily: true,
+        digest_daily_hour: 8,
+        digest_weekly: true,
       },
       {
         id: MALU,
@@ -52,7 +55,13 @@ export function dbVacia(): Db {
         avatar_url: null,
         telegram_chat_id: null,
         created_at: '2026-10-01T01:00:00Z',
+        digest_daily: true,
+        digest_daily_hour: 8,
+        digest_weekly: true,
       },
+    ],
+    app_settings: [
+      { id: true as unknown as string, telegram_digest_per_person: false, updated_at: '' },
     ],
     tasks: [],
     events: [],
@@ -426,6 +435,11 @@ export class SupabaseFalso {
 
       if (partes[2] === 'rpc') {
         if (this.fallar) return route.fulfill({ status: 500, json: { message: 'fallo' } })
+        if (partes[3] === 'create_telegram_link_code') return route.fulfill({ json: 'AB12CD34' })
+        if (partes[3] === 'unlink_telegram') {
+          this.db.members!.find((m) => m.id === YO)!.telegram_chat_id = null
+          return route.fulfill({ status: 204 })
+        }
         const { p_id } = req.postDataJSON() as { p_id: string }
         return route.fulfill({ json: this.completar(p_id) })
       }
@@ -433,7 +447,10 @@ export class SupabaseFalso {
       if (!tabla) return route.fulfill({ status: 404, json: { message: 'sin tabla' } })
       const f = filtro(u)
 
-      if (metodo === 'GET') return route.fulfill({ json: tabla.filter(f) })
+      if (metodo === 'GET') {
+        const filas = tabla.filter(f)
+        return route.fulfill({ json: objeto ? (filas[0] ?? null) : filas })
+      }
       if (this.fallar) return route.fulfill({ status: 500, json: { message: 'fallo' } })
 
       if (metodo === 'POST') {

@@ -1,3 +1,4 @@
+// ⚠ Copia generada por `pnpm sync:shared`. Edita el original en src/.
 /*
  * Repeticiones de pendientes y eventos, y próximas ocurrencias de fechas importantes.
  * Fuente única: se copia a supabase/functions/_shared con `pnpm sync:shared`.

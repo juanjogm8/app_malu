@@ -343,6 +343,31 @@ export const es = {
     faltaTexto:
       'Copia .env.example a .env.local y llena VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY. Luego reinicia el servidor.',
   },
+  ajustes: {
+    titulo: 'Ajustes',
+    sub: 'Telegram y resúmenes',
+    conectado: 'Conectado',
+    noConectado: 'Sin conectar',
+    explicacion:
+      'Recibe el resumen del día a las 8:00 y el de la semana el domingo a las 19:00, y agrega cosas al súper desde el chat.',
+    conectar: 'Conectar Telegram',
+    desconectar: 'Desconectar este Telegram',
+    desconectado: 'Telegram desconectado.',
+    pasos: (bot?: string) =>
+      bot
+        ? `Abre el chat con @${bot} y mándale este mensaje (o toca el botón):`
+        : 'Abre el chat con el bot de la casa en Telegram y mándale este mensaje:',
+    abrirTelegram: 'Abrir Telegram',
+    caduca: 'El código sirve una sola vez y caduca en 15 minutos.',
+    resumenes: 'Resúmenes',
+    cadaQuien: 'Cada quien elige sus resúmenes',
+    cadaQuienNo:
+      'Apagado: los dos reciben el diario a las 8:00 y el semanal el domingo a las 19:00.',
+    cadaQuienSi: 'Encendido: cada persona decide aquí qué recibe y a qué hora.',
+    diario: 'Resumen diario',
+    hora: 'Hora',
+    semanal: 'Resumen semanal (domingo 19:00)',
+  },
   pwa: { nueva: 'Hay una versión nueva', actualizar: 'Actualizar', despues: 'Después' },
   cargando: 'Cargando…',
   noEncontrado: 'Esta página no existe.',

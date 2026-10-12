@@ -1,3 +1,4 @@
+// ⚠ Copia generada por `pnpm sync:shared`. Edita el original en src/.
 /*
  * Fechas de calendario como texto "AAAA-MM-DD", sin zona horaria implícita.
  * La aritmética se hace en UTC para que el horario del dispositivo no mueva los días.

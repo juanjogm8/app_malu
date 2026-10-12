@@ -294,3 +294,21 @@ test('cerrar sesión borra la caché del dispositivo', async ({ page }) => {
   )
   expect(guardado).toBeNull()
 })
+
+test('ajustes: conectar Telegram y el flag de resúmenes por persona', async ({ page }) => {
+  const sb = new SupabaseFalso()
+  await sb.instalar(page)
+  await iniciarSesion(page)
+  await page.goto('/mas/ajustes')
+  await expect(page.getByText('Sin conectar')).toBeVisible()
+  await page.getByRole('button', { name: 'Conectar Telegram' }).click()
+  await expect(page.getByText('/start AB12CD34')).toBeVisible()
+
+  const flag = page.getByRole('switch', { name: /Cada quien elige sus resúmenes/ })
+  await expect(flag).toHaveAttribute('aria-checked', 'false')
+  await expect(page.getByRole('switch', { name: 'Resumen diario' })).toBeHidden()
+  await flag.click()
+  await expect.poll(() => sb.db.app_settings![0]!.telegram_digest_per_person).toBe(true)
+  await page.getByRole('switch', { name: /Resumen semanal/ }).click()
+  await expect.poll(() => sb.db.members![0]!.digest_weekly).toBe(false)
+})
