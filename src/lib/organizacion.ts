@@ -1,5 +1,5 @@
 /* Reglas de Niños, Planes, Notas y Comidas (criterios del prototipo). */
-import type { CalendarEvent, Contact, KidItem, Meal, Note, Plan } from '@/types/db'
+import type { CalendarEvent, Contact, KidKind, Meal, Note, Plan } from '@/types/db'
 import { addDays } from './fechas.ts'
 import { occDates } from './recurrencia'
 import { norm } from './texto'
@@ -11,7 +11,7 @@ const porAlta = (a: { created_at: string }, b: { created_at: string }) =>
 
 /* ---------- Niños ---------- */
 
-export const KID_KIND_NAME: Record<KidItem['kind'], string> = {
+export const KID_KIND_NAME: Record<KidKind, string> = {
   cita: 'Cita médica',
   vacuna: 'Vacuna',
   actividad: 'Actividad',
@@ -26,41 +26,38 @@ export const kidNames = (items: { kid?: string | null }[]) =>
     a.localeCompare(b, 'es'),
   )
 
-/**
- * Eventos del calendario marcados con un niño, en su próxima fecha (de hoy a un año).
- * Los que ya pasaron y no se repiten no aparecen.
- */
-export function kidEvents(events: CalendarEvent[], today: string, kid: string | null) {
-  return events
-    .filter((e) => e.kid?.trim() && (!kid || e.kid.trim() === kid))
-    .map((e) => ({ event: e, date: occDates(e.date, e.repeat, today, addDays(today, 366))[0] }))
-    .filter((x): x is { event: CalendarEvent; date: string } => !!x.date)
-    .sort(
-      (a, b) =>
-        a.date.localeCompare(b.date) || (a.event.time ?? '').localeCompare(b.event.time ?? ''),
-    )
+export interface EventoNino {
+  event: CalendarEvent
+  /** Próxima fecha (o la última, si ya pasó). */
+  date: string
 }
 
-/** Atrasados (con fecha pasada y sin hacer), Próximos, Sin fecha y Hechos. */
-export function kidGroups(
-  items: KidItem[],
+const porFechaHora = (a: EventoNino, b: EventoNino) =>
+  a.date.localeCompare(b.date) || (a.event.time ?? '').localeCompare(b.event.time ?? '')
+
+/**
+ * Vista Niños: los eventos que tienen niño, filtrados por niño y tipo.
+ * Próximos: su siguiente fecha de hoy a un año (los que se repiten, la siguiente vez).
+ * Ya pasaron: los que no se repiten de los últimos 60 días, el más reciente primero.
+ */
+export function kidView(
+  events: CalendarEvent[],
   today: string,
-  kind: KidItem['kind'] | null,
   kid: string | null,
+  kind: KidKind | null,
 ) {
-  const list = items.filter((i) => (!kind || i.kind === kind) && (!kid || i.kid === kid))
-  return [
-    {
-      name: 'Atrasados' as const,
-      items: list.filter((i) => !i.done && i.date && i.date < today).sort(porFecha),
-    },
-    {
-      name: 'Próximos' as const,
-      items: list.filter((i) => !i.done && i.date && i.date >= today).sort(porFecha),
-    },
-    { name: 'Sin fecha' as const, items: list.filter((i) => !i.done && !i.date).sort(porAlta) },
-    { name: 'Hechos' as const, items: list.filter((i) => i.done).sort(porFecha) },
-  ].filter((g) => g.items.length)
+  const lista = events.filter(
+    (e) => e.kid?.trim() && (!kid || e.kid.trim() === kid) && (!kind || e.kid_kind === kind),
+  )
+  const proximos: EventoNino[] = []
+  const pasados: EventoNino[] = []
+  for (const e of lista) {
+    const next = occDates(e.date, e.repeat, today, addDays(today, 366))[0]
+    if (next) proximos.push({ event: e, date: next })
+    else if (!e.repeat && e.date < today && e.date >= addDays(today, -60))
+      pasados.push({ event: e, date: e.date })
+  }
+  return { proximos: proximos.sort(porFechaHora), pasados: pasados.sort(porFechaHora).reverse() }
 }
 
 /* ---------- Planes ---------- */

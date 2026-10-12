@@ -28,7 +28,7 @@ import {
 
 const t = es.calendario
 type Modo = 'mes' | 'semana'
-const CAPAS: EntryKind[] = ['evento', 'pendiente', 'fecha', 'ninos', 'plan', 'comida', 'google']
+const CAPAS: EntryKind[] = ['evento', 'pendiente', 'fecha', 'plan', 'comida', 'google']
 const DIAS = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
 const esFecha = (s: string | null): s is string => !!s && /^\d{4}-\d{2}-\d{2}$/.test(s)
 

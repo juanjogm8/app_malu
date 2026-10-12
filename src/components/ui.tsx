@@ -187,7 +187,6 @@ const FORMAS: Record<EntryKind, CSSProperties> = {
   evento: { width: 12, height: 12, borderRadius: '50%' },
   pendiente: { width: 12, height: 12, borderRadius: 3 },
   fecha: { width: 10, height: 10, borderRadius: 1.5, transform: 'rotate(45deg)' },
-  ninos: { width: 14, height: 12, clipPath: 'polygon(50% 0,100% 100%,0 100%)' },
   plan: {
     width: 14,
     height: 14,

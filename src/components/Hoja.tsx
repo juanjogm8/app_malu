@@ -18,6 +18,8 @@ interface Base {
   label: string
   /** Ocupa media fila (dos campos lado a lado). */
   mitad?: boolean
+  /** Solo se muestra cuando se cumple (p. ej. el tipo de niño, si hay niño). */
+  si?: (v: Valores) => boolean
 }
 export type Campo = Base &
   (
@@ -198,7 +200,7 @@ function Panel({
   }
 
   const filas: Campo[][] = []
-  for (const c of config.campos) {
+  for (const c of config.campos.filter((c) => !c.si || c.si(v))) {
     const last = filas[filas.length - 1]
     if (c.mitad && last && last.length === 1 && last[0]!.mitad) last.push(c)
     else filas.push([c])

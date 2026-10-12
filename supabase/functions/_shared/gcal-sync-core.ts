@@ -1,7 +1,8 @@
 // Núcleo de la sincronización con Google Calendar, con dependencias inyectadas para probarlo.
+import type { CalendarEvent } from './db.ts'
 import { addDays } from './fechas.ts'
-import { googleAFila } from './gcal.ts'
-import type { FilaGoogle, GoogleEvent } from './gcal.ts'
+import { eventoAGoogle, googleAFila } from './gcal.ts'
+import type { FilaGoogle } from './gcal.ts'
 import { GoogleError } from './google-api.ts'
 import type { CalendarApi } from './google-api.ts'
 
@@ -70,17 +71,9 @@ export async function sincronizarLectura(
   return cambios
 }
 
-/** Algo de la app por publicar: un evento o algo de Niños con fecha. */
-export interface Publicable {
-  tabla: 'events' | 'kid_items'
-  id: string
-  google_event_id: string | null
-  recurso: GoogleEvent
-}
-
 export interface AlmacenEscritura {
-  pendientes: () => Promise<Publicable[]>
-  marcarPublicado: (p: Publicable, googleId: string, etag: string | null) => Promise<void>
+  pendientes: () => Promise<CalendarEvent[]>
+  marcarPublicado: (eventId: string, googleId: string, etag: string | null) => Promise<void>
   borradosPendientes: () => Promise<string[]>
   quitarBorrado: (googleId: string) => Promise<void>
 }
@@ -93,7 +86,7 @@ export async function publicar(api: CalendarApi, almacen: AlmacenEscritura, cale
     await almacen.quitarBorrado(id)
   }
   for (const ev of await almacen.pendientes()) {
-    const recurso = ev.recurso
+    const recurso = eventoAGoogle(ev)
     let g
     try {
       g = ev.google_event_id
@@ -109,7 +102,7 @@ export async function publicar(api: CalendarApi, almacen: AlmacenEscritura, cale
         g = await api.crear(calendarId, recurso)
       } else throw e
     }
-    await almacen.marcarPublicado(ev, g.id!, g.etag ?? null)
+    await almacen.marcarPublicado(ev.id, g.id!, g.etag ?? null)
     publicados++
   }
   return publicados

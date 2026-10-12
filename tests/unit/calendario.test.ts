@@ -17,6 +17,8 @@ const data: CalendarData = {
       is_shared: false,
       place: null,
       notes: null,
+      kid: 'Emilia',
+      kid_kind: 'actividad',
     },
     {
       ...a,
@@ -79,19 +81,6 @@ const data: CalendarData = {
       notes: null,
     },
   ],
-  kids: [
-    {
-      ...a,
-      id: 'k1',
-      text: 'Vacuna',
-      kind: 'vacuna',
-      kid: 'Emilia',
-      date: '2026-10-16',
-      time: '09:00:00',
-      notes: null,
-      done: false,
-    },
-  ],
   plans: [
     {
       ...a,
@@ -118,7 +107,7 @@ describe('entriesInRange', () => {
       '17:00|Natación',
     ])
     expect(map.get('2026-10-17')!.map((e) => e.title)).toEqual(['Cumpleaños de Mamá'])
-    expect(map.get('2026-10-16')![0]!.extra).toBe('Emilia')
+    expect(map.get('2026-10-12')!.find((e) => e.title === 'Natación')!.extra).toBe('Emilia')
     expect(map.has('2026-10-13')).toBe(false) // comidas apagadas por defecto
   })
 

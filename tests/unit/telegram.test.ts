@@ -85,7 +85,6 @@ const data: CalendarData = {
       notes: null,
     },
   ],
-  kids: [],
   plans: [],
   meals: [{ ...a, id: 'm1', date: T, meal: 'comida', text: 'Pozole', ingredients: null }],
 }

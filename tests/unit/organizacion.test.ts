@@ -1,16 +1,15 @@
 import { dateGroups, whenLabel } from '@/lib/fechas-importantes'
 import {
   isHttpLink,
-  kidEvents,
-  kidGroups,
   kidNames,
+  kidView,
   planGroups,
   plannedMeals,
   searchContacts,
   searchNotes,
   surprise,
 } from '@/lib/organizacion'
-import type { CalendarEvent, Contact, ImportantDate, KidItem, Meal, Note, Plan } from '@/types/db'
+import type { CalendarEvent, Contact, ImportantDate, Meal, Note, Plan } from '@/types/db'
 
 const T = '2026-10-12'
 let n = 0
@@ -19,46 +18,6 @@ const a = () => ({
   created_by: null,
   created_at: `2026-10-01T00:00:${String(n).padStart(2, '0')}Z`,
   updated_at: `2026-10-0${(n % 9) + 1}`,
-})
-
-describe('niños', () => {
-  const k = (o: Partial<KidItem>): KidItem => ({
-    ...a(),
-    text: 'k',
-    kind: 'cita',
-    kid: null,
-    date: null,
-    time: null,
-    notes: null,
-    done: false,
-    ...o,
-  })
-  const items = [
-    k({ text: 'atrasado', date: '2026-10-10', kid: 'Santi', kind: 'escuela' }),
-    k({ text: 'próximo 2', date: '2026-10-22', kid: 'Emilia' }),
-    k({ text: 'próximo 1', date: T, kid: 'Emilia', kind: 'vacuna' }),
-    k({ text: 'sin fecha', kid: 'Santi' }),
-    k({ text: 'hecho', date: '2026-10-01', done: true, kid: 'Emilia' }),
-  ]
-  it('agrupa y ordena', () => {
-    const g = kidGroups(items, T, null, null)
-    expect(g.map((x) => [x.name, x.items.map((i) => i.text)])).toEqual([
-      ['Atrasados', ['atrasado']],
-      ['Próximos', ['próximo 1', 'próximo 2']],
-      ['Sin fecha', ['sin fecha']],
-      ['Hechos', ['hecho']],
-    ])
-  })
-  it('filtra por tipo y por niño', () => {
-    expect(kidGroups(items, T, 'vacuna', null).flatMap((g) => g.items.map((i) => i.text))).toEqual([
-      'próximo 1',
-    ])
-    expect(kidGroups(items, T, null, 'Santi').flatMap((g) => g.items.map((i) => i.text))).toEqual([
-      'atrasado',
-      'sin fecha',
-    ])
-    expect(kidNames(items)).toEqual(['Emilia', 'Santi'])
-  })
 })
 
 describe('planes', () => {
@@ -166,7 +125,7 @@ describe('fechas y comidas', () => {
   })
 })
 
-describe('eventos de los niños', () => {
+describe('niños: vista de los eventos con niño', () => {
   const ev = (o: Partial<CalendarEvent>): CalendarEvent => ({
     ...a(),
     title: 'e',
@@ -178,27 +137,42 @@ describe('eventos de los niños', () => {
     place: null,
     notes: null,
     kid: null,
+    kid_kind: null,
     ...o,
   })
   const events = [
     ev({ title: 'sin niño', date: '2026-10-13' }),
-    ev({ title: 'natación', date: '2026-09-01', repeat: 'semanal', kid: 'Emilia' }),
-    ev({ title: 'ya pasó', date: '2026-10-01', kid: 'Santi' }),
-    ev({ title: 'festival', date: '2026-10-20', kid: 'Santi' }),
+    ev({
+      title: 'natación',
+      date: '2026-09-01',
+      repeat: 'semanal',
+      kid: 'Emilia',
+      kid_kind: 'actividad',
+    }),
+    ev({ title: 'vacuna', date: '2026-10-01', kid: 'Santi', kid_kind: 'vacuna' }),
+    ev({ title: 'hace mucho', date: '2026-06-01', kid: 'Santi' }),
+    ev({ title: 'festival', date: '2026-10-20', time: '10:00', kid: 'Santi', kid_kind: 'escuela' }),
+    ev({ title: 'pediatra', date: '2026-10-20', time: '09:00', kid: 'Emilia', kid_kind: 'cita' }),
   ]
+  const titulos = (xs: { event: CalendarEvent }[]) => xs.map((x) => x.event.title)
 
-  it('muestra la próxima fecha de cada evento con niño, en orden', () => {
-    expect(kidEvents(events, T, null).map((x) => [x.event.title, x.date])).toEqual([
+  it('próximos con su siguiente fecha, por fecha y hora; ya pasaron de los últimos 60 días', () => {
+    const v = kidView(events, T, null, null)
+    expect(v.proximos.map((x) => [x.event.title, x.date])).toEqual([
       ['natación', '2026-10-13'],
+      ['pediatra', '2026-10-20'],
       ['festival', '2026-10-20'],
     ])
-    expect(kidEvents(events, T, 'Santi').map((x) => x.event.title)).toEqual(['festival'])
+    expect(titulos(v.pasados)).toEqual(['vacuna'])
   })
 
-  it('junta los nombres de Niños y de los eventos', () => {
-    expect(kidNames([{ kid: 'Santi' }, { kid: ' Emilia ' }, { kid: null }, ...events])).toEqual([
-      'Emilia',
-      'Santi',
-    ])
+  it('filtra por niño y por tipo', () => {
+    expect(titulos(kidView(events, T, 'Santi', null).proximos)).toEqual(['festival'])
+    expect(titulos(kidView(events, T, null, 'cita').proximos)).toEqual(['pediatra'])
+    expect(titulos(kidView(events, T, 'Santi', 'vacuna').pasados)).toEqual(['vacuna'])
+  })
+
+  it('los nombres salen de los eventos, sin repetir ni espacios', () => {
+    expect(kidNames([...events, ev({ kid: ' Emilia ' })])).toEqual(['Emilia', 'Santi'])
   })
 })

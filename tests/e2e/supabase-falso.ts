@@ -68,7 +68,6 @@ export function dbVacia(): Db {
     tasks: [],
     events: [],
     important_dates: [],
-    kid_items: [],
     meals: [],
     plans: [],
     notes: [],
@@ -199,19 +198,36 @@ export function dbEjemplo(): Db {
       notes: null,
     },
   ]
-  db.kid_items = [
+  db.events.push(
     {
       id: uid(),
       ...audit(MALU),
-      text: 'Vacuna refuerzo',
-      kind: 'vacuna',
-      kid: 'Emilia',
+      title: 'Vacuna refuerzo',
       date: d(4),
       time: '09:00:00',
+      repeat: null,
+      owner_id: null,
+      is_shared: true,
+      place: null,
       notes: null,
-      done: false,
+      kid: 'Emilia',
+      kid_kind: 'vacuna',
     },
-  ]
+    {
+      id: uid(),
+      ...audit(),
+      title: 'Revisión con el pediatra',
+      date: d(10),
+      time: null,
+      repeat: null,
+      owner_id: null,
+      is_shared: true,
+      place: null,
+      notes: null,
+      kid: 'Emilia',
+      kid_kind: 'cita',
+    },
+  )
   db.plans = [
     {
       id: uid(),
@@ -225,41 +241,6 @@ export function dbEjemplo(): Db {
       notes: null,
     },
   ]
-  db.kid_items.push(
-    {
-      id: uid(),
-      ...audit(),
-      text: 'Comprar útiles escolares',
-      kind: 'escuela',
-      kid: 'Santi',
-      date: d(-2),
-      time: null,
-      notes: null,
-      done: false,
-    },
-    {
-      id: uid(),
-      ...audit(),
-      text: 'Revisión con el pediatra',
-      kind: 'cita',
-      kid: 'Emilia',
-      date: d(10),
-      time: null,
-      notes: null,
-      done: false,
-    },
-    {
-      id: uid(),
-      ...audit(),
-      text: 'Inscribir a natación de invierno',
-      kind: 'actividad',
-      kid: 'Santi',
-      date: null,
-      time: null,
-      notes: null,
-      done: false,
-    },
-  )
   db.plans.push(
     {
       id: uid(),

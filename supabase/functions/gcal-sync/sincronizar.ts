@@ -1,11 +1,9 @@
 // Sincroniza las cuentas conectadas (lectura) y publica en el calendario compartido (escritura).
 import { clienteAdmin } from '../_shared/admin.ts'
-import type { AppSettings, CalendarEvent, KidItem } from '../_shared/db.ts'
+import type { AppSettings, CalendarEvent } from '../_shared/db.ts'
 import { today } from '../_shared/fechas.ts'
 import { publicar, sincronizarLectura } from '../_shared/gcal-sync-core.ts'
-import { eventoAGoogle, ninoAGoogle } from '../_shared/gcal.ts'
 import type { FilaGoogle } from '../_shared/gcal.ts'
-import type { Publicable } from '../_shared/gcal-sync-core.ts'
 import { calendarApi, GoogleError, renovarAcceso } from '../_shared/google-api.ts'
 
 type Admin = ReturnType<typeof clienteAdmin>
@@ -64,34 +62,16 @@ function almacenLectura(admin: Admin) {
 
 function almacenEscritura(admin: Admin) {
   return {
-    pendientes: async (): Promise<Publicable[]> => {
-      const [eventos, ninos] = await Promise.all([
-        admin.from('events').select('*').is('google_synced_at', null),
-        // Lo de Niños solo se publica si tiene fecha.
-        admin.from('kid_items').select('*').is('google_synced_at', null).not('date', 'is', null),
-      ])
-      if (eventos.error) throw eventos.error
-      if (ninos.error) throw ninos.error
-      return [
-        ...(eventos.data as CalendarEvent[]).map((ev) => ({
-          tabla: 'events' as const,
-          id: ev.id,
-          google_event_id: ev.google_event_id ?? null,
-          recurso: eventoAGoogle(ev),
-        })),
-        ...(ninos.data as (KidItem & { date: string })[]).map((k) => ({
-          tabla: 'kid_items' as const,
-          id: k.id,
-          google_event_id: k.google_event_id ?? null,
-          recurso: ninoAGoogle(k),
-        })),
-      ]
+    pendientes: async () => {
+      const { data, error } = await admin.from('events').select('*').is('google_synced_at', null)
+      if (error) throw error
+      return data as CalendarEvent[]
     },
-    marcarPublicado: async (p: Publicable, google_event_id: string, google_etag: string | null) => {
+    marcarPublicado: async (id: string, google_event_id: string, google_etag: string | null) => {
       await admin
-        .from(p.tabla)
+        .from('events')
         .update({ google_event_id, google_etag, google_synced_at: new Date().toISOString() })
-        .eq('id', p.id)
+        .eq('id', id)
     },
     borradosPendientes: async () => {
       const { data } = await admin.from('google_pending_deletes').select('google_event_id')

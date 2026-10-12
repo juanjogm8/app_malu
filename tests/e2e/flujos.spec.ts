@@ -375,23 +375,36 @@ test('google: la capa Google muestra los eventos y Ajustes manda a conectar', as
   await expect(page).toHaveURL(/accounts\.google\.com/)
 })
 
-test('niños: un evento con niño aparece en Niños y se abre para editar', async ({ page }) => {
+test('niños: vista de eventos con niño; agregar desde Niños trae el niño y el tipo', async ({
+  page,
+}) => {
   const sb = new SupabaseFalso(dbVacia())
   await sb.instalar(page)
   await iniciarSesion(page)
   await page.goto('/calendario')
   await page.getByRole('button', { name: '+ Evento' }).click()
   await page.getByLabel('Título').fill('Natación')
+  // El tipo solo aparece cuando hay niño.
+  await expect(page.getByLabel('Tipo')).toHaveCount(0)
   await page.getByLabel('Niño (opcional)').fill('Sofi')
+  await page.getByLabel('Tipo').selectOption('actividad')
   await page.getByRole('button', { name: 'Guardar' }).click()
   await expect(page.getByRole('dialog')).toBeHidden()
   await expect(page.getByText('Evento · Ambos · Sofi')).toBeVisible()
-  expect(sb.db.events![0]).toMatchObject({ title: 'Natación', kid: 'Sofi' })
+  expect(sb.db.events![0]).toMatchObject({ title: 'Natación', kid: 'Sofi', kid_kind: 'actividad' })
 
   await page.getByRole('link', { name: 'Más' }).click()
   await page.getByRole('link', { name: /Niños/ }).click()
-  await expect(page.getByRole('heading', { name: 'En el calendario' })).toBeVisible()
-  await page.getByRole('button', { name: 'Natación' }).click()
-  await expect(page.getByRole('dialog', { name: 'Editar evento' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Próximos' })).toBeVisible()
+  await page.getByRole('button', { name: 'Escuela' }).click()
+  await expect(page.getByText('No hay nada con este filtro.')).toBeVisible()
+  await page.getByRole('button', { name: 'Actividad' }).click()
+  await expect(page.getByRole('button', { name: /Natación/ })).toBeVisible()
+
+  await page.getByRole('button', { name: '+ Agregar' }).click()
+  await expect(page.getByRole('dialog', { name: 'Nuevo evento' })).toBeVisible()
   await expect(page.getByLabel('Niño (opcional)')).toHaveValue('Sofi')
+  await expect(page.getByRole('dialog').getByLabel('Tipo', { exact: true })).toHaveValue(
+    'actividad',
+  )
 })

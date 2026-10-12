@@ -6,20 +6,20 @@ import { fila } from '@/components/estilos'
 import { es } from '@/i18n/es'
 import { startOfWeek, today } from '@/lib/fechas'
 import { dateInfos } from '@/lib/fechas-importantes'
-import { plannedMeals } from '@/lib/organizacion'
+import { kidView, plannedMeals } from '@/lib/organizacion'
 
 const t = es.mas
 
 export function MasPage() {
   const hoy = today()
   const { rows: meals } = useRows('meals')
-  const { rows: kids } = useRows('kid_items')
+  const { rows: events } = useRows('events')
   const { rows: dates } = useRows('important_dates')
   const { rows: plans } = useRows('plans')
   const { rows: notes } = useRows('notes')
   const { rows: contacts } = useRows('contacts')
 
-  const proximosNinos = kids.filter((k) => !k.done && k.date && k.date >= hoy).length
+  const proximosNinos = kidView(events, hoy, null, null).proximos.length
   const fechasMes = dateInfos(dates, hoy).filter((x) => x.days >= 0 && x.days <= 30).length
   const ideas = plans.filter((p) => p.status === 'idea').length
   const opciones: { to: string; titulo: string; sub: string; icon: IconName; dato: string }[] = [

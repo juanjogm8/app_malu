@@ -17,7 +17,7 @@ import { kidNames } from '@/lib/organizacion'
 import { whoFrom, whoToEvent, whoToTask } from '@/lib/personas'
 import type { WhoValue } from '@/lib/personas'
 import { REPEAT_NAME, REPEATS } from '@/lib/recurrencia'
-import type { Meal, Task } from '@/types/db'
+import type { KidKind, Meal, Task } from '@/types/db'
 
 const REP_OPTS: [string, string][] = [
   ['', 'No se repite'],
@@ -84,7 +84,6 @@ export function useHojas() {
   const { rows: tasks } = useRows('tasks')
   const { rows: events } = useRows('events')
   const { rows: dates } = useRows('important_dates')
-  const { rows: kids } = useRows('kid_items')
   const { rows: plans } = useRows('plans')
   const { rows: meals } = useRows('meals')
   const { rows: google } = useRows('google_events')
@@ -191,12 +190,19 @@ export function useHojas() {
         t: 'text',
         ph: 'Nombre',
         mitad: true,
-        sugerencias: kidNames([...kids, ...events]),
+        sugerencias: kidNames(events),
+      },
+      {
+        k: 'kid_kind',
+        label: 'Tipo',
+        t: 'select',
+        opts: [['', 'Sin tipo'], ...KT],
+        si: (v) => !!s(v, 'kid').trim(),
       },
       { k: 'place', label: 'Lugar', t: 'text' },
       { k: 'notes', label: 'Notas', t: 'area' },
     ],
-    [quien, kids, events],
+    [quien, events],
   )
   const packEvento = (v: Valores) => ({
     title: s(v, 'title'),
@@ -207,13 +213,14 @@ export function useHojas() {
     place: orNull(s(v, 'place')),
     notes: orNull(s(v, 'notes')),
     kid: orNull(s(v, 'kid')),
+    kid_kind: s(v, 'kid') ? (orNull(s(v, 'kid_kind')) as KidKind | null) : null,
   })
   const nuevoEvento = useCallback(
-    (date?: string) =>
+    (date?: string, pre: Valores = {}) =>
       hoja.abrir({
         titulo: 'Nuevo evento',
         campos: camposEvento(),
-        valores: { who: 'both', repeat: '', date: date ?? today() },
+        valores: { who: 'both', repeat: '', kid_kind: '', date: date ?? today(), ...pre },
         onSave: async (v) => !!(await w.insert('events', packEvento(v))),
       }),
     [hoja, camposEvento, w],
@@ -230,6 +237,7 @@ export function useHojas() {
           who: whoFrom(e.owner_id, e.is_shared),
           repeat: e.repeat ?? '',
           kid: e.kid ?? '',
+          kid_kind: e.kid_kind ?? '',
           place: e.place ?? '',
           notes: e.notes ?? '',
         },
@@ -299,68 +307,6 @@ export function useHojas() {
         onDelete: () => void w.remove('important_dates', [f]),
       }),
     [hoja, camposFecha, w],
-  )
-
-  /* ---------- Niños ---------- */
-  const camposNino = useCallback(
-    (): Campo[] => [
-      {
-        k: 'text',
-        label: 'Qué es',
-        t: 'text',
-        req: true,
-        ph: 'Revisión con el pediatra, útiles escolares…',
-      },
-      { k: 'kind', label: 'Tipo', t: 'select', opts: KT, mitad: true },
-      {
-        k: 'kid',
-        label: 'Quién',
-        t: 'text',
-        ph: 'Nombre',
-        mitad: true,
-        sugerencias: kidNames([...kids, ...events]),
-      },
-      { k: 'date', label: 'Fecha', t: 'date', mitad: true },
-      { k: 'time', label: 'Hora', t: 'time', mitad: true },
-      { k: 'notes', label: 'Notas (regalo, lugar, teléfono…)', t: 'area' },
-    ],
-    [kids, events],
-  )
-  const packNino = (v: Valores) => ({
-    text: s(v, 'text'),
-    kind: s(v, 'kind') as Row<'kid_items'>['kind'],
-    kid: orNull(s(v, 'kid')),
-    date: orNull(s(v, 'date')),
-    time: orNull(s(v, 'time')),
-    notes: orNull(s(v, 'notes')),
-  })
-  const nuevoNino = useCallback(
-    (pre: Partial<Valores> = {}) =>
-      hoja.abrir({
-        titulo: 'Nuevo de los niños',
-        campos: camposNino(),
-        valores: { kind: 'cita', ...pre } as Valores,
-        onSave: async (v) => !!(await w.insert('kid_items', packNino(v))),
-      }),
-    [hoja, camposNino, w],
-  )
-  const editarNino = useCallback(
-    (k: Row<'kid_items'>) =>
-      hoja.abrir({
-        titulo: 'Editar',
-        campos: camposNino(),
-        valores: {
-          text: k.text,
-          kind: k.kind,
-          kid: k.kid ?? '',
-          date: k.date ?? '',
-          time: hhmm(k.time),
-          notes: k.notes ?? '',
-        },
-        onSave: (v) => w.update('kid_items', k.id, packNino(v)),
-        onDelete: () => void w.remove('kid_items', [k]),
-      }),
-    [hoja, camposNino, w],
   )
 
   /* ---------- Planes ---------- */
@@ -616,9 +562,6 @@ export function useHojas() {
       } else if (e.kind === 'fecha') {
         const r = dates.find((x) => x.id === e.id)
         if (r) editarFecha(r)
-      } else if (e.kind === 'ninos') {
-        const r = kids.find((x) => x.id === e.id)
-        if (r) editarNino(r)
       } else if (e.kind === 'plan') {
         const r = plans.find((x) => x.id === e.id)
         if (r) editarPlan(r)
@@ -636,13 +579,11 @@ export function useHojas() {
       tasks,
       dates,
       google,
-      kids,
       plans,
       meals,
       editarEvento,
       editarPendiente,
       editarFecha,
-      editarNino,
       editarPlan,
       abrirComida,
     ],
@@ -655,8 +596,6 @@ export function useHojas() {
     editarEvento,
     nuevaFecha,
     editarFecha,
-    nuevoNino,
-    editarNino,
     nuevoPlan,
     editarPlan,
     nuevaNota,

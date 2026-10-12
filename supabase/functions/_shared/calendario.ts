@@ -1,24 +1,15 @@
 // ⚠ Copia generada por `pnpm sync:shared`. Edita el original en src/.
 /* Une todas las capas del calendario en un mapa fecha → entradas (entriesInRange del prototipo). */
-import type {
-  CalendarEvent,
-  GoogleEventRow,
-  ImportantDate,
-  KidItem,
-  Meal,
-  Plan,
-  Task,
-} from './db.ts'
+import type { CalendarEvent, GoogleEventRow, ImportantDate, Meal, Plan, Task } from './db.ts'
 import { dateTitle } from './fechas-importantes.ts'
 import { occDates } from './recurrencia.ts'
 
-export type EntryKind = 'evento' | 'pendiente' | 'fecha' | 'ninos' | 'plan' | 'comida' | 'google'
+export type EntryKind = 'evento' | 'pendiente' | 'fecha' | 'plan' | 'comida' | 'google'
 
 export const KIND_LABEL: Record<EntryKind, string> = {
   evento: 'Evento',
   pendiente: 'Pendiente',
   fecha: 'Fecha',
-  ninos: 'Niños',
   plan: 'Plan',
   comida: 'Comida',
   google: 'Google',
@@ -29,7 +20,6 @@ export const DEFAULT_LAYERS: Layers = {
   evento: true,
   pendiente: true,
   fecha: true,
-  ninos: true,
   plan: true,
   comida: false,
   google: true,
@@ -57,7 +47,6 @@ export interface CalendarData {
   events: CalendarEvent[]
   tasks: Task[]
   dates: ImportantDate[]
-  kids: KidItem[]
   plans: Plan[]
   meals: Meal[]
   /** Fase 3: eventos leídos de Google Calendar (solo lectura). */
@@ -124,21 +113,6 @@ export function entriesInRange(
           time: '',
           personId: null,
           shared: true,
-        })
-
-  if (layers.ninos)
-    for (const k of data.kids)
-      if (!k.done && inRange(k.date))
-        push({
-          key: `ninos:${k.id}`,
-          kind: 'ninos',
-          id: k.id,
-          date: k.date,
-          title: k.text,
-          time: hhmm(k.time),
-          personId: null,
-          shared: true,
-          extra: k.kid ?? undefined,
         })
 
   if (layers.plan)

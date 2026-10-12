@@ -34,7 +34,6 @@ const TABLES: TableName[] = [
   'tasks',
   'events',
   'important_dates',
-  'kid_items',
   'meals',
   'plans',
   'notes',

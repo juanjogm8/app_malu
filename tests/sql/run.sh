@@ -28,8 +28,12 @@ fi
 export PGOPTIONS="-c client_min_messages=error"
 PSQL=(psql "$DATABASE_URL" -X -q -v ON_ERROR_STOP=1 -o /dev/null)
 "${PSQL[@]}" -f "$ROOT/tests/sql/00_supabase_stub.sql"
+# tests/sql/migraciones/<migración>.antes.sql y .despues.sql prueban migraciones que mueven datos.
 for f in "$ROOT"/supabase/migrations/*.sql; do
+  base="$ROOT/tests/sql/migraciones/$(basename "$f" .sql)"
+  [[ -f "$base.antes.sql" ]] && "${PSQL[@]}" -f "$base.antes.sql"
   "${PSQL[@]}" -f "$f"
+  [[ -f "$base.despues.sql" ]] && { echo "▶ migración $(basename "$f")"; "${PSQL[@]}" -f "$base.despues.sql"; }
 done
 for f in "$ROOT"/tests/sql/[1-9]*.sql; do
   echo "▶ $(basename "$f")"

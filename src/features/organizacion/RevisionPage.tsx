@@ -50,7 +50,6 @@ export function RevisionPage() {
   // El domingo se planea la semana que empieza mañana; otro día, la semana en curso.
   const lunes = startOfWeek(addDays(hoy, 1))
   const tareas = overdueTasks(data.tasks, hoy)
-  const ninos = data.kids.filter((k) => !k.done && k.date && k.date < hoy)
   const viene = entriesInRange(data, hoy, addDays(hoy, 6), ALL_BUT_MEALS)
   const dias = Array.from({ length: 7 }, (_, i) => addDays(hoy, i)).filter(
     (d) => viene.get(d)?.length,
@@ -106,7 +105,7 @@ export function RevisionPage() {
       </div>
 
       <Paso n={1} titulo={t.atoro} actual>
-        {tareas.length + ninos.length ? (
+        {tareas.length ? (
           <Caja>
             {tareas.map((task, i) => (
               <FilaRevision
@@ -126,30 +125,6 @@ export function RevisionPage() {
                     }}
                     onSemana={async () => {
                       if (await w.update('tasks', task.id, { due_date: addDays(hoy, 7) }))
-                        setResueltos((n) => n + 1)
-                    }}
-                  />
-                }
-              />
-            ))}
-            {ninos.map((k, i) => (
-              <FilaRevision
-                key={k.id}
-                i={tareas.length + i}
-                kind="ninos"
-                slot="both"
-                titulo={k.text}
-                meta={[es.inicio.vencio(fShort(k.date!)), k.kid].filter(Boolean).join(' · ')}
-                tarde
-                onOpen={() => hojas.editarNino(k)}
-                acciones={
-                  <Acciones
-                    onHecho={async () => {
-                      if (await w.update('kid_items', k.id, { done: true }))
-                        setResueltos((n) => n + 1)
-                    }}
-                    onSemana={async () => {
-                      if (await w.update('kid_items', k.id, { date: addDays(hoy, 7) }))
                         setResueltos((n) => n + 1)
                     }}
                   />

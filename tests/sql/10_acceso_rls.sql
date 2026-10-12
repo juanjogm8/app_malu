@@ -32,7 +32,6 @@ insert into casos values
   ('tasks',            $$insert into public.tasks (text) values ('t')$$),
   ('events',           $$insert into public.events (title, date) values ('e', '2026-10-12')$$),
   ('important_dates',  $$insert into public.important_dates (name, date) values ('f', '1990-05-01')$$),
-  ('kid_items',        $$insert into public.kid_items (text) values ('k')$$),
   ('meals',            $$insert into public.meals (date, meal, text) values ('2026-10-13', 'cena', 'm')$$),
   ('plans',            $$insert into public.plans (text) values ('p')$$),
   ('notes',            $$insert into public.notes (title) values ('n')$$),

@@ -74,9 +74,12 @@ export type CalendarEvent = Audit & {
   is_shared: boolean
   place: string | null
   notes: string | null
-  /** Niño al que corresponde (opcional): el evento aparece también en Niños. */
+  /** Niño al que corresponde (opcional): el evento aparece en la vista Niños. */
   kid?: string | null
+  kid_kind?: KidKind | null
 }
+
+export type KidKind = 'cita' | 'vacuna' | 'actividad' | 'escuela' | 'fiesta' | 'otro'
 
 export type ImportantDate = Audit & {
   name: string
@@ -85,20 +88,6 @@ export type ImportantDate = Audit & {
   yearly: boolean
   remind_days: 1 | 3 | 7 | 14 | 30
   notes: string | null
-}
-
-export type KidItem = Audit & {
-  text: string
-  kind: 'cita' | 'vacuna' | 'actividad' | 'escuela' | 'fiesta' | 'otro'
-  kid: string | null
-  date: string | null
-  time: string | null
-  notes: string | null
-  done: boolean
-  /** Lo que tiene fecha se publica en el calendario compartido de Google. */
-  google_event_id?: string | null
-  google_etag?: string | null
-  google_synced_at?: string | null
 }
 
 export type Meal = Audit & {
@@ -211,7 +200,6 @@ export type Database = {
       tasks: Table<Task, 'text'>
       events: Table<CalendarEvent, 'title' | 'date'>
       important_dates: Table<ImportantDate, 'name' | 'date'>
-      kid_items: Table<KidItem, 'text'>
       meals: Table<Meal, 'date' | 'meal'>
       plans: Table<Plan, 'text'>
       notes: Table<Note, 'title'>

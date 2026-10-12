@@ -56,7 +56,6 @@ export function useDatosCalendario(): { data: CalendarData; loading: boolean } {
   const events = useRows('events')
   const tasks = useRows('tasks')
   const dates = useRows('important_dates')
-  const kids = useRows('kid_items')
   const plans = useRows('plans')
   const meals = useRows('meals')
   const google = useRows('google_events')
@@ -66,13 +65,12 @@ export function useDatosCalendario(): { data: CalendarData; loading: boolean } {
       events: events.rows,
       tasks: tasks.rows,
       dates: dates.rows,
-      kids: kids.rows,
       plans: plans.rows,
       meals: meals.rows,
     }),
-    [events.rows, tasks.rows, dates.rows, kids.rows, plans.rows, meals.rows, google.rows],
+    [events.rows, tasks.rows, dates.rows, plans.rows, meals.rows, google.rows],
   )
-  const loading = [events, tasks, dates, kids, plans, meals].some((x) => x.loading)
+  const loading = [events, tasks, dates, plans, meals].some((x) => x.loading)
   return { data, loading }
 }
 

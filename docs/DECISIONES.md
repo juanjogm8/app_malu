@@ -96,7 +96,7 @@ visual**. Donde chocan:
 - **Subvistas de Más:** siguen el diseño y cambian el encabezado por "‹ Más". La Revisión lleva su
   propio encabezado (cerrar · fecha).
 - **Revisión:** en domingo planea la semana que empieza mañana; otro día, la semana en curso.
-  "Lo que se atoró" incluye pendientes y cosas de los niños vencidas, ambos con Hecho y +1 semana.
+  "Lo que se atoró" incluye los pendientes vencidos, con Hecho y +1 semana.
   El cierre "Semana en orden" resume lo hecho en esa sesión.
 - **Notas:** el pie dice "De {persona} · {fecha de la última edición}". La tabla no guarda quién
   editó por última vez, solo quién creó la nota.
@@ -194,13 +194,18 @@ Verificado con la documentación vigente de Google:
   rendimiento ≥ 90. Las tipografías se cargan sin bloquear el primer pintado. `robots.txt` y
   `noindex`: la app es privada y no debe aparecer en buscadores.
 
-## Niños ↔ calendario (después de la entrega)
+## Niños = eventos con niño (después de la entrega)
 
-- **Campo "Niño" en los eventos** (`events.kid`, opcional, con sugerencias de los nombres ya usados).
-  Un evento con niño aparece también en **Niños**, en el grupo "En el calendario", con su próxima
-  fecha (los que se repiten muestran la siguiente). Se ve con el filtro "Todo" y se filtra por niño;
-  al tocarlo se edita como evento. En el calendario su subtítulo agrega el nombre ("Evento · Ambos · Sofi").
-- **Lo de Niños con fecha se publica en Google** (calendario "Casa en Orden"), igual que los eventos:
-  título "Vacuna · Mateo" (el nombre no se repite si el título ya lo trae), sin repetición. Marcarlo
-  hecho no lo quita de Google; quitarle la fecha o borrarlo, sí. Los eventos con niño también llevan
-  el nombre en el título que se publica.
+- **Niños dejó de ser una lista aparte**: es una vista de los eventos del calendario que tienen
+  niño (`events.kid`) y, opcionalmente, un tipo (`events.kid_kind`: cita médica, vacuna, actividad,
+  escuela, fiesta o regalo, otro). El campo "Tipo" solo aparece en la hoja cuando hay niño.
+- La vista agrupa en **Próximos** (siguiente fecha, también de los que se repiten) y **Ya pasaron**
+  (últimos 60 días), con filtros por niño y por tipo. "+ Agregar" abre "Nuevo evento" con el niño y
+  el tipo del filtro ya puestos (o el único niño, si solo hay uno).
+- Como son eventos, salen en el calendario ("Evento · Ambos · Sofi"), en Hoy, en los resúmenes y en
+  Google con el nombre en el título ("Vacuna · Mateo"; no se repite si el título ya lo trae).
+- Lo que no tenga fecha (comprar uniforme) va a **Pendientes** con tipo "Niños". La migración
+  `…12_ninos_como_eventos` movió lo guardado: con fecha → evento; sin fecha y sin hacer → pendiente
+  (lo ya hecho sin fecha se descartó) y eliminó `kid_items`.
+- Se quitaron la capa "Niños" del calendario y la parte de niños de "Lo que se atoró" en la Revisión
+  (los eventos no se atrasan).
