@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&amp;family=Instrument+Sans:wght@400..700&amp;display=swap">
+<style>body{margin:0;background:#E4E8E4;-webkit-font-smoothing:antialiased}a{color:#1E6B4A}a:hover{color:#13251C}</style>
+</helmet>
+<div style="padding:40px 44px 60px;display:flex;flex-direction:column;gap:24px;font-family:'Instrument Sans',system-ui,sans-serif;color:#13251C">
+<div style="display:flex;flex-direction:column;gap:6px;max-width:900px">
+<div style="font:400 34px/1.1 'Young Serif',Georgia,serif">Organización familiar y revisión · 390 px</div>
+<div style="font-size:14px;line-height:1.5;color:#4A5E54">Más y sus cinco secciones, más la Revisión de la semana. Las subpantallas usan una barra con "atrás" en lugar del encabezado de la app. Ver también <a href="Sistema 2b.dc.html">Sistema</a> · <a href="Pantallas 2b - Principales.dc.html">Principales</a> · <a href="Pantallas 2b - Estados y tablet.dc.html">Estados y tablet</a>.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:32px;--font-display:'Young Serif',Georgia,serif;--font-body:'Instrument Sans',system-ui,sans-serif;--bg:#F1F5F1;--surface:#FFFFFF;--tint:#E8EFE9;--ink:#13251C;--muted:#4A5E54;--line:#D4E0D7;--accent:#1E6B4A;--accent-ink:#FFFFFF;--accent-soft:#DCEEE3;--sun:#F2A23A;--sun-ink:#13251C;--sun-soft:#FCE2B0;--warn:#8A5300;--warn-soft:#FBEACB;--danger:#B3261E;--danger-soft:#FBE4E1;--info:#2C5DA8;--info-soft:#E0E9F7;--ok:#1F7046;--ok-soft:#DDF0E4;--focus:#1E6B4A;--person-a:#2B62C4;--person-a-soft:#E1EAFA;--person-b:#B8401F;--person-b-soft:#F8E2DA;--person-both:#13251C;--scrim:rgba(12,25,20,.45);--elev-sheet:0 -8px 32px rgba(19,37,28,.18);--elev-toast:0 8px 24px rgba(19,37,28,.22)">
+<sc-for list="{{ modes }}" as="m" hint-placeholder-count="2">
+<div style="{{ m.vars }}">
+<div style="width:max-content;background:var(--bg);color:var(--ink);font-family:var(--font-body);border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:18px;box-shadow:0 0 0 1px var(--line)">
+<span style="font:400 28px/1 var(--font-display)">{{ m.label }}</span>
+<div style="display:flex;gap:28px;align-items:flex-start">
+
+<!-- Más -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.5 Más</span>
+<div style="width:390px;min-height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="flex:none;display:flex;align-items:center;justify-content:space-between;padding:2px 18px 8px"><span style="font:400 17px/1 var(--font-display)">Casa en Orden</span><span style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);white-space:nowrap"><span style="display:flex;align-items:center;gap:5px"><i style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></i>En vivo</span><span style="width:32px;height:32px;border-radius:50%;background:var(--person-a);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:14px">J</span></span></div>
+<div style="flex:1;padding:6px 16px 24px;display:flex;flex-direction:column;gap:16px">
+<span style="font:400 30px/1 var(--font-display)">Más</span>
+<div style="border-radius:22px;background:var(--sun-soft);padding:16px;display:flex;align-items:center;gap:14px"><span style="width:44px;height:44px;border-radius:50%;background:var(--sun);flex:none"></span><div style="flex:1"><div style="font:400 20px var(--font-display)">Revisión de la semana</div><div style="font-size:13px;color:var(--muted)">10 minutos, el domingo, juntos</div></div><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M9 6l6 6-6 6"></path></svg></div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<sc-for list="{{ menu }}" as="r" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:14px;min-height:72px;padding:10px 14px;border-top:1px solid {{ r.bd }}">
+<span style="width:40px;height:40px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:none"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round"><path d="{{ r.d }}"></path></svg></span>
+<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{ r.title }}</div><div style="font-size:13px;color:var(--muted)">{{ r.sub }}</div></div>
+<span style="font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap">{{ r.data }}</span>
+<svg width="16" height="16" viewBox="0 0 24 24" style="flex:none;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M9 6l6 6-6 6"></path></svg>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navMas }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i><sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:{{ n.bb }};color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">{{ n.badge }}</span></sc-if></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+<!-- Comidas -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.6 Comidas de la semana</span>
+<div style="width:390px;min-height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="flex:none;display:flex;align-items:center;gap:6px;padding:0 12px 6px"><span style="width:44px;height:44px;display:grid;place-items:center;color:var(--accent)"><svg width="22" height="22" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M15 6l-6 6 6 6"></path></svg></span><span style="font-size:15px;font-weight:600;color:var(--accent)">Más</span></div>
+<div style="flex:1;padding:0 16px 24px;display:flex;flex-direction:column;gap:14px">
+<span style="font:400 30px/1 var(--font-display)">Comidas</span>
+<div style="display:flex;align-items:center;gap:6px"><span style="width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M15 6l-6 6 6 6"></path></svg></span><span style="flex:1;text-align:center;font:400 20px var(--font-display)">12 – 18 oct</span><span style="width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M9 6l6 6-6 6"></path></svg></span></div>
+<div style="height:48px;border-radius:24px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>Pasar ingredientes al súper (9)</div>
+<sc-for list="{{ meals }}" as="d" hint-placeholder-count="7">
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;align-items:center;gap:8px;padding:0 4px"><span style="font:400 19px var(--font-display)">{{ d.day }}</span><sc-if value="{{ d.today }}"><span style="height:22px;padding:0 8px;border-radius:11px;background:var(--sun);color:var(--sun-ink);display:flex;align-items:center;font-size:12px;font-weight:700">Hoy</span></sc-if></div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<sc-for list="{{ d.items }}" as="r">
+<div style="display:flex;align-items:center;gap:12px;min-height:50px;padding:4px 12px 4px 14px;border-top:1px solid {{ r.bd }}">
+<span style="width:78px;flex:none;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">{{ r.label }}</span>
+<span style="flex:1;min-width:0;font-size:16px;font-weight:{{ r.fw }};color:{{ r.fg }};font-style:{{ r.fs }}">{{ r.dish }}</span>
+<sc-if value="{{ r.ing }}"><span style="height:26px;padding:0 9px;border-radius:13px;background:var(--tint);display:flex;align-items:center;font-size:12.5px;font-weight:600;white-space:nowrap">{{ r.ing }}</span></sc-if>
+</div>
+</sc-for>
+</div></div>
+</sc-for>
+<div style="display:flex;flex-direction:column;gap:8px;padding:6px 4px 0"><div style="display:flex;justify-content:space-between;font-size:14px"><span style="font-weight:600">11 de 21 comidas planeadas</span><span style="color:var(--muted)">52%</span></div><div style="height:8px;border-radius:4px;background:var(--tint);overflow:hidden"><div style="width:52%;height:100%;border-radius:4px;background:var(--accent)"></div></div></div>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navMas }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i><sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:{{ n.bb }};color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">{{ n.badge }}</span></sc-if></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+<!-- Niños -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.7 Niños</span>
+<div style="width:390px;min-height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="flex:none;display:flex;align-items:center;gap:6px;padding:0 12px 6px"><span style="width:44px;height:44px;display:grid;place-items:center;color:var(--accent)"><svg width="22" height="22" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M15 6l-6 6 6 6"></path></svg></span><span style="font-size:15px;font-weight:600;color:var(--accent)">Más</span></div>
+<div style="flex:1;padding:0 16px 24px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font:400 30px/1 var(--font-display)">Niños</span><span style="height:40px;padding:0 14px;border-radius:20px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;font-weight:600;font-size:14px">+ Agregar</span></div>
+<div style="display:flex;gap:6px;overflow:hidden"><sc-for list="{{ kidTypes }}" as="f" hint-placeholder-count="6"><span style="flex:none;height:36px;padding:0 14px;border-radius:18px;border:1px solid {{ f.bd }};background:{{ f.bg }};color:{{ f.fg }};display:flex;align-items:center;gap:6px;font-size:14px;font-weight:{{ f.fw }}"><sc-if value="{{ f.on }}"><svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></sc-if>{{ f.label }}</span></sc-for></div>
+<div style="display:flex;gap:6px"><sc-for list="{{ kids }}" as="f" hint-placeholder-count="3"><span style="flex:none;height:36px;padding:0 14px;border-radius:18px;border:1px solid {{ f.bd }};background:{{ f.bg }};color:{{ f.fg }};display:flex;align-items:center;gap:6px;font-size:14px;font-weight:{{ f.fw }}"><sc-if value="{{ f.on }}"><svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></sc-if>{{ f.label }}</span></sc-for></div>
+<sc-for list="{{ kidGroups }}" as="g" hint-placeholder-count="4">
+<div>
+<div style="display:flex;align-items:center;gap:8px;padding:0 4px 8px;color:{{ g.c }}"><sc-if value="{{ g.alert }}"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7.5v5.5M12 16.5h.01"></path></svg></sc-if><span style="font:400 22px var(--font-display)">{{ g.name }}</span><span style="font-size:13px;font-weight:700;color:var(--muted)">{{ g.n }}</span></div>
+<div style="background:{{ g.bg }};border:1px solid {{ g.bdr }};border-radius:18px;overflow:hidden">
+<sc-for list="{{ g.items }}" as="t">
+<div style="display:flex;gap:12px;padding:12px 14px;border-top:1px solid {{ t.bd }}">
+<span style="width:30px;height:30px;border-radius:50%;border:2px solid {{ t.boxBd }};background:{{ t.boxBg }};flex:none;display:grid;place-items:center;color:var(--accent-ink)"><sc-if value="{{ t.done }}"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></sc-if></span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px;padding-top:4px">
+<div style="font-size:16px;font-weight:600;line-height:1.3;color:{{ t.fg }};text-decoration:{{ t.deco }}">{{ t.title }}</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ t.chips }}" as="c"><span style="height:26px;padding:0 9px;border-radius:13px;display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:{{ c.fw }};background:{{ c.bg }};color:{{ c.fg }};border:1px {{ c.bs }} {{ c.bc }}"><sc-if value="{{ c.ic }}"><svg width="12" height="12" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ c.ic }}"></path></svg></sc-if>{{ c.label }}</span></sc-for></div>
+</div></div>
+</sc-for>
+</div></div>
+</sc-for>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navMas }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i><sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:{{ n.bb }};color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">{{ n.badge }}</span></sc-if></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+<!-- Fechas -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.8 Fechas importantes</span>
+<div style="width:390px;min-height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="flex:none;display:flex;align-items:center;gap:6px;padding:0 12px 6px"><span style="width:44px;height:44px;display:grid;place-items:center;color:var(--accent)"><svg width="22" height="22" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M15 6l-6 6 6 6"></path></svg></span><span style="font-size:15px;font-weight:600;color:var(--accent)">Más</span></div>
+<div style="flex:1;padding:0 16px 24px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font:400 30px/1 var(--font-display)">Fechas</span><span style="height:40px;padding:0 14px;border-radius:20px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;font-weight:600;font-size:14px">+ Agregar</span></div>
+<sc-for list="{{ dateGroups }}" as="g" hint-placeholder-count="3">
+<div>
+<div style="display:flex;align-items:center;gap:8px;padding:0 4px 8px;color:{{ g.c }}"><sc-if value="{{ g.alert }}"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7.5v5.5M12 16.5h.01"></path></svg></sc-if><span style="font:400 22px var(--font-display)">{{ g.name }}</span><span style="font-size:13px;font-weight:700;color:var(--muted)">{{ g.n }}</span></div>
+<div style="background:{{ g.bg }};border:1px solid {{ g.bdr }};border-radius:18px;overflow:hidden">
+<sc-for list="{{ g.items }}" as="f">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:64px;border-top:1px solid {{ f.bd }}">
+<div style="width:44px;flex:none;display:flex;flex-direction:column;align-items:center;line-height:1"><span style="font:400 22px/1 var(--font-display)">{{ f.dd }}</span><span style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px">{{ f.mm }}</span></div>
+<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{ f.title }}</div><div style="font-size:13px;color:var(--muted)">{{ f.sub }}</div></div>
+<span style="height:28px;padding:0 10px;border-radius:14px;background:{{ f.cbg }};color:{{ f.cfg }};display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;white-space:nowrap"><sc-if value="{{ f.ic }}"><svg width="13" height="13" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round"><path d="{{ f.ic }}"></path></svg></sc-if>{{ f.chip }}</span>
+</div>
+</sc-for>
+</div></div>
+</sc-for>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navMas }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i><sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:{{ n.bb }};color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">{{ n.badge }}</span></sc-if></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+<!-- Planes -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.9 Planes y citas</span>
+<div style="width:390px;min-height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="flex:none;display:flex;align-items:center;gap:6px;padding:0 12px 6px"><span style="width:44px;height:44px;display:grid;place-items:center;color:var(--accent)"><svg width="22" height="22" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M15 6l-6 6 6 6"></path></svg></span><span style="font-size:15px;font-weight:600;color:var(--accent)">Más</span></div>
+<div style="flex:1;padding:0 16px 24px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font:400 30px/1 var(--font-display)">Planes</span><span style="height:40px;padding:0 14px;border-radius:20px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;font-weight:600;font-size:14px">+ Agregar</span></div>
+<div style="display:flex;gap:6px;overflow:hidden"><sc-for list="{{ planTypes }}" as="f" hint-placeholder-count="6"><span style="flex:none;height:36px;padding:0 14px;border-radius:18px;border:1px solid {{ f.bd }};background:{{ f.bg }};color:{{ f.fg }};display:flex;align-items:center;gap:6px;font-size:14px;font-weight:{{ f.fw }}"><sc-if value="{{ f.on }}"><svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></sc-if>{{ f.label }}</span></sc-for></div>
+<div style="border-radius:22px;background:var(--sun-soft);padding:16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:10px"><span style="width:36px;height:36px;border-radius:50%;background:var(--sun);color:var(--sun-ink);display:grid;place-items:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"></path></svg></span><span style="font-size:15px;font-weight:600">Sorpréndeme con una idea</span></div>
+<div style="font:400 22px/1.2 var(--font-display)">¿Y si prueban la fonda nueva de Coyoacán?</div>
+<div style="font-size:13px;color:var(--muted)">Restaurantes · Idea guardada por Malu</div>
+<div style="display:flex;gap:8px"><span style="height:40px;padding:0 16px;border-radius:20px;background:var(--ink);color:var(--bg);display:flex;align-items:center;font-weight:600;font-size:14px">Planearlo</span><span style="height:40px;padding:0 16px;border-radius:20px;border:1.5px solid var(--ink);display:flex;align-items:center;font-weight:600;font-size:14px">Otra idea</span></div>
+</div>
+<sc-for list="{{ planGroups }}" as="g" hint-placeholder-count="3">
+<div>
+<div style="display:flex;align-items:baseline;gap:8px;padding:0 4px 8px"><span style="font:400 22px var(--font-display)">{{ g.name }}</span><span style="font-size:13px;font-weight:700;color:var(--muted)">{{ g.n }}</span></div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<sc-for list="{{ g.items }}" as="p">
+<div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-top:1px solid {{ p.bd }}">
+<div style="display:flex;align-items:flex-start;gap:10px"><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{ p.title }}</div><div style="font-size:13px;color:var(--muted)">{{ p.sub }}</div></div><span style="height:30px;padding:0 9px 0 11px;border-radius:15px;background:{{ g.pbg }};color:{{ g.pfg }};display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700;white-space:nowrap">{{ g.pill }}<svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9l6 6 6-6"></path></svg></span></div>
+<sc-if value="{{ p.link }}"><span style="align-self:flex-start;display:flex;align-items:center;gap:6px;min-height:32px;font-size:14px;font-weight:600;color:var(--accent)"><svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"></path></svg>Abrir enlace</span></sc-if>
+</div>
+</sc-for>
+</div></div>
+</sc-for>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navMas }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i><sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:{{ n.bb }};color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">{{ n.badge }}</span></sc-if></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+<!-- Notas / Contactos -->
+<sc-for list="{{ notesViews }}" as="v" hint-placeholder-count="2">
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">{{ v.caption }}</span>
+<div style="width:390px;min-height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="flex:none;display:flex;align-items:center;gap:6px;padding:0 12px 6px"><span style="width:44px;height:44px;display:grid;place-items:center;color:var(--accent)"><svg width="22" height="22" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M15 6l-6 6 6 6"></path></svg></span><span style="font-size:15px;font-weight:600;color:var(--accent)">Más</span></div>
+<div style="flex:1;padding:0 16px 24px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font:400 30px/1 var(--font-display)">{{ v.title }}</span><span style="height:40px;padding:0 14px;border-radius:20px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;font-weight:600;font-size:14px">+ Agregar</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:22px;background:var(--tint)"><span style="height:36px;border-radius:18px;background:{{ v.aBg }};box-shadow:0 0 0 1px {{ v.aBd }};display:grid;place-items:center;font-weight:{{ v.aFw }};font-size:15px;color:{{ v.aFg }}">Notas</span><span style="height:36px;border-radius:18px;background:{{ v.bBg }};box-shadow:0 0 0 1px {{ v.bBd }};display:grid;place-items:center;font-weight:{{ v.bFw }};font-size:15px;color:{{ v.bFg }}">Contactos</span></div>
+<span style="height:46px;border-radius:23px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 16px;font-size:16px;color:var(--muted)"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><path d="M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 1 0 0-13zM15.5 15.5 20 20"></path></svg>{{ v.search }}</span>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<sc-for list="{{ v.notes }}" as="n">
+<div style="display:flex;flex-direction:column;gap:3px;padding:12px 14px 14px;border-top:1px solid {{ n.bd }}"><div style="font-size:16px;font-weight:600">{{ n.title }}</div><div style="font-size:14px;line-height:1.4;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">{{ n.body }}</div><div style="font-size:12px;color:var(--muted);margin-top:4px">{{ n.meta }}</div></div>
+</sc-for>
+<sc-for list="{{ v.contacts }}" as="c">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 10px 10px 14px;min-height:70px;border-top:1px solid {{ c.bd }}">
+<span style="width:40px;height:40px;border-radius:50%;background:var(--tint);display:grid;place-items:center;font:400 17px var(--font-display);flex:none">{{ c.ini }}</span>
+<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{ c.name }}</div><div style="font-size:13px;color:var(--muted)">{{ c.job }}</div><div style="font-size:15px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums;margin-top:2px;user-select:all">{{ c.tel }}</div></div>
+<span style="height:40px;padding:0 12px;border-radius:20px;border:1.5px solid var(--line);display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600"><svg width="15" height="15" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M8 8h11v12H8zM5 16V4h11"></path></svg>Copiar</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navMas }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i><sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:{{ n.bb }};color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">{{ n.badge }}</span></sc-if></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+</sc-for>
+
+<!-- Revisión -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.11 Revisión de la semana</span>
+<div style="width:390px;min-height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 12px 6px"><span style="width:44px;height:44px;display:grid;place-items:center;color:var(--muted)"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><path d="M6 6l12 12M18 6L6 18"></path></svg></span><span style="font-size:13px;font-weight:600;color:var(--muted)">Domingo 18 oct</span><span style="width:44px"></span></div>
+<div style="flex:1;padding:0 16px 24px;display:flex;flex-direction:column;gap:18px">
+<div><div style="font:400 32px/1.08 var(--font-display)">Revisión de la semana</div><div style="font-size:15px;color:var(--muted);margin-top:6px">Unos 10 minutos. Vayan en orden.</div></div>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px"><sc-for list="{{ steps }}" as="s" hint-placeholder-count="5"><span style="height:6px;border-radius:3px;background:{{ s.c }}"></span></sc-for></div>
+<sc-for list="{{ review }}" as="r" hint-placeholder-count="5">
+<div style="display:flex;gap:12px">
+<span style="width:36px;height:36px;border-radius:50%;flex:none;background:{{ r.nbg }};color:{{ r.nfg }};border:1.5px solid {{ r.nbd }};display:grid;place-items:center;font:400 17px/1 var(--font-display)">{{ r.n }}</span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;padding-top:4px">
+<div style="font:400 21px/1.2 var(--font-display)">{{ r.title }}</div>
+<sc-if value="{{ r.note }}"><div style="font-size:14px;color:var(--muted)">{{ r.note }}</div></sc-if>
+<sc-if value="{{ r.hasRows }}"><div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<sc-for list="{{ r.rows }}" as="x">
+<div style="display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-top:1px solid {{ x.bd }}">
+<div style="display:flex;align-items:center;gap:10px"><span style="width:14px;flex:none;display:grid;place-items:center"><span style="{{ x.node }}"></span></span><div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600">{{ x.title }}</div><div style="font-size:13px;color:{{ x.mfg }}">{{ x.meta }}</div></div></div>
+<sc-if value="{{ x.actions }}"><div style="display:flex;gap:8px;padding-left:24px"><span style="height:36px;padding:0 14px;border-radius:18px;border:1.5px solid var(--accent);color:var(--accent);display:flex;align-items:center;font-weight:600;font-size:14px">Hecho</span><span style="height:36px;padding:0 14px;border-radius:18px;background:var(--tint);display:flex;align-items:center;font-weight:600;font-size:14px">+1 semana</span></div></sc-if>
+</div>
+</sc-for>
+</div></sc-if>
+<sc-if value="{{ r.cta }}"><span style="align-self:flex-start;height:40px;padding:0 16px;border-radius:20px;border:1.5px solid var(--accent);color:var(--accent);display:flex;align-items:center;font-weight:600;font-size:14px">{{ r.cta }}</span></sc-if>
+</div></div>
+</sc-for>
+<div style="height:54px;border-radius:27px;background:var(--sun);color:var(--sun-ink);display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:16px;margin-top:4px">Listo, hasta la próxima semana</div>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+<!-- Revisión cierre -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.11 Revisión · cierre</span>
+<div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="position:absolute;left:50%;top:150px;margin-left:-170px;width:340px;height:340px;border-radius:50%;background:var(--sun-soft)"></div>
+<div style="position:absolute;left:50%;top:230px;margin-left:-90px;width:180px;height:180px;border-radius:50%;background:var(--sun)"></div>
+<div style="position:relative;height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="position:relative;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 24px 48px;gap:14px;text-align:center">
+<div style="font:400 36px/1.1 var(--font-display)">Semana en orden</div>
+<div style="font-size:16px;line-height:1.45;color:var(--muted)">Resolvieron 2 pendientes atorados, planearon 6 comidas y dejaron el súper listo.</div>
+<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:6px 0 10px"><span style="height:30px;padding:0 12px;border-radius:15px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;font-size:13px;font-weight:600">Próxima revisión: dom 25 oct</span></div>
+<div style="height:52px;border-radius:26px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:600;font-size:16px">Volver a Inicio</div>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+</div></div></div>
+</sc-for>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const DARK = { '--bg': '#0C1914', '--surface': '#132620', '--tint': '#1A3128', '--ink': '#EEF2EA', '--muted': '#A7BAAF', '--line': '#263E33', '--accent': '#7FD3A8', '--accent-ink': '#0C1914', '--accent-soft': '#1D3D2F', '--sun': '#F5AE45', '--sun-ink': '#1A1205', '--sun-soft': '#3A2C12', '--warn': '#F0C066', '--warn-soft': '#352A12', '--danger': '#FF9C92', '--danger-soft': '#3B1C1A', '--info': '#9DBDF5', '--info-soft': '#1C2A44', '--ok': '#86D6A5', '--ok-soft': '#173826', '--focus': '#7FD3A8', '--person-a': '#82AEFF', '--person-a-soft': '#1C2B47', '--person-b': '#FF8F6E', '--person-b-soft': '#40221A', '--person-both': '#EEF2EA', '--scrim': 'rgba(0,0,0,.6)', '--elev-sheet': '0 -8px 32px rgba(0,0,0,.5)', '--elev-toast': '0 8px 24px rgba(0,0,0,.5)' };
+    const modes = [{ label: 'Claro', vars: {} }, { label: 'Oscuro', vars: DARK }];
+    const I = { inicio: 'M4 11 12 4l8 7v9h-5v-6H9v6H4z', cal: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4', pend: 'M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM8 12.5l3 3 5-6', list: 'M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01', mas: 'M5 12h.01M12 12h.01M19 12h.01' };
+    const navMas = [{ k: 'inicio', label: 'Inicio' }, { k: 'cal', label: 'Calendario' }, { k: 'pend', label: 'Pendientes', badge: '2', bb: 'var(--danger)' }, { k: 'list', label: 'Listas', badge: '11', bb: 'var(--ink)' }, { k: 'mas', label: 'Más' }].map(n => { const on = n.k === 'mas'; return { ...n, d: I[n.k], hasBadge: !!n.badge, c: on ? 'var(--accent)' : 'var(--muted)', line: on ? 'var(--accent)' : 'transparent', fw: on ? 700 : 500 }; });
+    const AB = 'linear-gradient(90deg,var(--person-a) 0 50%,var(--person-b) 50% 100%)';
+    const fill = w => w === 'both' ? AB : `var(--person-${w})`;
+    const SH = { evento: [12, 12, '50%'], pendiente: [12, 12, '3px'], fecha: [10, 10, '1.5px', 'rotate(45deg)'], ninos: [14, 12, '0', 'none', 'polygon(50% 0,100% 100%,0 100%)'], plan: [14, 14, '50%', 'none', 'none', 'radial-gradient(circle,transparent 3.5px,#000 4px)'], comida: [16, 8, '4px'] };
+    const node = (t, w) => { const s = SH[t]; return { display: 'block', width: s[0], height: s[1], borderRadius: s[2], transform: s[3] || 'none', clipPath: s[4] || 'none', WebkitMaskImage: s[5] || 'none', maskImage: s[5] || 'none', background: fill(w) }; };
+    const bd = arr => arr.map((x, i) => ({ ...x, bd: i ? 'var(--tint)' : 'transparent' }));
+    const IC = { alert: 'M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7.5v5.5M12 16.5h.01', clock: 'M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7v5l3 2', check: 'M5 12.5l4.5 4.5L19 7', cal: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4' };
+    const menu = bd([
+      { title: 'Comidas de la semana', sub: 'Desayuno, comida y cena', data: '11 de 21', d: 'M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 3c-2 0-3 3-3 6s1 4 3 4v8' },
+      { title: 'Niños', sub: 'Citas, vacunas, escuela y fiestas', data: '3 próximos', d: 'M12 4a3 3 0 1 0 0 6 3 3 0 1 0 0-6zM6 20v-2a6 6 0 0 1 12 0v2' },
+      { title: 'Fechas importantes', sub: 'Cumpleaños, aniversarios y vencimientos', data: '3 este mes', d: 'M12 3l2.6 5.6 6 .6-4.5 4 1.3 6L12 16.3 6.6 19.2l1.3-6-4.5-4 6-.6z' },
+      { title: 'Planes y citas', sub: 'Ideas para salir juntos', data: '3 ideas', d: 'M12 21s-7-4.5-7-11a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 6.5-7 11-7 11z' },
+      { title: 'Notas y contactos', sub: 'Claves, medidas y proveedores', data: '12', d: 'M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5' }
+    ]);
+    const M = (label, dish, ing) => ({ label, dish: dish || 'Sin planear', ing: ing ? ing + ' ingredientes' : '', fw: dish ? 600 : 400, fg: dish ? 'var(--ink)' : 'var(--muted)', fs: dish ? 'normal' : 'italic' });
+    const MD = [['Lunes 12', ['Chilaquiles', 4], ['Sopa de lentejas', 5], null], ['Martes 13', ['Huevos rancheros', 4], ['Tacos de pollo', 6], null], ['Miércoles 14', null, ['Pasta con jitomate', 4], ['Quesadillas', 3]], ['Jueves 15', ['Avena con fruta', 3], ['Pozole', 7], null], ['Viernes 16', null, ['Pescado empapelado', 5], ['Pizza en casa', 4]], ['Sábado 17', ['Hot cakes', 4], null, null], ['Domingo 18', null, null, null]];
+    const meals = MD.map(([day, a, b, c], i) => ({ day, today: !i, items: bd([M('Desayuno', ...(a || [])), M('Comida', ...(b || [])), M('Cena', ...(c || []))]) }));
+    const F = (labels, act) => labels.map((label, i) => { const on = i === act; return { label, on, bg: on ? 'var(--ink)' : 'var(--surface)', fg: on ? 'var(--bg)' : 'var(--ink)', bd: on ? 'var(--ink)' : 'var(--line)', fw: on ? 600 : 500 }; });
+    const kidTypes = F(['Todo', 'Cita médica', 'Vacuna', 'Actividad', 'Escuela', 'Fiesta o regalo'], 0);
+    const kids = F(['Los dos', 'Emilia', 'Santi'], 0);
+    const ch = (label, o) => ({ label, fw: 600, bg: 'var(--tint)', fg: 'var(--ink)', bs: 'solid', bc: 'transparent', ic: '', ...o });
+    const kid = n => ch(n, { bg: 'var(--surface)', bc: 'var(--line)' });
+    const K = (title, type, k, d, o) => ({ title, done: !!(o && o.done), chips: [ch(type), kid(k), d], boxBd: o && o.done ? 'var(--accent)' : 'var(--muted)', boxBg: o && o.done ? 'var(--accent)' : 'var(--surface)', fg: o && o.done ? 'var(--muted)' : 'var(--ink)', deco: o && o.done ? 'line-through' : 'none' });
+    const dt = l => ch(l, { ic: IC.cal });
+    const G = (name, items, alert) => ({ name, n: items.length, alert: !!alert, c: alert ? 'var(--danger)' : 'var(--ink)', bg: alert ? 'var(--danger-soft)' : 'var(--surface)', bdr: alert ? 'transparent' : 'var(--line)', items: bd(items) });
+    const kidGroups = [
+      G('Atrasados', [K('Comprar útiles escolares', 'Escuela', 'Santi', ch('Venció 10 oct', { bg: 'var(--surface)', fg: 'var(--danger)', fw: 700, ic: IC.alert }))], 1),
+      G('Próximos', [K('Vacuna refuerzo', 'Vacuna', 'Emilia', ch('Vie 16 oct', { bg: 'var(--warn-soft)', fg: 'var(--warn)', fw: 700, ic: IC.clock })), K('Revisión con el pediatra', 'Cita médica', 'Emilia', dt('22 oct')), K('Fiesta de Leo: comprar regalo', 'Fiesta o regalo', 'Santi', dt('25 oct'))]),
+      G('Sin fecha', [K('Inscribir a natación de invierno', 'Actividad', 'Santi', ch('Sin fecha', { bg: 'transparent', bs: 'dashed', bc: 'var(--muted)', fg: 'var(--muted)' }))]),
+      G('Hechos', [K('Junta de padres de familia', 'Escuela', 'Emilia', dt('5 oct'), { done: 1 })])
+    ];
+    const FD = (dd, mm, title, sub, chip, kind) => { const K2 = { late: ['danger-soft', 'danger', IC.alert], soon: ['warn-soft', 'warn', IC.clock], info: ['tint', 'ink', ''] }[kind]; return { dd, mm, title, sub, chip, cbg: `var(--${K2[0]})`, cfg: `var(--${K2[1]})`, ic: K2[2] }; };
+    const dateGroups = [
+      G('Vencidas', [FD('30', 'sep', 'Verificación del coche', 'Vencimiento', 'Hace 12 días', 'late')], 1),
+      G('Próximos 30 días', [FD('17', 'oct', 'Cumpleaños de Mamá', 'Cumpleaños · Cumple 64', 'En 5 días', 'soon'), FD('24', 'oct', 'Seguro del coche', 'Vencimiento · Renovar póliza', 'En 12 días', 'soon'), FD('7', 'nov', 'Aniversario', 'Aniversario · 9 años', 'En 26 días', 'info')]),
+      G('Más adelante', [FD('14', 'ene', 'Cumpleaños de Santi', 'Cumpleaños · Cumple 7', 'En 3 meses', 'info'), FD('3', 'mar', 'Pasaporte de Malu', 'Vencimiento', 'En 5 meses', 'info')])
+    ];
+    const planTypes = F(['Todo', 'Restaurantes', 'Fin de semana', 'Noche de pareja', 'Viajes', 'Otros'], 0);
+    const PG = (name, pill, bg, fg, items) => ({ name, pill, n: items.length, pbg: `var(--${bg})`, pfg: `var(--${fg})`, items: bd(items.map(([title, sub, link]) => ({ title, sub, link: !!link }))) });
+    const planGroups = [
+      PG('Planeado', 'Planeado', 'info-soft', 'info', [['Cena de aniversario', 'Noche de pareja · Roma Norte · Sáb 7 nov', 1], ['Fin de semana en Valle de Bravo', 'Viajes · 21 – 22 nov', 1]]),
+      PG('Idea', 'Idea', 'tint', 'ink', [['Probar un restaurante nuevo', 'Restaurantes · Coyoacán', 1], ['Picnic en Chapultepec', 'Fin de semana', 0], ['Clase de cocina juntos', 'Noche de pareja', 1]]),
+      PG('Hecho', 'Hecho', 'ok-soft', 'ok', [['Cine en la Cineteca', 'Otros · 27 sep', 0]])
+    ];
+    const seg = on => on ? { bg: 'var(--surface)', bd: 'var(--line)', fw: 600, fg: 'var(--ink)' } : { bg: 'transparent', bd: 'transparent', fw: 500, fg: 'var(--muted)' };
+    const sv = (a, b) => ({ aBg: a.bg, aBd: a.bd, aFw: a.fw, aFg: a.fg, bBg: b.bg, bBd: b.bd, bFw: b.fw, bFg: b.fg });
+    const notesViews = [
+      { caption: '7.10 Notas', title: 'Notas', search: 'Buscar notas', ...sv(seg(1), seg(0)), contacts: [], notes: bd([
+        { title: 'Clave del wifi', body: 'Red CasaOrden_5G. La clave está en la etiqueta del módem, atrás de la tele.', meta: 'Editada por Malu · 3 oct' },
+        { title: 'Medidas de la sala', body: 'Ventana grande 2.40 × 1.60 m. Pared de la tele 3.10 m. Para las persianas y el sillón nuevo.', meta: 'Editada por ti · 28 sep' },
+        { title: 'Tallas de los niños', body: 'Emilia: playera 8, pantalón 8, tenis 19. Santi: playera 6, pantalón 6, tenis 17.', meta: 'Editada por Malu · 20 sep' },
+        { title: 'Facturas del coche', body: 'Servicio de mayo y verificación en la carpeta azul del cajón del comedor.', meta: 'Editada por ti · 2 sep' }
+      ]) },
+      { caption: '7.10 Contactos', title: 'Contactos', search: 'Buscar por nombre u oficio', ...sv(seg(0), seg(1)), notes: [], contacts: bd([
+        { ini: 'P', name: 'Don Pedro', job: 'Plomero', tel: '55 1234 5678' },
+        { ini: 'R', name: 'Dra. Ramírez', job: 'Pediatra', tel: '55 8765 4321' },
+        { ini: 'J', name: 'Javier', job: 'Electricista', tel: '55 2468 1357' },
+        { ini: 'L', name: 'Sra. Lupita', job: 'Tintorería', tel: '55 1357 2468' }
+      ]) }
+    ];
+    const steps = [0, 1, 2, 3, 4].map(i => ({ c: i < 1 ? 'var(--sun)' : 'var(--line)' }));
+    const RX = (title, meta, t, w, o) => ({ title, meta, node: node(t, w), actions: !!(o && o.act), mfg: o && o.late ? 'var(--danger)' : 'var(--muted)' });
+    const R = (n, title, o) => ({ n, title, note: o.note || '', rows: bd(o.rows || []), hasRows: !!(o.rows && o.rows.length), cta: o.cta || '', nbg: n === 1 ? 'var(--sun)' : 'transparent', nfg: n === 1 ? 'var(--sun-ink)' : 'var(--ink)', nbd: n === 1 ? 'var(--sun)' : 'var(--line)' });
+    const review = [
+      R(1, 'Lo que se atoró', { rows: [RX('Cambiar foco del pasillo', 'Venció el 8 oct · Malu', 'pendiente', 'b', { act: 1, late: 1 }), RX('Comprar útiles escolares', 'Venció el 10 oct · Santi', 'ninos', 'a', { act: 1, late: 1 })] }),
+      R(2, 'Lo que viene', { rows: [RX('Junta de la escuela', 'Lun 19 · 8:30 · Ambos', 'evento', 'both'), RX('Pagar el agua', 'Mié 21 · Yo', 'pendiente', 'a'), RX('Revisión con el pediatra', 'Jue 22 · Malu', 'ninos', 'b')] }),
+      R(3, 'Comidas', { note: 'Hay 11 de 21 planeadas para la próxima semana.', cta: 'Planear comidas' }),
+      R(4, 'Súper', { note: 'Faltan 11 productos. 9 ingredientes de las comidas aún no están en la lista.', cta: 'Pasar ingredientes (9)' }),
+      R(5, 'Fechas del mes', { rows: [RX('Cumpleaños de Mamá', 'Sáb 17 oct · Cumple 64', 'fecha', 'both'), RX('Seguro del coche', 'Vence el sáb 24 oct', 'fecha', 'a')] })
+    ];
+    return { modes, navMas, menu, meals, kidTypes, kids, kidGroups, dateGroups, planTypes, planGroups, notesViews, steps, review };
+  }
+}
+</script>
+</body>
+</html>

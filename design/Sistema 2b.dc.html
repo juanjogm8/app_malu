@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&amp;family=Instrument+Sans:wght@400..700&amp;display=swap">
+<style>body{margin:0;background:#E4E8E4;-webkit-font-smoothing:antialiased}a{color:#1E6B4A}a:hover{color:#13251C}</style>
+</helmet>
+<div style="padding:40px 44px 60px;display:flex;flex-direction:column;gap:24px;font-family:'Instrument Sans',system-ui,sans-serif;color:#13251C">
+<div style="display:flex;flex-direction:column;gap:6px;max-width:900px">
+<div style="font:400 34px/1.1 'Young Serif',Georgia,serif">Casa en Orden · Sistema de diseño</div>
+<div style="font-size:14px;line-height:1.5;color:#4A5E54">Dirección 2b, Jardín de cempasúchil. Tokens y componentes con sus estados, en claro y oscuro. Los nombres de token coinciden con <b>tokens.css</b> y <b>tokens.json</b>. Pantallas: <a href="Pantallas 2b - Principales.dc.html">Principales</a> · <a href="Pantallas 2b - Organizacion.dc.html">Organización</a> · <a href="Pantallas 2b - Estados y tablet.dc.html">Estados y tablet</a>.</div>
+</div>
+<div style="display:flex;gap:32px;align-items:flex-start;--font-display:'Young Serif',Georgia,serif;--font-body:'Instrument Sans',system-ui,sans-serif;--bg:#F1F5F1;--surface:#FFFFFF;--tint:#E8EFE9;--ink:#13251C;--muted:#4A5E54;--line:#D4E0D7;--accent:#1E6B4A;--accent-ink:#FFFFFF;--accent-soft:#DCEEE3;--sun:#F2A23A;--sun-ink:#13251C;--sun-soft:#FCE2B0;--warn:#8A5300;--warn-soft:#FBEACB;--danger:#B3261E;--danger-soft:#FBE4E1;--info:#2C5DA8;--info-soft:#E0E9F7;--ok:#1F7046;--ok-soft:#DDF0E4;--focus:#1E6B4A;--person-a:#2B62C4;--person-a-soft:#E1EAFA;--person-b:#B8401F;--person-b-soft:#F8E2DA;--person-both:#13251C;--scrim:rgba(12,25,20,.45);--elev-sheet:0 -8px 32px rgba(19,37,28,.18);--elev-toast:0 8px 24px rgba(19,37,28,.22)">
+<sc-for list="{{ modes }}" as="m" hint-placeholder-count="2">
+<div style="{{ m.vars }}">
+<div style="width:860px;background:var(--bg);color:var(--ink);font-family:var(--font-body);border-radius:28px;padding:32px;display:flex;flex-direction:column;gap:36px;box-shadow:0 0 0 1px var(--line)">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 30px/1 var(--font-display)">{{ m.label }}</span><span style="font-size:13px;color:var(--muted)">{{ m.note }}</span></div>
+
+<!-- Color -->
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font:400 22px/1.2 var(--font-display)">Color</div>
+<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px">
+<sc-for list="{{ m.tokens }}" as="t" hint-placeholder-count="20"><div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden"><div style="height:40px;background:{{ t.sw }};border-bottom:1px solid var(--line)"></div><div style="padding:6px 8px 8px"><div style="font-size:12px;font-weight:700">{{ t.name }}</div><div style="font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums">{{ t.hex }}</div></div></div></sc-for>
+</div>
+<div style="font-size:13px;line-height:1.5;color:var(--muted);max-width:720px">Cempasúchil (<b style="color:var(--ink)">--sun</b>) se reserva para "hoy" y para el cierre de la revisión semanal. Nunca se usa para texto sobre fondo claro.</div>
+</div>
+
+<!-- Personas -->
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font:400 22px/1.2 var(--font-display)">Colores de persona</div>
+<div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px">
+<sc-for list="{{ m.pal }}" as="p" hint-placeholder-count="6"><div style="background:var(--surface);border:1px solid {{ p.bd }};border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:8px"><span style="width:22px;height:22px;border-radius:50%;background:{{ p.c }}"></span><span style="font-size:14px;font-weight:700">{{ p.name }}</span></div><div style="font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums">{{ p.c }} · {{ p.group }}</div><div style="display:flex;gap:6px"><span style="flex:1;height:28px;border-radius:14px;background:{{ p.soft }};color:{{ p.c }};display:grid;place-items:center;font-size:13px;font-weight:700">Malu</span></div><div style="font-size:13px;font-weight:700;color:{{ p.c }};background:var(--bg);border-radius:8px;padding:4px 8px">Sobre fondo</div><sc-if value="{{ p.def }}" hint-placeholder-val="{{ false }}"><div style="font-size:11px;font-weight:700;color:var(--accent)">{{ p.def }}</div></sc-if></div></sc-for>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;font-size:13px;color:var(--muted)">
+<span style="display:flex;align-items:center;gap:6px"><i style="width:12px;height:12px;border-radius:50%;background:var(--person-a)"></i>Juanjo (Yo)</span>
+<span style="display:flex;align-items:center;gap:6px"><i style="width:12px;height:12px;border-radius:50%;background:var(--person-b)"></i>Malu</span>
+<span style="display:flex;align-items:center;gap:6px"><i style="width:12px;height:12px;border-radius:50%;background:linear-gradient(90deg,var(--person-a) 0 50%,var(--person-b) 50% 100%)"></i>Ambos: punto partido</span>
+<span>Regla: una persona de grupo frío y otra de grupo cálido. Así se distinguen con deuteranopía (eje azul–amarillo).</span>
+</div>
+</div>
+
+<!-- Tipografía -->
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font:400 22px/1.2 var(--font-display)">Tipografía</div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px">
+<sc-for list="{{ type }}" as="t" hint-placeholder-count="11"><div style="display:grid;grid-template-columns:150px 210px 1fr;align-items:baseline;gap:16px;padding:12px 18px;border-top:1px solid var(--tint)"><span style="font-size:13px;font-weight:700">{{ t.name }}</span><span style="font-size:12px;color:var(--muted)">{{ t.spec }}</span><span style="{{ t.st }}">{{ t.sample }}</span></div></sc-for>
+</div>
+<div style="font-size:13px;color:var(--muted)">Cifras con <b style="color:var(--ink)">font-variant-numeric: tabular-nums</b> en horas, montos y conteos. Captura siempre de 16 px o más.</div>
+</div>
+
+<!-- Botones -->
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font:400 22px/1.2 var(--font-display)">Botones</div>
+<div style="display:grid;grid-template-columns:110px repeat(4,minmax(0,1fr));gap:12px 14px;align-items:center">
+<span></span><span style="font-size:12px;font-weight:700;color:var(--muted)">Normal</span><span style="font-size:12px;font-weight:700;color:var(--muted)">Presionado</span><span style="font-size:12px;font-weight:700;color:var(--muted)">Foco</span><span style="font-size:12px;font-weight:700;color:var(--muted)">Deshabilitado</span>
+<span style="font-size:13px;font-weight:700">Primario</span>
+<span style="height:48px;border-radius:24px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:600;font-size:15px">Guardar</span>
+<span style="height:48px;border-radius:24px;background:color-mix(in oklab,var(--accent) 80%,var(--ink));color:var(--accent-ink);display:grid;place-items:center;font-weight:600;font-size:15px;transform:scale(.98)">Guardar</span>
+<span style="height:48px;border-radius:24px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:600;font-size:15px;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--focus)">Guardar</span>
+<span style="height:48px;border-radius:24px;background:var(--tint);color:var(--muted);display:grid;place-items:center;font-weight:600;font-size:15px">Guardar</span>
+<span style="font-size:13px;font-weight:700">Secundario</span>
+<span style="height:48px;border-radius:24px;border:1.5px solid var(--accent);color:var(--accent);display:grid;place-items:center;font-weight:600;font-size:15px">Revisión</span>
+<span style="height:48px;border-radius:24px;border:1.5px solid var(--accent);background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:600;font-size:15px;transform:scale(.98)">Revisión</span>
+<span style="height:48px;border-radius:24px;border:1.5px solid var(--accent);color:var(--accent);display:grid;place-items:center;font-weight:600;font-size:15px;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--focus)">Revisión</span>
+<span style="height:48px;border-radius:24px;border:1.5px solid var(--line);color:var(--muted);display:grid;place-items:center;font-weight:600;font-size:15px">Revisión</span>
+<span style="font-size:13px;font-weight:700">Fantasma</span>
+<span style="height:48px;border-radius:24px;color:var(--accent);display:grid;place-items:center;font-weight:600;font-size:15px">Cancelar</span>
+<span style="height:48px;border-radius:24px;background:var(--tint);color:var(--accent);display:grid;place-items:center;font-weight:600;font-size:15px">Cancelar</span>
+<span style="height:48px;border-radius:24px;color:var(--accent);display:grid;place-items:center;font-weight:600;font-size:15px;box-shadow:0 0 0 2px var(--focus)">Cancelar</span>
+<span style="height:48px;border-radius:24px;color:var(--muted);display:grid;place-items:center;font-weight:600;font-size:15px;opacity:.6">Cancelar</span>
+<span style="font-size:13px;font-weight:700">Destructivo</span>
+<span style="height:48px;border-radius:24px;background:var(--danger-soft);color:var(--danger);display:grid;place-items:center;font-weight:600;font-size:15px">Eliminar</span>
+<span style="height:48px;border-radius:24px;background:var(--danger-soft);color:var(--danger);display:grid;place-items:center;font-weight:600;font-size:15px;box-shadow:inset 0 0 0 1.5px var(--danger);transform:scale(.98)">Eliminar</span>
+<span style="height:48px;border-radius:24px;background:var(--danger-soft);color:var(--danger);display:grid;place-items:center;font-weight:600;font-size:15px;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--focus)">Eliminar</span>
+<span style="height:48px;border-radius:24px;background:var(--tint);color:var(--muted);display:grid;place-items:center;font-weight:600;font-size:15px">Eliminar</span>
+<span style="font-size:13px;font-weight:700">Enlace</span>
+<span style="height:48px;display:grid;place-items:center;color:var(--accent);font-weight:600;font-size:15px;text-decoration:underline;text-underline-offset:3px">Limpiar comprados</span>
+<span style="height:48px;display:grid;place-items:center;color:var(--ink);font-weight:600;font-size:15px;text-decoration:underline;text-underline-offset:3px">Limpiar comprados</span>
+<span style="height:48px;display:grid;place-items:center"><span style="color:var(--accent);font-weight:600;font-size:15px;text-decoration:underline;text-underline-offset:3px;border-radius:6px;box-shadow:0 0 0 2px var(--focus);padding:2px 6px">Limpiar comprados</span></span>
+<span style="height:48px;display:grid;place-items:center;color:var(--muted);font-weight:600;font-size:15px;text-decoration:underline;text-underline-offset:3px;opacity:.6">Limpiar comprados</span>
+<span style="font-size:13px;font-weight:700">Chico / ícono</span>
+<span style="display:flex;gap:8px;align-items:center"><span style="height:36px;padding:0 14px;border-radius:18px;border:1.5px solid var(--accent);color:var(--accent);display:flex;align-items:center;font-weight:600;font-size:14px">Hecho</span><span style="width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M15 6l-6 6 6 6"></path></svg></span></span>
+<span style="display:flex;gap:8px;align-items:center"><span style="height:36px;padding:0 14px;border-radius:18px;border:1.5px solid var(--accent);background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;font-weight:600;font-size:14px">Hecho</span><span style="width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--tint);display:grid;place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M15 6l-6 6 6 6"></path></svg></span></span>
+<span style="display:flex;gap:8px;align-items:center"><span style="height:36px;padding:0 14px;border-radius:18px;border:1.5px solid var(--accent);color:var(--accent);display:flex;align-items:center;font-weight:600;font-size:14px;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--focus)">Hecho</span></span>
+<span style="display:flex;gap:8px;align-items:center"><span style="height:36px;padding:0 14px;border-radius:18px;border:1.5px solid var(--line);color:var(--muted);display:flex;align-items:center;font-weight:600;font-size:14px">Hecho</span></span>
+</div>
+<div style="font-size:13px;color:var(--muted)">Alto 48 px (chico 36 px con área táctil de 44 px). Foco: anillo de 2 px en --focus separado 3 px. Presionado: escala .98 en 120 ms.</div>
+</div>
+
+<!-- Campos -->
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font:400 22px/1.2 var(--font-display)">Campos</div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 14px">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600">Texto · normal</span><span style="height:50px;border-radius:16px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;padding:0 14px;font-size:16px;color:var(--muted)">¿Qué hay que hacer?</span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600">Texto · foco</span><span style="height:50px;border-radius:16px;border:2px solid var(--accent);box-shadow:0 0 0 4px var(--accent-soft);background:var(--surface);display:flex;align-items:center;padding:0 13px;font-size:16px">Pagar la luz<i style="width:1.5px;height:20px;background:var(--accent);margin-left:2px"></i></span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600">Texto · error</span><span style="height:50px;border-radius:16px;border:2px solid var(--danger);background:var(--surface);display:flex;align-items:center;padding:0 13px;font-size:16px;color:var(--muted)">Título</span><span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--danger)"><svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7.5v5.5M12 16.5h.01"></path></svg>Escribe qué hay que hacer</span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600;color:var(--muted)">Texto · deshabilitado</span><span style="height:50px;border-radius:16px;border:1px dashed var(--line);background:var(--tint);display:flex;align-items:center;padding:0 14px;font-size:16px;color:var(--muted)">Solo lectura</span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600">Fecha</span><span style="height:50px;border-radius:16px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:16px">Jue 15 oct<svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:var(--muted);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"></path></svg></span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600">Hora</span><span style="height:50px;border-radius:16px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:16px;font-variant-numeric:tabular-nums">20:00<svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:var(--muted);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7v5l3 2"></path></svg></span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600">Selector</span><span style="height:50px;border-radius:16px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:16px"><span style="display:flex;align-items:center;gap:8px"><i style="width:10px;height:10px;border-radius:50%;background:linear-gradient(90deg,var(--person-a) 0 50%,var(--person-b) 50% 100%)"></i>Ambos</span><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9l6 6 6-6"></path></svg></span></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600">Dinero</span><span style="height:50px;border-radius:16px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;gap:6px;padding:0 14px;font-size:16px;font-variant-numeric:tabular-nums"><span style="color:var(--muted)">$</span><span style="flex:1">1,250</span><span style="font-size:12px;font-weight:700;color:var(--muted)">MXN</span></span></label>
+<label style="display:flex;flex-direction:column;gap:6px;grid-column:span 2"><span style="font-size:13px;font-weight:600">Búsqueda</span><span style="height:46px;border-radius:23px;background:var(--tint);display:flex;align-items:center;gap:10px;padding:0 16px;font-size:16px;color:var(--muted)"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><path d="M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 1 0 0-13zM15.5 15.5 20 20"></path></svg>Buscar notas y contactos</span></label>
+<label style="display:flex;flex-direction:column;gap:6px;grid-column:span 2"><span style="font-size:13px;font-weight:600">Área de texto</span><span style="height:96px;border-radius:16px;border:1px solid var(--line);background:var(--surface);padding:12px 14px;font-size:16px;line-height:1.4;box-sizing:border-box">Ventana grande 2.40 × 1.60 m.<br>Pared de la tele 3.10 m.</span></label>
+</div>
+<div style="font-size:13px;color:var(--muted)">Teclado: fecha y hora abren el selector nativo; dinero usa <b style="color:var(--ink)">inputmode="decimal"</b>; teléfono <b style="color:var(--ink)">inputmode="tel"</b>. Etiqueta visible siempre arriba (no solo placeholder).</div>
+</div>
+
+<!-- Filas -->
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font:400 22px/1.2 var(--font-display)">Filas</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:700;color:var(--muted)">CON CASILLA · normal, presionada, marcada, foco</span>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:12px;min-height:54px;padding:0 14px"><span style="width:30px;height:30px;border-radius:50%;border:2px solid var(--muted);flex:none"></span><span style="flex:1;font-size:17px;font-weight:500">Aguacate</span><span style="width:24px;height:24px;border-radius:50%;background:var(--person-b);color:var(--bg);display:grid;place-items:center;font-size:11px;font-weight:700">M</span></div>
+<div style="display:flex;align-items:center;gap:12px;min-height:54px;padding:0 14px;border-top:1px solid var(--tint);background:var(--tint)"><span style="width:30px;height:30px;border-radius:50%;border:2px solid var(--accent);flex:none;box-shadow:0 0 0 5px var(--accent-soft);transform:scale(.92)"></span><span style="flex:1;font-size:17px;font-weight:500">Pechuga de pollo</span><span style="width:24px;height:24px;border-radius:50%;background:var(--person-b);color:var(--bg);display:grid;place-items:center;font-size:11px;font-weight:700">M</span></div>
+<div style="display:flex;align-items:center;gap:12px;min-height:54px;padding:0 14px;border-top:1px solid var(--tint)"><span style="width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--accent-ink);flex:none;display:grid;place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span><span style="flex:1;font-size:17px;font-weight:500;color:var(--muted);text-decoration:line-through">Jitomate 1 kg</span><span style="width:24px;height:24px;border-radius:50%;background:var(--person-a);color:var(--bg);display:grid;place-items:center;font-size:11px;font-weight:700">J</span></div>
+<div style="display:flex;align-items:center;gap:12px;min-height:54px;padding:0 14px;border-top:1px solid var(--tint)"><span style="width:30px;height:30px;border-radius:50%;border:2px solid var(--muted);flex:none;box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--focus)"></span><span style="flex:1;font-size:17px;font-weight:500">Queso Oaxaca</span></div>
+</div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;font-weight:700;color:var(--muted)">SIN CASILLA · mejoras, planes, fechas, notas</span>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:12px;min-height:62px;padding:8px 14px"><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">Pintar la sala</div><div style="font-size:13px;color:var(--muted)">Sala y comedor · $8,000</div></div><span style="height:30px;padding:0 10px 0 12px;border-radius:15px;background:var(--warn-soft);color:var(--warn);display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700">En proceso<svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9l6 6 6-6"></path></svg></span></div>
+<div style="display:flex;align-items:center;gap:12px;min-height:62px;padding:8px 14px;border-top:1px solid var(--tint)"><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">Cumpleaños de Mamá</div><div style="font-size:13px;color:var(--muted)">Sáb 17 oct · Cumple 64</div></div><span style="height:28px;padding:0 10px;border-radius:14px;background:var(--warn-soft);color:var(--warn);display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700"><svg width="13" height="13" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7v5l3 2"></path></svg>En 5 días</span></div>
+<div style="display:flex;flex-direction:column;gap:2px;padding:10px 14px 12px;border-top:1px solid var(--tint)"><div style="font-size:16px;font-weight:600">Clave del wifi</div><div style="font-size:14px;line-height:1.4;color:var(--muted)">Red CasaOrden_5G. La clave está en la etiqueta del módem, atrás de la tele.</div></div>
+</div></div>
+</div>
+</div>
+
+<!-- Chips -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="font:400 22px/1.2 var(--font-display)">Chips, píldoras y controles</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+<span style="height:28px;padding:0 10px;border-radius:14px;background:var(--tint);display:flex;align-items:center;font-size:13px;font-weight:600">4 ingredientes</span>
+<span style="height:28px;padding:0 10px;border-radius:14px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600"><i style="width:9px;height:9px;border-radius:50%;background:var(--person-a)"></i>Yo</span>
+<span style="height:28px;padding:0 10px;border-radius:14px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600"><i style="width:9px;height:9px;border-radius:50%;background:var(--person-b)"></i>Malu</span>
+<span style="height:28px;padding:0 10px;border-radius:14px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600"><i style="width:9px;height:9px;border-radius:50%;background:linear-gradient(90deg,var(--person-a) 0 50%,var(--person-b) 50% 100%)"></i>Ambos</span>
+<span style="height:28px;padding:0 10px;border-radius:14px;border:1px dashed var(--muted);display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--muted)">Sin asignar</span>
+<span style="height:28px;padding:0 10px;border-radius:14px;background:var(--danger-soft);color:var(--danger);display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700"><svg width="13" height="13" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.8;stroke-linecap:round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7.5v5.5M12 16.5h.01"></path></svg>Venció 8 oct</span>
+<span style="height:28px;padding:0 10px;border-radius:14px;background:var(--warn-soft);color:var(--warn);display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700"><svg width="13" height="13" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7v5l3 2"></path></svg>Hoy</span>
+<span style="height:28px;padding:0 10px;border-radius:14px;background:var(--ok-soft);color:var(--ok);display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700"><svg width="13" height="13" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Hecho el 3 sep</span>
+<span style="height:28px;padding:0 10px;border-radius:14px;background:var(--tint);display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600"><svg width="13" height="13" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4"></path></svg>Cada 2 meses</span>
+<span style="height:28px;padding:0 10px;border-radius:14px;border:1.5px solid var(--danger);color:var(--danger);display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700">↑ Prioridad alta</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+<span style="font-size:12px;font-weight:700;color:var(--muted);width:110px">Píldora selector</span>
+<sc-for list="{{ pills }}" as="p" hint-placeholder-count="10"><span style="height:30px;padding:0 9px 0 11px;border-radius:15px;background:{{ p.bg }};color:{{ p.fg }};display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700">{{ p.label }}<svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9l6 6 6-6"></path></svg></span></sc-for>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+<span style="font-size:12px;font-weight:700;color:var(--muted);width:110px">Filtro</span>
+<span style="height:36px;padding:0 14px 0 10px;border-radius:18px;background:var(--ink);color:var(--bg);display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600"><svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Todos</span>
+<span style="height:36px;padding:0 14px;border-radius:18px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;font-size:14px;font-weight:500">Míos</span>
+<span style="height:36px;padding:0 14px;border-radius:18px;border:1px solid var(--line);background:var(--tint);display:flex;align-items:center;font-size:14px;font-weight:500">De Malu · presionado</span>
+<span style="height:36px;padding:0 14px;border-radius:18px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;font-size:14px;font-weight:500;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--focus)">Rutinas · foco</span>
+<span style="height:36px;padding:0 14px;border-radius:18px;border:1px dashed var(--line);display:flex;align-items:center;font-size:14px;font-weight:500;color:var(--muted)">Deshabilitado</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">
+<span style="font-size:12px;font-weight:700;color:var(--muted);width:110px">Segmentado</span>
+<div style="width:300px;display:grid;grid-template-columns:repeat(3,1fr);padding:4px;border-radius:22px;background:var(--tint)"><span style="height:36px;border-radius:18px;background:var(--surface);display:grid;place-items:center;font-weight:600;font-size:15px;box-shadow:0 0 0 1px var(--line)">Súper · 11</span><span style="height:36px;display:grid;place-items:center;font-weight:500;font-size:15px;color:var(--muted)">Compras</span><span style="height:36px;display:grid;place-items:center;font-weight:500;font-size:15px;color:var(--muted)">Mejoras</span></div>
+<span style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)"><span style="width:40px;height:24px;border-radius:12px;background:var(--line);position:relative"><span style="position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:var(--surface)"></span></span>Interruptor apagado</span>
+<span style="display:flex;align-items:center;gap:8px;font-size:14px"><span style="width:40px;height:24px;border-radius:12px;background:var(--accent);position:relative"><span style="position:absolute;right:3px;top:3px;width:18px;height:18px;border-radius:50%;background:var(--accent-ink);display:grid;place-items:center"></span></span>Encendido</span>
+</div>
+</div>
+
+<!-- Calendario -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="font:400 22px/1.2 var(--font-display)">Calendario</div>
+<div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end">
+<sc-for list="{{ cells }}" as="c" hint-placeholder-count="6"><div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:50px;height:52px;display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--surface);border-radius:12px;padding-top:4px"><span style="width:34px;height:34px;border-radius:50%;background:{{ c.bg }};box-shadow:inset 0 0 0 {{ c.ring }};color:{{ c.fg }};display:grid;place-items:center;font:400 16px/1 var(--font-display)">{{ c.n }}</span><span style="display:flex;gap:2px;align-items:center;min-height:5px"><sc-for list="{{ c.dots }}" as="p"><i style="width:5px;height:5px;border-radius:50%;background:{{ p }}"></i></sc-for><sc-if value="{{ c.more }}"><b style="font-size:9px;line-height:5px;color:var(--muted)">{{ c.more }}</b></sc-if></span></div><span style="font-size:12px;color:var(--muted)">{{ c.label }}</span></div></sc-for>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:6px 0">
+<sc-for list="{{ shapes }}" as="e" hint-placeholder-count="6"><div style="display:flex;align-items:center;gap:12px;min-height:50px;padding:0 14px"><span style="width:46px;flex:none;font-size:14px;font-weight:600;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums">{{ e.time }}</span><span style="width:16px;display:grid;place-items:center;flex:none"><span style="{{ e.node }}"></span></span><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{ e.title }}</div><div style="font-size:13px;color:var(--muted)">{{ e.sub }}</div></div></div></sc-for>
+</div>
+<div style="font-size:13px;line-height:1.55;color:var(--muted);display:flex;flex-direction:column;gap:8px">
+<div><b style="color:var(--ink)">Entrada de calendario:</b> hora (46 px, alineada a la derecha) · marcador · título 16/600 · subtítulo "Tipo · Persona" 13 px.</div>
+<div><b style="color:var(--ink)">El color dice quién; la forma dice qué.</b> Evento círculo, pendiente cuadrado, fecha rombo, niños triángulo, plan anillo, comida píldora. El subtítulo repite el tipo en texto.</div>
+<div><b style="color:var(--ink)">Celda de mes:</b> número en círculo de 34 px. Hoy = relleno --sun. Seleccionado = anillo de 2 px en --ink. Hasta 4 puntos de persona de 5 px; desde el quinto, "+N". Otro mes: número en --muted, sin puntos.</div>
+</div>
+</div>
+</div>
+
+<!-- Feedback -->
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="font:400 22px/1.2 var(--font-display)">Avance, encabezados, avisos y estados</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:14px"><div style="width:64px;height:64px;flex:none;border-radius:50%;background:conic-gradient(var(--sun) 0 39%,var(--line) 39% 100%);display:grid;place-items:center"><span style="width:50px;height:50px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font:400 18px/1 var(--font-display)">7</span></div><div style="flex:1;display:flex;flex-direction:column;gap:6px"><span style="font-size:14px;color:var(--muted)">7 de 18 en el carrito</span><div style="height:8px;border-radius:4px;background:var(--tint);overflow:hidden"><div style="width:39%;height:100%;border-radius:4px;background:var(--accent)"></div></div><span style="font-size:12px;color:var(--muted)">Anillo (súper) o barra lineal (comidas, revisión)</span></div></div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:baseline;gap:8px"><span style="font:400 24px var(--font-display)">Esta semana</span><span style="font-size:13px;color:var(--muted)">2</span></div>
+<div style="display:flex;align-items:center;gap:8px;color:var(--danger)"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7.5v5.5M12 16.5h.01"></path></svg><span style="font:400 24px var(--font-display)">Atrasados</span><span style="font-size:13px;font-weight:700">1</span></div>
+</div>
+<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+<span style="min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--danger);color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">2</span>
+<span style="min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--ink);color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">11</span>
+<span style="width:24px;height:24px;border-radius:50%;background:var(--person-a);color:var(--bg);display:grid;place-items:center;font-size:11px;font-weight:700">J</span>
+<span style="width:32px;height:32px;border-radius:50%;background:var(--person-b);color:var(--bg);display:grid;place-items:center;font-size:14px;font-weight:700">M</span>
+<span style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--person-a);background:repeating-linear-gradient(45deg,var(--tint) 0 4px,var(--line) 4px 8px);display:grid;place-items:center;font:600 8px ui-monospace,monospace;color:var(--muted)">foto</span>
+<span style="font-size:12px;color:var(--muted)">Avatar con foto: anillo de 2 px del color de la persona</span>
+</div>
+<div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted)">
+<span style="display:flex;align-items:center;gap:5px"><i style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></i>En vivo</span>
+<span style="display:flex;align-items:center;gap:5px;color:var(--warn);font-weight:700"><svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round"><path d="M3 9a14 14 0 0 1 18 0M6.5 12.5a9 9 0 0 1 11 0M10 16a4 4 0 0 1 4 0M12 19.5h.01M4 4l16 16"></path></svg>Sin conexión</span>
+<span style="display:flex;align-items:center;gap:5px;color:var(--info);font-weight:700"><svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3"></path></svg>Solo lectura</span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="height:54px;border-radius:16px;background:var(--ink);color:var(--bg);display:flex;align-items:center;gap:12px;padding:0 8px 0 16px;box-shadow:var(--elev-toast)"><span style="flex:1;font-size:15px;font-weight:500">Eliminado</span><span style="height:40px;padding:0 14px;border-radius:12px;display:flex;align-items:center;font-weight:700;font-size:15px;color:var(--sun)">Deshacer</span></div>
+<div style="height:54px;border-radius:16px;background:var(--ink);color:var(--bg);display:flex;align-items:center;gap:12px;padding:0 8px 0 12px;box-shadow:var(--elev-toast)"><span style="width:26px;height:26px;border-radius:50%;background:var(--sun);color:var(--sun-ink);display:grid;place-items:center;flex:none"><svg width="15" height="15" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span><span style="flex:1;font-size:15px;font-weight:500">Listo. Próxima: 12 dic.</span><span style="height:40px;padding:0 14px;border-radius:12px;display:flex;align-items:center;font-weight:700;font-size:15px;color:var(--sun)">Deshacer</span></div>
+<div style="height:54px;border-radius:16px;background:var(--danger-soft);color:var(--danger);border:1.5px solid var(--danger);display:flex;align-items:center;gap:10px;padding:0 8px 0 14px"><svg width="18" height="18" viewBox="0 0 24 24" style="flex:none;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7.5v5.5M12 16.5h.01"></path></svg><span style="flex:1;font-size:15px;font-weight:600">No se pudo guardar</span><span style="height:40px;padding:0 14px;border-radius:12px;display:flex;align-items:center;font-weight:700;font-size:15px;text-decoration:underline;text-underline-offset:3px">Reintentar</span></div>
+<div style="border-radius:16px;background:var(--surface);border:1px solid var(--line);padding:12px 14px;display:flex;flex-direction:column;gap:10px"><span style="font-size:15px;font-weight:600">¿Quitar los 7 comprados de la lista?</span><span style="display:flex;gap:8px"><span style="height:40px;padding:0 16px;border-radius:20px;background:var(--danger-soft);color:var(--danger);display:flex;align-items:center;font-weight:600;font-size:14px">Sí, limpiar</span><span style="height:40px;padding:0 16px;border-radius:20px;color:var(--accent);display:flex;align-items:center;font-weight:600;font-size:14px">Cancelar</span></span></div>
+<div style="border-radius:18px;background:var(--surface);border:1px solid var(--line);padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><span style="width:52px;height:52px;border-radius:50%;background:var(--sun-soft);display:grid;place-items:center;color:var(--ink)"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"></path></svg></span><span style="font:400 20px var(--font-display)">La lista del súper está vacía</span><span style="font-size:14px;color:var(--muted)">Lo que agreguen aquí lo ven los dos al momento.</span><span style="height:40px;padding:0 16px;border-radius:20px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;font-weight:600;font-size:14px;margin-top:4px">Agregar lo básico</span></div>
+</div>
+</div>
+</div>
+
+<!-- Hoja -->
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font:400 22px/1.2 var(--font-display)">Hoja de captura</div>
+<div style="display:flex;gap:20px;align-items:flex-start">
+<div style="width:390px;flex:none;background:var(--surface);border-radius:26px 26px 0 0;box-shadow:var(--elev-sheet);padding:8px 16px 18px;display:flex;flex-direction:column;gap:12px">
+<span style="align-self:center;width:40px;height:5px;border-radius:3px;background:var(--line)"></span>
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font:400 22px var(--font-display)">Nuevo pendiente</span><span style="width:44px;height:44px;display:grid;place-items:center;color:var(--muted)"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><path d="M6 6l12 12M18 6L6 18"></path></svg></span></div>
+<span style="height:50px;border-radius:16px;border:2px solid var(--accent);box-shadow:0 0 0 4px var(--accent-soft);display:flex;align-items:center;padding:0 13px;font-size:16px">Pagar la luz</span>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><span style="height:50px;border-radius:16px;border:1px solid var(--line);display:flex;align-items:center;padding:0 14px;font-size:16px">Jue 15 oct</span><span style="height:50px;border-radius:16px;border:1px solid var(--line);display:flex;align-items:center;padding:0 14px;font-size:16px">Cada 2 meses</span></div>
+<div style="display:flex;gap:10px;padding-top:6px;border-top:1px solid var(--tint)"><span style="height:48px;padding:0 14px;border-radius:24px;color:var(--danger);display:flex;align-items:center;font-weight:600;font-size:15px">Eliminar</span><span style="flex:1"></span><span style="height:48px;padding:0 16px;border-radius:24px;color:var(--accent);display:flex;align-items:center;font-weight:600;font-size:15px">Cancelar</span><span style="height:48px;padding:0 22px;border-radius:24px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;font-weight:600;font-size:15px">Guardar</span></div>
+</div>
+<div style="font-size:13px;line-height:1.55;color:var(--muted);display:flex;flex-direction:column;gap:8px">
+<div>Radio superior 26 px, asa de 40 × 5 px, fondo --surface, sombra --elev-sheet sobre velo --scrim.</div>
+<div>Pie fijo: Eliminar (fantasma destructivo) a la izquierda, solo al editar; Cancelar y Guardar a la derecha.</div>
+<div>Con teclado abierto el pie sube encima del teclado (visualViewport); el contenido se desplaza, el pie no.</div>
+<div>En pantallas de 768 px o más se centra como diálogo de 560 px con radio de 26 px.</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const L = { bg: '#F1F5F1', surface: '#FFFFFF', tint: '#E8EFE9', ink: '#13251C', muted: '#4A5E54', line: '#D4E0D7', accent: '#1E6B4A', 'accent-ink': '#FFFFFF', 'accent-soft': '#DCEEE3', sun: '#F2A23A', 'sun-ink': '#13251C', 'sun-soft': '#FCE2B0', warn: '#8A5300', 'warn-soft': '#FBEACB', danger: '#B3261E', 'danger-soft': '#FBE4E1', info: '#2C5DA8', 'info-soft': '#E0E9F7', ok: '#1F7046', 'ok-soft': '#DDF0E4' };
+    const D = { bg: '#0C1914', surface: '#132620', tint: '#1A3128', ink: '#EEF2EA', muted: '#A7BAAF', line: '#263E33', accent: '#7FD3A8', 'accent-ink': '#0C1914', 'accent-soft': '#1D3D2F', sun: '#F5AE45', 'sun-ink': '#1A1205', 'sun-soft': '#3A2C12', warn: '#F0C066', 'warn-soft': '#352A12', danger: '#FF9C92', 'danger-soft': '#3B1C1A', info: '#9DBDF5', 'info-soft': '#1C2A44', ok: '#86D6A5', 'ok-soft': '#173826' };
+    const PD = { 'person-a': '#82AEFF', 'person-a-soft': '#1C2B47', 'person-b': '#FF8F6E', 'person-b-soft': '#40221A', 'person-both': '#EEF2EA', focus: '#7FD3A8', scrim: 'rgba(0,0,0,.6)', 'elev-sheet': '0 -8px 32px rgba(0,0,0,.5)', 'elev-toast': '0 8px 24px rgba(0,0,0,.5)' };
+    const dvars = {}; Object.entries({ ...D, ...PD }).forEach(([k, v]) => dvars['--' + k] = v);
+    const toks = o => Object.entries(o).map(([k, v]) => ({ name: '--' + k, hex: v, sw: 'var(--' + k + ')' }));
+    const PAL = [['Azul', 'frío', '#2B62C4', '#E1EAFA', '#82AEFF', '#1C2B47', 'Persona A por defecto'], ['Ciruela', 'frío', '#7A3A9E', '#EFE2F6', '#D3A2F2', '#2E1F3A'], ['Jade', 'frío', '#0E7368', '#D8EFEC', '#5FD3C3', '#123532'], ['Teja', 'cálido', '#B8401F', '#F8E2DA', '#FF8F6E', '#40221A', 'Persona B por defecto'], ['Ocre', 'cálido', '#8A5D00', '#F6E8C6', '#EBC35C', '#352A10'], ['Rosa', 'cálido', '#B0306A', '#F8DEEA', '#FF8DBC', '#42192B']];
+    const pal = dark => PAL.map(p => ({ name: p[0], group: p[1], c: dark ? p[4] : p[2], soft: dark ? p[5] : p[3], def: p[6] || '', bd: p[6] ? 'var(--accent)' : 'var(--line)' }));
+    const modes = [
+      { label: 'Claro', note: 'Modo por defecto de día', vars: {}, tokens: toks(L), pal: pal(false) },
+      { label: 'Oscuro', note: 'Verde noche: las superficies se aclaran al subir', vars: dvars, tokens: toks(D), pal: pal(true) }
+    ];
+    const ds = 'font-family:var(--font-display);font-weight:400;';
+    const T = (name, spec, st, sample) => ({ name, spec, st, sample });
+    const type = [
+      T('Display XL', 'Young Serif 38/40', { fontFamily: 'var(--font-display)', fontSize: 38, lineHeight: '40px' }, 'Hola, Juanjo'),
+      T('Display L', 'Young Serif 30/34', { fontFamily: 'var(--font-display)', fontSize: 30, lineHeight: '34px' }, 'Octubre'),
+      T('Display M', 'Young Serif 24/28', { fontFamily: 'var(--font-display)', fontSize: 24, lineHeight: '28px' }, 'Próximos 7 días'),
+      T('Display S', 'Young Serif 20/24', { fontFamily: 'var(--font-display)', fontSize: 20, lineHeight: '24px' }, 'Lunes 12 de octubre'),
+      T('Producto', 'Instrument Sans 17/22 · 500', { fontSize: 17, fontWeight: 500 }, 'Tortillas de maíz'),
+      T('Título de fila', 'Instrument Sans 16/22 · 600', { fontSize: 16, fontWeight: 600 }, 'Junta de la escuela'),
+      T('Cuerpo', 'Instrument Sans 16/22 · 400', { fontSize: 16 }, 'Red CasaOrden_5G, la clave está atrás del módem.'),
+      T('Pequeño', 'Instrument Sans 14/20 · 400–600', { fontSize: 14 }, '7 de 18 en el carrito'),
+      T('Meta', 'Instrument Sans 13/18 · --muted', { fontSize: 13, color: 'var(--muted)' }, 'Evento · Yo'),
+      T('Eyebrow', '12/16 · 700 · +0.08em · MAYÚS', { fontSize: 12, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' }, 'Atrasado'),
+      T('Navegación', '11/14 · 500, activo 700', { fontSize: 11, fontWeight: 700, color: 'var(--accent)' }, 'Calendario')
+    ];
+    const P = (label, bg, fg) => ({ label, bg: `var(--${bg})`, fg: `var(--${fg})` });
+    const pills = [P('Alta', 'danger-soft', 'danger'), P('Media', 'warn-soft', 'warn'), P('Baja', 'tint', 'muted'), P('Idea', 'tint', 'ink'), P('Planeado', 'info-soft', 'info'), P('En proceso', 'warn-soft', 'warn'), P('Listo', 'ok-soft', 'ok'), P('Hecho', 'ok-soft', 'ok')];
+    const A = 'var(--person-a)', B = 'var(--person-b)', AB = 'linear-gradient(90deg,var(--person-a) 0 50%,var(--person-b) 50% 100%)';
+    const C = (label, n, bg, fg, ring, dots, more) => ({ label, n, bg, fg, ring, dots, more: more || '' });
+    const cells = [C('Normal', 9, 'transparent', 'var(--ink)', '0 transparent', [A, B]), C('Hoy', 12, 'var(--sun)', 'var(--sun-ink)', '0 transparent', [AB, B]), C('Seleccionado', 15, 'transparent', 'var(--ink)', '2px var(--ink)', [AB]), C('Hoy + selec.', 12, 'var(--sun)', 'var(--sun-ink)', '2px var(--ink)', [A]), C('Otro mes', 29, 'transparent', 'var(--muted)', '0 transparent', []), C('Más de 4', 24, 'transparent', 'var(--ink)', '0 transparent', [AB, A, B, B], '+1')];
+    const fill = w => w === 'both' ? AB : `var(--person-${w})`;
+    const SH = { evento: [12, 12, '50%'], pendiente: [12, 12, '3px'], fecha: [10, 10, '1.5px', 'rotate(45deg)'], ninos: [14, 12, '0', 'none', 'polygon(50% 0,100% 100%,0 100%)'], plan: [14, 14, '50%', 'none', 'none', 'radial-gradient(circle,transparent 3.5px,#000 4px)'], comida: [16, 8, '4px'] };
+    const node = (t, w) => { const s = SH[t]; return { display: 'block', width: s[0], height: s[1], borderRadius: s[2], transform: s[3] || 'none', clipPath: s[4] || 'none', WebkitMaskImage: s[5] || 'none', maskImage: s[5] || 'none', background: fill(w) }; };
+    const shapes = [['8:30', 'Junta de la escuela', 'Evento · Ambos', 'evento', 'both'], ['Día', 'Revisar colegiatura', 'Pendiente · Malu', 'pendiente', 'b'], ['Día', 'Cumpleaños de Mamá', 'Fecha · Ambos', 'fecha', 'both'], ['17:00', 'Clase de natación', 'Niños · Yo', 'ninos', 'a'], ['20:00', 'Cena con amigos', 'Plan · Ambos', 'plan', 'both'], ['14:30', 'Sopa de lentejas', 'Comida · Malu', 'comida', 'b']].map(r => ({ time: r[0], title: r[1], sub: r[2], node: node(r[3], r[4]) }));
+    return { modes, type, pills, cells, shapes };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,27 +1,36 @@
 @import 'tailwindcss';
 @import './tokens.css';
 
-/* Tailwind usa las variables de los tokens: bg-surface, text-muted, border-border, etc. */
+/* Tailwind usa las variables de los tokens: bg-surface, text-muted, border-line, etc. */
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-text: var(--text);
-  --color-muted: var(--text-muted);
-  --color-border: var(--border);
+  --color-tint: var(--tint);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
   --color-accent: var(--accent);
-  --color-accent-contrast: var(--accent-contrast);
-  --color-danger: var(--danger);
-  --color-ok: var(--ok);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-sun: var(--sun);
+  --color-sun-ink: var(--sun-ink);
+  --color-sun-soft: var(--sun-soft);
   --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
   --color-person-a: var(--person-a);
   --color-person-b: var(--person-b);
-  --font-sans: var(--font-sans);
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius);
-  --radius-lg: var(--radius-lg);
+  --color-scrim: var(--scrim);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-body);
+  --shadow-sheet: var(--elev-sheet);
+  --shadow-toast: var(--elev-toast);
   --spacing-tap: var(--tap);
-  --shadow-card: var(--shadow);
 }
 
 html,
@@ -33,15 +42,97 @@ body,
 body {
   margin: 0;
   background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-sans);
+  color: var(--ink);
+  font: var(--text-body);
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 }
 
+input,
+select,
+textarea,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* Foco de teclado: anillo de 2 px en --focus separado 3 px (Sistema 2b). */
 :focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow:
+    0 0 0 3px var(--bg),
+    0 0 0 5px var(--focus);
+}
+
+@layer components {
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  .eyebrow {
+    font: var(--text-eyebrow);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  /* "Ambos": punto partido A | B */
+  .both-fill {
+    background: linear-gradient(90deg, var(--person-a) 0 50%, var(--person-b) 50% 100%);
+  }
+  /* Presionar: escala .98 en 120 ms */
+  .press {
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast);
+  }
+  .press:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+  /* Campo de texto (Sistema 2b · Campos) */
+  .field {
+    height: 50px;
+    width: 100%;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 0 14px;
+    font-size: 16px;
+    outline: none;
+  }
+  .field::placeholder {
+    color: var(--muted);
+  }
+  .field:focus {
+    border: 2px solid var(--accent);
+    padding: 0 13px;
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  .field[aria-invalid='true'] {
+    border: 2px solid var(--danger);
+    padding: 0 13px;
+  }
+  textarea.field {
+    height: auto;
+    min-height: 76px;
+    padding: 12px 14px;
+    line-height: 1.4;
+    resize: vertical;
+  }
+  textarea.field:focus,
+  textarea.field[aria-invalid='true'] {
+    padding: 11px 13px;
+  }
+  .skeleton {
+    background: var(--tint);
+    animation: pulso 1.2s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes pulso {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.55;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -49,6 +140,7 @@ body {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }

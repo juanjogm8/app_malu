@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&amp;family=Instrument+Sans:wght@400..700&amp;display=swap">
+<style>body{margin:0;background:#E4E8E4;-webkit-font-smoothing:antialiased}a{color:#1E6B4A}a:hover{color:#13251C}</style>
+</helmet>
+<div style="padding:40px 44px 60px;display:flex;flex-direction:column;gap:24px;font-family:'Instrument Sans',system-ui,sans-serif;color:#13251C">
+<div style="display:flex;flex-direction:column;gap:6px;max-width:900px">
+<div style="font:400 34px/1.1 'Young Serif',Georgia,serif">Pantallas principales · 390 px</div>
+<div style="font-size:14px;line-height:1.5;color:#4A5E54">Inicio, Calendario, Pendientes y Listas. Las pantallas largas se muestran completas (con scroll); Pendientes y Súper se muestran a 844 px para ver los elementos fijos. Ver también <a href="Sistema 2b.dc.html">Sistema</a> · <a href="Pantallas 2b - Organizacion.dc.html">Organización</a> · <a href="Pantallas 2b - Estados y tablet.dc.html">Estados y tablet</a>.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:32px;--font-display:'Young Serif',Georgia,serif;--font-body:'Instrument Sans',system-ui,sans-serif;--bg:#F1F5F1;--surface:#FFFFFF;--tint:#E8EFE9;--ink:#13251C;--muted:#4A5E54;--line:#D4E0D7;--accent:#1E6B4A;--accent-ink:#FFFFFF;--accent-soft:#DCEEE3;--sun:#F2A23A;--sun-ink:#13251C;--sun-soft:#FCE2B0;--warn:#8A5300;--warn-soft:#FBEACB;--danger:#B3261E;--danger-soft:#FBE4E1;--info:#2C5DA8;--info-soft:#E0E9F7;--ok:#1F7046;--ok-soft:#DDF0E4;--focus:#1E6B4A;--person-a:#2B62C4;--person-a-soft:#E1EAFA;--person-b:#B8401F;--person-b-soft:#F8E2DA;--person-both:#13251C;--scrim:rgba(12,25,20,.45);--elev-sheet:0 -8px 32px rgba(19,37,28,.18);--elev-toast:0 8px 24px rgba(19,37,28,.22)">
+<sc-for list="{{ modes }}" as="m" hint-placeholder-count="2">
+<div style="{{ m.vars }}">
+<div style="width:max-content;background:var(--bg);color:var(--ink);font-family:var(--font-body);border-radius:28px;padding:28px;display:flex;flex-direction:column;gap:18px;box-shadow:0 0 0 1px var(--line)">
+<span style="font:400 28px/1 var(--font-display)">{{ m.label }}</span>
+<div style="display:flex;gap:28px;align-items:flex-start">
+
+<!-- Inicio -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.1 Inicio</span>
+<div style="width:390px;min-height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="position:absolute;top:-70px;right:-60px;width:230px;height:230px;border-radius:50%;background:var(--sun-soft)"></div>
+<div style="position:relative;height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="position:relative;flex:none;display:flex;align-items:center;justify-content:space-between;padding:2px 18px 8px"><span style="font:400 17px/1 var(--font-display)">Casa en Orden</span><span style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);white-space:nowrap"><span style="display:flex;align-items:center;gap:5px"><i style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></i>En vivo</span><span style="width:32px;height:32px;border-radius:50%;background:var(--person-a);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:14px">J</span></span></div>
+<div style="position:relative;flex:1;padding:10px 16px 24px;display:flex;flex-direction:column;gap:18px">
+<div><div style="font:400 38px/1.05 var(--font-display);letter-spacing:-.01em">Hola, Juanjo</div><div style="font-size:15px;color:var(--muted);margin-top:6px">Lunes 12 de octubre</div></div>
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px">
+<sc-for list="{{ week }}" as="w" hint-placeholder-count="7"><div style="display:flex;flex-direction:column;align-items:center;gap:5px"><span style="font-size:11px;font-weight:600;color:var(--muted)">{{ w.d }}</span><span style="width:40px;height:40px;border-radius:50%;background:{{ w.bg }};border:1.5px solid {{ w.bd }};color:{{ w.fg }};display:grid;place-items:center;font:400 17px/1 var(--font-display)">{{ w.n }}</span><span style="display:flex;gap:2px;min-height:5px"><sc-for list="{{ w.dots }}" as="p"><i style="width:5px;height:5px;border-radius:50%;background:{{ p }}"></i></sc-for></span></div></sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<sc-for list="{{ shortcuts }}" as="s" hint-placeholder-count="3"><div style="min-height:52px;padding:0 14px;border-left:1px solid {{ s.bd }};display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;font-weight:600">{{ s.label }}</span><span style="font:400 22px/1 var(--font-display);color:var(--accent)">{{ s.n }}</span></div></sc-for>
+</div>
+<div style="height:48px;border-radius:24px;border:1.5px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M4 12a8 8 0 1 0 2.3-5.7M4 4v4h4"></path></svg>Hacer la revisión de la semana</div>
+<div>
+<div style="display:flex;align-items:baseline;gap:8px;padding:0 4px 8px"><span style="font:400 24px var(--font-display)">Hoy</span><span style="font-size:13px;color:var(--muted)">4</span></div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<sc-for list="{{ today }}" as="e" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:12px;padding:6px 14px;min-height:56px;border-top:1px solid {{ e.bd }}">
+<span style="width:42px;flex:none;font-size:14px;font-weight:600;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums">{{ e.time }}</span>
+<span style="width:16px;flex:none;display:grid;place-items:center"><span style="{{ e.node }}"></span></span>
+<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{ e.title }}</div><div style="font-size:13px;color:var(--muted)">{{ e.sub }}</div></div>
+<sc-if value="{{ e.task }}" hint-placeholder-val="{{ false }}"><span style="height:36px;padding:0 14px;border-radius:18px;border:1.5px solid var(--accent);color:var(--accent);display:flex;align-items:center;font-weight:600;font-size:14px">Hecho</span></sc-if>
+</div>
+</sc-for>
+</div></div>
+<div>
+<div style="display:flex;align-items:center;gap:8px;padding:0 4px 8px;color:var(--danger)"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7.5v5.5M12 16.5h.01"></path></svg><span style="font:400 24px var(--font-display)">Atrasados</span><span style="font-size:13px;font-weight:700">1</span></div>
+<div style="background:var(--danger-soft);border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:12px">
+<span style="width:16px;flex:none;display:grid;place-items:center"><span style="{{ lateNode }}"></span></span>
+<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">Cambiar foco del pasillo</div><div style="font-size:13px;font-weight:600;color:var(--danger)">Venció el 8 oct · Malu</div></div>
+<span style="height:36px;padding:0 14px;border-radius:18px;background:var(--surface);color:var(--accent);display:flex;align-items:center;font-weight:600;font-size:14px">Hecho</span>
+</div></div>
+<div>
+<div style="padding:0 4px 8px;font:400 24px var(--font-display)">Próximos 7 días</div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<sc-for list="{{ upcoming }}" as="g" hint-placeholder-count="3">
+<div style="padding:12px 14px 2px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-top:1px solid {{ g.bd }}">{{ g.day }}</div>
+<sc-for list="{{ g.items }}" as="e">
+<div style="display:flex;align-items:center;gap:12px;padding:4px 14px 8px;min-height:48px">
+<span style="width:42px;flex:none;font-size:14px;font-weight:600;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums">{{ e.time }}</span>
+<span style="width:16px;flex:none;display:grid;place-items:center"><span style="{{ e.node }}"></span></span>
+<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{ e.title }}</div><div style="font-size:13px;color:var(--muted)">{{ e.sub }}</div></div>
+</div>
+</sc-for>
+</sc-for>
+</div></div>
+<div>
+<div style="padding:0 4px 8px;font:400 24px var(--font-display)">Fechas que se acercan</div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<sc-for list="{{ dates }}" as="f" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:58px;border-top:1px solid {{ f.bd }}">
+<span style="width:16px;flex:none;display:grid;place-items:center"><span style="{{ f.node }}"></span></span>
+<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{ f.title }}</div><div style="font-size:13px;color:var(--muted)">{{ f.sub }}</div></div>
+<span style="height:28px;padding:0 10px;border-radius:14px;background:{{ f.cbg }};color:{{ f.cfg }};display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;white-space:nowrap"><svg width="13" height="13" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7v5l3 2"></path></svg>{{ f.chip }}</span>
+</div>
+</sc-for>
+</div></div>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navInicio }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i><sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:{{ n.bb }};color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">{{ n.badge }}</span></sc-if></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+<!-- Inicio vacío -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.1 Inicio · primer uso</span>
+<div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="position:absolute;top:-70px;right:-60px;width:230px;height:230px;border-radius:50%;background:var(--sun-soft)"></div>
+<div style="position:relative;height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="position:relative;flex:none;display:flex;align-items:center;justify-content:space-between;padding:2px 18px 8px"><span style="font:400 17px/1 var(--font-display)">Casa en Orden</span><span style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);white-space:nowrap"><span style="display:flex;align-items:center;gap:5px"><i style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></i>En vivo</span><span style="width:32px;height:32px;border-radius:50%;background:var(--person-a);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:14px">J</span></span></div>
+<div style="position:relative;flex:1;padding:10px 16px 24px;display:flex;flex-direction:column;gap:22px">
+<div><div style="font:400 38px/1.05 var(--font-display);letter-spacing:-.01em">Hola, Juanjo</div><div style="font-size:15px;color:var(--muted);margin-top:6px">Lunes 12 de octubre</div></div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px 18px 10px;display:flex;flex-direction:column;gap:6px">
+<span style="width:52px;height:52px;border-radius:50%;background:var(--sun);margin-bottom:8px"></span>
+<span style="font:400 26px/1.15 var(--font-display)">Empiecen por aquí</span>
+<span style="font-size:15px;line-height:1.45;color:var(--muted);margin-bottom:8px">Lo que agregue uno, el otro lo ve al momento.</span>
+<sc-for list="{{ starters }}" as="s" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:14px;min-height:60px;border-top:1px solid var(--tint)">
+<span style="width:40px;height:40px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:none"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="{{ s.d }}"></path></svg></span>
+<div style="flex:1"><div style="font-size:16px;font-weight:600">{{ s.title }}</div><div style="font-size:13px;color:var(--muted)">{{ s.sub }}</div></div>
+<svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M9 6l6 6-6 6"></path></svg>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navInicioVacio }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+<!-- Calendario Mes -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.2 Calendario · Mes</span>
+<div style="width:390px;min-height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="flex:none;display:flex;align-items:center;justify-content:space-between;padding:2px 18px 8px"><span style="font:400 17px/1 var(--font-display)">Casa en Orden</span><span style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);white-space:nowrap"><span style="display:flex;align-items:center;gap:5px"><i style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></i>En vivo</span><span style="width:32px;height:32px;border-radius:50%;background:var(--person-a);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:14px">J</span></span></div>
+<div style="flex:1;padding:6px 16px 24px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:6px">
+<div style="flex:1;display:flex;align-items:baseline;gap:8px"><span style="font:400 30px/1 var(--font-display)">Octubre</span><span style="font-size:16px;color:var(--muted)">2026</span></div>
+<span style="width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M15 6l-6 6 6 6"></path></svg></span>
+<span style="width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M9 6l6 6-6 6"></path></svg></span>
+<span style="height:44px;padding:0 14px;border-radius:22px;border:1.5px solid var(--accent);color:var(--accent);display:flex;align-items:center;font-weight:600;font-size:14px">Hoy</span>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:22px;background:var(--tint)"><span style="height:36px;border-radius:18px;background:var(--surface);display:grid;place-items:center;font-weight:600;font-size:15px;box-shadow:0 0 0 1px var(--line)">Mes</span><span style="height:36px;display:grid;place-items:center;font-weight:500;font-size:15px;color:var(--muted)">Semana</span></div>
+<div style="display:flex;gap:6px;overflow:hidden">
+<sc-for list="{{ layers }}" as="l" hint-placeholder-count="6"><div style="flex:none;height:34px;padding:0 12px 0 10px;border-radius:17px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;border:1px solid {{ l.bd }};background:{{ l.bg }};color:{{ l.fg }}"><span style="width:14px;display:grid;place-items:center"><span style="{{ l.node }}"></span></span>{{ l.label }}</div></sc-for>
+</div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:10px 6px 6px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));row-gap:2px">
+<sc-for list="{{ wk }}" as="d" hint-placeholder-count="7"><div style="height:22px;display:grid;place-items:center;font-size:12px;font-weight:600;color:var(--muted)">{{ d }}</div></sc-for>
+<sc-for list="{{ cal }}" as="c" hint-placeholder-count="35"><div style="height:52px;display:flex;flex-direction:column;align-items:center;gap:3px"><span style="width:34px;height:34px;border-radius:50%;background:{{ c.bg }};box-shadow:inset 0 0 0 {{ c.ring }};color:{{ c.fg }};display:grid;place-items:center;font:400 16px/1 var(--font-display)">{{ c.num }}</span><span style="display:flex;gap:2px;align-items:center;min-height:5px"><sc-for list="{{ c.dots }}" as="p"><i style="width:5px;height:5px;border-radius:50%;background:{{ p }}"></i></sc-for><sc-if value="{{ c.more }}"><b style="font-size:9px;line-height:5px;color:var(--muted)">{{ c.more }}</b></sc-if></span></div></sc-for>
+</div>
+<div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 2px 8px 4px"><span style="font:400 20px var(--font-display)">Lunes 12 de octubre</span><span style="height:40px;padding:0 14px;border-radius:20px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;font-weight:600;font-size:14px">+ Evento</span></div>
+<div style="position:relative">
+<div style="position:absolute;left:61px;top:16px;bottom:16px;width:1.5px;background:var(--line)"></div>
+<sc-for list="{{ today }}" as="e" hint-placeholder-count="4">
+<div style="position:relative;display:flex;align-items:center;gap:12px;min-height:54px;padding-left:4px">
+<span style="width:42px;flex:none;font-size:14px;font-weight:600;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums">{{ e.time }}</span>
+<span style="width:16px;height:16px;flex:none;display:grid;place-items:center;background:var(--bg);border-radius:4px"><span style="{{ e.node }}"></span></span>
+<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{ e.title }}</div><div style="font-size:13px;color:var(--muted)">{{ e.sub }}</div></div>
+</div>
+</sc-for>
+</div></div>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navCal }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i><sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:{{ n.bb }};color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">{{ n.badge }}</span></sc-if></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+<!-- Calendario Semana -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.2 Calendario · Semana</span>
+<div style="width:390px;min-height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="flex:none;display:flex;align-items:center;justify-content:space-between;padding:2px 18px 8px"><span style="font:400 17px/1 var(--font-display)">Casa en Orden</span><span style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);white-space:nowrap"><span style="display:flex;align-items:center;gap:5px"><i style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></i>En vivo</span><span style="width:32px;height:32px;border-radius:50%;background:var(--person-a);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:14px">J</span></span></div>
+<div style="flex:1;padding:6px 16px 24px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:6px">
+<div style="flex:1;display:flex;align-items:baseline;gap:8px"><span style="font:400 26px/1 var(--font-display)">12 – 18 oct</span></div>
+<span style="width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M15 6l-6 6 6 6"></path></svg></span>
+<span style="width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M9 6l6 6-6 6"></path></svg></span>
+<span style="height:44px;padding:0 14px;border-radius:22px;border:1.5px solid var(--accent);color:var(--accent);display:flex;align-items:center;font-weight:600;font-size:14px">Hoy</span>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:22px;background:var(--tint)"><span style="height:36px;display:grid;place-items:center;font-weight:500;font-size:15px;color:var(--muted)">Mes</span><span style="height:36px;border-radius:18px;background:var(--surface);display:grid;place-items:center;font-weight:600;font-size:15px;box-shadow:0 0 0 1px var(--line)">Semana</span></div>
+<sc-for list="{{ weekBlocks }}" as="b" hint-placeholder-count="7">
+<div style="display:flex;gap:12px;align-items:flex-start">
+<div style="width:46px;flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:8px"><span style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">{{ b.d }}</span><span style="width:38px;height:38px;border-radius:50%;background:{{ b.bg }};color:{{ b.fg }};display:grid;place-items:center;font:400 18px/1 var(--font-display)">{{ b.n }}</span></div>
+<div style="flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<sc-if value="{{ b.empty }}" hint-placeholder-val="{{ false }}"><div style="min-height:52px;display:flex;align-items:center;padding:0 14px;color:var(--muted);font-size:15px">—</div></sc-if>
+<sc-for list="{{ b.items }}" as="e">
+<div style="display:flex;align-items:center;gap:10px;padding:6px 12px;min-height:52px;border-top:1px solid {{ e.bd }}">
+<span style="width:16px;flex:none;display:grid;place-items:center"><span style="{{ e.node }}"></span></span>
+<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600">{{ e.title }}</div><div style="font-size:13px;color:var(--muted)">{{ e.time }} · {{ e.sub }}</div></div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navCal }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i><sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:{{ n.bb }};color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">{{ n.badge }}</span></sc-if></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+<!-- Pendientes -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.3 Pendientes · con aviso de rutina</span>
+<div style="width:390px;min-height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="flex:none;display:flex;align-items:center;justify-content:space-between;padding:2px 18px 8px"><span style="font:400 17px/1 var(--font-display)">Casa en Orden</span><span style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);white-space:nowrap"><span style="display:flex;align-items:center;gap:5px"><i style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></i>En vivo</span><span style="width:32px;height:32px;border-radius:50%;background:var(--person-a);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:14px">J</span></span></div>
+<div style="flex:1;padding:6px 16px 100px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font:400 30px/1 var(--font-display)">Pendientes</span><span style="font-size:13px;color:var(--muted)">7 abiertos</span></div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:10px">
+<span style="height:50px;border-radius:16px;border:1px solid var(--line);display:flex;align-items:center;padding:0 14px;font-size:16px;color:var(--muted)">¿Qué hay que hacer?</span>
+<div style="display:flex;gap:6px">
+<span style="flex:1;height:44px;border-radius:14px;background:var(--tint);display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600"><i style="width:9px;height:9px;border-radius:50%;background:linear-gradient(90deg,var(--person-a) 0 50%,var(--person-b) 50% 100%)"></i>Ambos</span>
+<span style="flex:1;height:44px;border-radius:14px;background:var(--tint);display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600"><svg width="15" height="15" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"></path></svg>Fecha</span>
+<span style="flex:1;height:44px;border-radius:14px;background:var(--tint);display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600"><svg width="15" height="15" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4"></path></svg>Repetir</span>
+<span style="height:44px;padding:0 16px;border-radius:22px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;font-weight:600;font-size:14px">Agregar</span>
+</div></div>
+<div style="display:flex;gap:6px;overflow:hidden">
+<sc-for list="{{ filters }}" as="f" hint-placeholder-count="5"><span style="flex:none;height:36px;padding:0 14px;border-radius:18px;border:1px solid {{ f.bd }};background:{{ f.bg }};color:{{ f.fg }};display:flex;align-items:center;gap:6px;font-size:14px;font-weight:{{ f.fw }}"><sc-if value="{{ f.on }}"><svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></sc-if>{{ f.label }}</span></sc-for>
+</div>
+<sc-for list="{{ tasks }}" as="g" hint-placeholder-count="5">
+<div>
+<div style="display:flex;align-items:center;gap:8px;padding:0 4px 8px;color:{{ g.c }}"><sc-if value="{{ g.alert }}"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7.5v5.5M12 16.5h.01"></path></svg></sc-if><span style="font:400 22px var(--font-display)">{{ g.name }}</span><span style="font-size:13px;font-weight:700;color:var(--muted)">{{ g.n }}</span></div>
+<div style="background:{{ g.bg }};border:1px solid {{ g.bdr }};border-radius:18px;overflow:hidden">
+<sc-for list="{{ g.items }}" as="t">
+<div style="display:flex;gap:12px;padding:12px 14px;border-top:1px solid {{ t.bd }}">
+<span style="width:30px;height:30px;border-radius:50%;border:2px solid var(--muted);flex:none;background:var(--surface)"></span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px;padding-top:4px">
+<div style="font-size:16px;font-weight:600;line-height:1.3">{{ t.title }}</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ t.chips }}" as="c"><span style="height:26px;padding:0 9px;border-radius:13px;display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:{{ c.fw }};background:{{ c.bg }};color:{{ c.fg }};border:1px {{ c.bs }} {{ c.bc }}"><sc-if value="{{ c.dot }}"><i style="width:8px;height:8px;border-radius:50%;background:{{ c.dot }}"></i></sc-if><sc-if value="{{ c.ic }}"><svg width="12" height="12" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ c.ic }}"></path></svg></sc-if>{{ c.label }}</span></sc-for></div>
+</div></div>
+</sc-for>
+</div></div>
+</sc-for>
+<div style="height:52px;border-radius:18px;border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 16px;color:var(--muted)"><span style="display:flex;align-items:baseline;gap:8px"><span style="font:400 20px var(--font-display);color:var(--ink)">Hechos</span><span style="font-size:13px;font-weight:700">3</span></span><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9l6 6 6-6"></path></svg></div>
+</div>
+<div style="position:absolute;left:12px;right:12px;bottom:86px;height:54px;border-radius:16px;background:var(--ink);color:var(--bg);display:flex;align-items:center;gap:12px;padding:0 8px 0 12px;box-shadow:var(--elev-toast)"><span style="width:26px;height:26px;border-radius:50%;background:var(--sun);color:var(--sun-ink);display:grid;place-items:center;flex:none"><svg width="15" height="15" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span><span style="flex:1;font-size:15px;font-weight:500">Listo. Próxima: 12 dic.</span><span style="height:40px;padding:0 14px;border-radius:12px;display:flex;align-items:center;font-weight:700;font-size:15px;color:var(--sun)">Deshacer</span></div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navPend }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i><sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:{{ n.bb }};color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">{{ n.badge }}</span></sc-if></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+<!-- Súper -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.4 Listas · Súper (844 px, captura fija)</span>
+<div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="flex:none;padding:4px 16px 12px;display:flex;flex-direction:column;gap:14px">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);padding:4px;border-radius:22px;background:var(--tint)"><span style="height:36px;border-radius:18px;background:var(--surface);display:grid;place-items:center;font-weight:600;font-size:15px;box-shadow:0 0 0 1px var(--line)">Súper · 11</span><span style="height:36px;display:grid;place-items:center;font-weight:500;font-size:15px;color:var(--muted)">Compras</span><span style="height:36px;display:grid;place-items:center;font-weight:500;font-size:15px;color:var(--muted)">Mejoras</span></div>
+<div style="display:flex;align-items:center;gap:14px">
+<div style="width:64px;height:64px;flex:none;border-radius:50%;background:conic-gradient(var(--sun) 0 39%,var(--line) 39% 100%);display:grid;place-items:center"><span style="width:50px;height:50px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font:400 18px/1 var(--font-display)">7</span></div>
+<div style="flex:1"><div style="font:400 30px/1 var(--font-display)">Súper</div><div style="font-size:14px;color:var(--muted);margin-top:4px">7 de 18 en el carrito</div></div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;font-size:14px"><span style="display:flex;align-items:center;gap:8px;color:var(--muted)"><span style="width:40px;height:24px;border-radius:12px;background:var(--line);position:relative"><span style="position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:var(--surface)"></span></span>Ocultar comprados</span><span style="font-weight:600;color:var(--accent);text-decoration:underline;text-underline-offset:3px">Limpiar comprados (7)</span></div>
+</div>
+<div style="flex:1;min-height:0;overflow:hidden;padding:0 16px;display:flex;flex-direction:column;gap:14px">
+<sc-for list="{{ superList }}" as="sec" hint-placeholder-count="4">
+<div style="flex:none">
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 4px 6px"><span style="font:400 19px var(--font-display)">{{ sec.name }}</span><span style="font-size:13px;color:var(--muted)">{{ sec.count }}</span></div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<sc-for list="{{ sec.items }}" as="it">
+<div style="display:flex;align-items:center;gap:12px;min-height:54px;padding:0 4px 0 14px;border-top:1px solid {{ it.bd }}">
+<span style="width:30px;height:30px;flex:none;border-radius:50%;border:2px solid {{ it.boxBd }};background:{{ it.boxBg }};display:grid;place-items:center;color:var(--accent-ink)"><sc-if value="{{ it.done }}"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></sc-if></span>
+<span style="flex:1;font-size:17px;font-weight:500;text-decoration:{{ it.deco }};color:{{ it.fg }}">{{ it.name }}</span>
+<span style="width:24px;height:24px;border-radius:50%;background:{{ it.av }};color:var(--bg);display:grid;place-items:center;font-size:11px;font-weight:700">{{ it.ini }}</span>
+<span style="width:40px;height:44px;display:grid;place-items:center;color:var(--muted)"><svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M12 5.5h.01M12 12h.01M12 18.5h.01"></path></svg></span>
+</div>
+</sc-for>
+</div></div>
+</sc-for>
+</div>
+<div style="flex:none;display:flex;gap:8px;padding:10px 16px;background:var(--bg);border-top:1px solid var(--line)">
+<div style="flex:1;height:52px;border-radius:16px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 6px 0 16px;font-size:16px;color:var(--muted)">Agregar al súper…<span style="height:38px;padding:0 10px;border-radius:12px;background:var(--tint);color:var(--ink);display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600">Sección automática<svg width="12" height="12" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9l6 6 6-6"></path></svg></span></div>
+<div style="width:52px;height:52px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round"><path d="M12 5v14M5 12h14"></path></svg></div>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navList }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i><sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:{{ n.bb }};color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">{{ n.badge }}</span></sc-if></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+<!-- Compras -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.4 Listas · Compras pendientes</span>
+<div style="width:390px;min-height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="flex:1;padding:4px 16px 24px;display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);padding:4px;border-radius:22px;background:var(--tint)"><span style="height:36px;display:grid;place-items:center;font-weight:500;font-size:15px;color:var(--muted)">Súper · 11</span><span style="height:36px;border-radius:18px;background:var(--surface);display:grid;place-items:center;font-weight:600;font-size:15px;box-shadow:0 0 0 1px var(--line)">Compras</span><span style="height:36px;display:grid;place-items:center;font-weight:500;font-size:15px;color:var(--muted)">Mejoras</span></div>
+<div style="display:flex;align-items:flex-end;justify-content:space-between"><div><div style="font:400 30px/1 var(--font-display)">Compras</div><div style="font-size:14px;color:var(--muted);margin-top:6px">3 pendientes</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Total aprox.</div><div style="font:400 26px/1.1 var(--font-display);font-variant-numeric:tabular-nums">$4,250</div></div></div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:10px">
+<span style="height:50px;border-radius:16px;border:1px solid var(--line);display:flex;align-items:center;padding:0 14px;font-size:16px;color:var(--muted)">¿Qué hay que comprar?</span>
+<div style="display:grid;grid-template-columns:120px 1fr;gap:8px"><span style="height:50px;border-radius:16px;border:1px solid var(--line);display:flex;align-items:center;gap:6px;padding:0 12px;font-size:16px;color:var(--muted)"><span>$</span>Costo</span><span style="height:50px;border-radius:16px;border:1px solid var(--line);display:flex;align-items:center;padding:0 14px;font-size:16px;color:var(--muted)">Dónde (tienda o link)</span></div>
+<div style="display:flex;gap:8px;align-items:center"><div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);padding:3px;border-radius:20px;background:var(--tint)"><span style="height:34px;display:grid;place-items:center;font-size:14px;font-weight:600;color:var(--muted)">Alta</span><span style="height:34px;border-radius:17px;background:var(--surface);display:grid;place-items:center;font-size:14px;font-weight:600;box-shadow:0 0 0 1px var(--line)">Media</span><span style="height:34px;display:grid;place-items:center;font-size:14px;font-weight:600;color:var(--muted)">Baja</span></div><span style="height:44px;padding:0 18px;border-radius:22px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;font-weight:600;font-size:14px">Agregar</span></div>
+</div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<sc-for list="{{ compras }}" as="c" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 12px 10px 14px;min-height:66px;border-top:1px solid {{ c.bd }}">
+<span style="width:30px;height:30px;border-radius:50%;border:2px solid var(--muted);flex:none"></span>
+<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{ c.title }}</div><div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)"><sc-if value="{{ c.link }}"><svg width="13" height="13" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg></sc-if>{{ c.where }} · <b style="color:var(--ink);font-variant-numeric:tabular-nums">{{ c.cost }}</b></div></div>
+<span style="height:30px;padding:0 9px 0 11px;border-radius:15px;background:{{ c.pbg }};color:{{ c.pfg }};display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700">{{ c.prio }}<svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9l6 6 6-6"></path></svg></span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navList }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i><sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:{{ n.bb }};color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">{{ n.badge }}</span></sc-if></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+<!-- Mejoras -->
+<div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--muted)">7.4 Listas · Mejoras del hogar</span>
+<div style="width:390px;min-height:844px;border-radius:36px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-body);display:flex;flex-direction:column;position:relative;box-shadow:0 0 0 1px var(--line)">
+<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font:600 15px/1 system-ui">9:41<span style="width:22px;height:11px;border-radius:3px;border:1.5px solid currentColor;opacity:.8"></span></div>
+<div style="flex:1;padding:4px 16px 24px;display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);padding:4px;border-radius:22px;background:var(--tint)"><span style="height:36px;display:grid;place-items:center;font-weight:500;font-size:15px;color:var(--muted)">Súper · 11</span><span style="height:36px;display:grid;place-items:center;font-weight:500;font-size:15px;color:var(--muted)">Compras</span><span style="height:36px;border-radius:18px;background:var(--surface);display:grid;place-items:center;font-weight:600;font-size:15px;box-shadow:0 0 0 1px var(--line)">Mejoras</span></div>
+<div><div style="font:400 30px/1 var(--font-display)">Mejoras</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px"><span style="height:28px;padding:0 10px;border-radius:14px;background:var(--tint);display:flex;align-items:center;font-size:13px;font-weight:600">5 por hacer</span><span style="height:28px;padding:0 10px;border-radius:14px;background:var(--tint);display:flex;align-items:center;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums">Estimado $42,000</span><span style="height:28px;padding:0 10px;border-radius:14px;background:var(--ok-soft);color:var(--ok);display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700"><svg width="12" height="12" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>1 lista</span></div></div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:10px">
+<span style="height:50px;border-radius:16px;border:1px solid var(--line);display:flex;align-items:center;padding:0 14px;font-size:16px;color:var(--muted)">¿Qué quieren mejorar?</span>
+<div style="display:grid;grid-template-columns:1fr 120px auto;gap:8px"><span style="height:50px;border-radius:16px;border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 14px;font-size:16px">Cocina<svg width="16" height="16" viewBox="0 0 24 24" style="fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9l6 6 6-6"></path></svg></span><span style="height:50px;border-radius:16px;border:1px solid var(--line);display:flex;align-items:center;gap:6px;padding:0 12px;font-size:16px;color:var(--muted)">$ Costo</span><span style="height:50px;padding:0 16px;border-radius:25px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;font-weight:600;font-size:14px">Agregar</span></div>
+</div>
+<sc-for list="{{ mejoras }}" as="g" hint-placeholder-count="4">
+<div>
+<div style="display:flex;align-items:baseline;gap:8px;padding:0 4px 8px"><span style="font:400 22px var(--font-display)">{{ g.name }}</span><span style="font-size:13px;font-weight:700;color:var(--muted)">{{ g.n }}</span></div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden">
+<sc-for list="{{ g.items }}" as="r">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 12px 10px 16px;min-height:62px;border-top:1px solid {{ r.bd }}">
+<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600;text-decoration:{{ r.deco }}">{{ r.title }}</div><div style="font-size:13px;color:var(--muted)">{{ r.area }} · <span style="font-variant-numeric:tabular-nums">{{ r.cost }}</span></div></div>
+<span style="height:30px;padding:0 9px 0 11px;border-radius:15px;background:{{ g.pbg }};color:{{ g.pfg }};display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700;white-space:nowrap">{{ g.pill }}<svg width="14" height="14" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9l6 6 6-6"></path></svg></span>
+</div>
+</sc-for>
+</div></div>
+</sc-for>
+</div>
+<div style="flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:10px 8px 28px">
+<sc-for list="{{ navList }}" as="n" hint-placeholder-count="5"><div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;color:{{ n.c }}"><svg width="24" height="24" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ n.d }}"></path></svg><span style="font-size:11px;font-weight:{{ n.fw }}">{{ n.label }}</span><i style="width:5px;height:5px;border-radius:50%;background:{{ n.line }}"></i><sc-if value="{{ n.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-6px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:{{ n.bb }};color:var(--bg);font:700 11px/18px var(--font-body);text-align:center">{{ n.badge }}</span></sc-if></div></sc-for>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;margin-left:-67px;width:134px;height:5px;border-radius:3px;background:var(--ink)"></div>
+</div></div>
+
+</div></div></div>
+</sc-for>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const DARK = { '--bg': '#0C1914', '--surface': '#132620', '--tint': '#1A3128', '--ink': '#EEF2EA', '--muted': '#A7BAAF', '--line': '#263E33', '--accent': '#7FD3A8', '--accent-ink': '#0C1914', '--accent-soft': '#1D3D2F', '--sun': '#F5AE45', '--sun-ink': '#1A1205', '--sun-soft': '#3A2C12', '--warn': '#F0C066', '--warn-soft': '#352A12', '--danger': '#FF9C92', '--danger-soft': '#3B1C1A', '--info': '#9DBDF5', '--info-soft': '#1C2A44', '--ok': '#86D6A5', '--ok-soft': '#173826', '--focus': '#7FD3A8', '--person-a': '#82AEFF', '--person-a-soft': '#1C2B47', '--person-b': '#FF8F6E', '--person-b-soft': '#40221A', '--person-both': '#EEF2EA', '--scrim': 'rgba(0,0,0,.6)', '--elev-sheet': '0 -8px 32px rgba(0,0,0,.5)', '--elev-toast': '0 8px 24px rgba(0,0,0,.5)' };
+    const modes = [{ label: 'Claro', vars: {} }, { label: 'Oscuro', vars: DARK }];
+    const I = { inicio: 'M4 11 12 4l8 7v9h-5v-6H9v6H4z', cal: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4', pend: 'M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM8 12.5l3 3 5-6', list: 'M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01', mas: 'M5 12h.01M12 12h.01M19 12h.01' };
+    const nav = (k, noBadge) => [{ k: 'inicio', label: 'Inicio' }, { k: 'cal', label: 'Calendario' }, { k: 'pend', label: 'Pendientes', badge: '2', bb: 'var(--danger)' }, { k: 'list', label: 'Listas', badge: '11', bb: 'var(--ink)' }, { k: 'mas', label: 'Más' }].map(n => { const on = n.k === k; return { ...n, d: I[n.k], hasBadge: !noBadge && !!n.badge, c: on ? 'var(--accent)' : 'var(--muted)', line: on ? 'var(--accent)' : 'transparent', fw: on ? 700 : 500 }; });
+    const AB = 'linear-gradient(90deg,var(--person-a) 0 50%,var(--person-b) 50% 100%)';
+    const fill = w => w === 'both' ? AB : `var(--person-${w})`;
+    const SH = { evento: [12, 12, '50%'], pendiente: [12, 12, '3px'], fecha: [10, 10, '1.5px', 'rotate(45deg)'], ninos: [14, 12, '0', 'none', 'polygon(50% 0,100% 100%,0 100%)'], plan: [14, 14, '50%', 'none', 'none', 'radial-gradient(circle,transparent 3.5px,#000 4px)'], comida: [16, 8, '4px'] };
+    const node = (t, w) => { const s = SH[t]; return { display: 'block', width: s[0], height: s[1], borderRadius: s[2], transform: s[3] || 'none', clipPath: s[4] || 'none', WebkitMaskImage: s[5] || 'none', maskImage: s[5] || 'none', background: fill(w) }; };
+    const TL = { evento: 'Evento', pendiente: 'Pendiente', fecha: 'Fecha', ninos: 'Niños', plan: 'Plan', comida: 'Comida' };
+    const N = { a: 'Yo', b: 'Malu', both: 'Ambos' };
+    const ent = (time, title, t, w, extra) => ({ time, title, sub: `${TL[t]} · ${N[w]}` + (extra && extra.more ? ' · ' + extra.more : ''), node: node(t, w), task: !!(extra && extra.task) });
+    const bd = arr => arr.map((x, i) => ({ ...x, bd: i ? 'var(--tint)' : 'transparent' }));
+    const today = bd([ent('8:30', 'Junta de la escuela', 'evento', 'both'), ent('Día', 'Revisar colegiatura', 'pendiente', 'b', { task: 1, more: 'Cada mes' }), ent('17:00', 'Clase de natación', 'ninos', 'a', { more: 'Cada semana' }), ent('20:00', 'Cena con amigos', 'plan', 'both')]);
+    const upcoming = bd([
+      { day: 'Martes 13', items: [ent('10:00', 'Dentista', 'evento', 'a'), ent('14:30', 'Tacos de pollo', 'comida', 'b')] },
+      { day: 'Jueves 15', items: [ent('Día', 'Pagar la luz', 'pendiente', 'both', { more: 'Cada 2 meses' })] },
+      { day: 'Viernes 16', items: [ent('9:00', 'Vacuna refuerzo de Emilia', 'ninos', 'b')] },
+      { day: 'Sábado 17', items: [ent('Día', 'Cumpleaños de Mamá', 'fecha', 'both')] }
+    ]);
+    const dates = bd([{ title: 'Cumpleaños de Mamá', sub: 'Sáb 17 oct · Cumple 64', chip: 'En 5 días', cbg: 'var(--warn-soft)', cfg: 'var(--warn)', node: node('fecha', 'both') }, { title: 'Seguro del coche', sub: 'Vence el sáb 24 oct', chip: 'En 12 días', cbg: 'var(--tint)', cfg: 'var(--ink)', node: node('fecha', 'a') }]);
+    const EV = { 1: ['a'], 3: ['both'], 5: ['b', 'a'], 8: ['b'], 9: ['a'], 12: ['both', 'b', 'a', 'both'], 13: ['a', 'b'], 15: ['both'], 16: ['b'], 17: ['both', 'a'], 19: ['a', 'b'], 20: ['b'], 22: ['a'], 24: ['both', 'a', 'b', 'b', 'a'], 26: ['a'], 28: ['b'], 30: ['both'], 31: ['a', 'b'] };
+    const dots = l => l.slice(0, 4).map(fill);
+    const cal = [28, 29, 30].map(n => ({ num: n, out: true })).concat(Array.from({ length: 31 }, (_, i) => ({ num: i + 1 }))).concat([{ num: 1, out: true }]).map(c => { const l = c.out ? [] : (EV[c.num] || []); const t = !c.out && c.num === 12; return { num: c.num, bg: t ? 'var(--sun)' : 'transparent', fg: t ? 'var(--sun-ink)' : c.out ? 'var(--muted)' : 'var(--ink)', ring: t ? '2px var(--ink)' : '0 transparent', dots: dots(l), more: l.length > 4 ? '+' + (l.length - 4) : '' }; });
+    const week = ['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, i) => { const n = 12 + i, t = !i; return { d, n, bg: t ? 'var(--sun)' : 'var(--surface)', fg: t ? 'var(--sun-ink)' : 'var(--ink)', bd: t ? 'var(--sun)' : 'var(--line)', dots: (EV[n] || []).slice(0, 3).map(fill) }; });
+    const shortcuts = [{ label: 'Súper', n: 11 }, { label: 'Compras', n: 3 }, { label: 'Mejoras', n: 5 }].map((s, i) => ({ ...s, bd: i ? 'var(--line)' : 'transparent' }));
+    const starters = [{ title: 'Agregar al súper', sub: 'Leche, huevo, tortillas…', d: I.list }, { title: 'Crear una rutina', sub: 'Pagar la luz cada 2 meses', d: 'M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4' }, { title: 'Poner un evento', sub: 'Junta, dentista, cena…', d: I.cal }];
+    const LY = [['Eventos', 'evento', 1], ['Pendientes', 'pendiente', 1], ['Fechas', 'fecha', 1], ['Niños', 'ninos', 1], ['Planes', 'plan', 0], ['Comidas', 'comida', 0]];
+    const layers = LY.map(([label, t, on]) => ({ label, node: { ...node(t, 'both'), background: on ? 'var(--ink)' : 'var(--muted)', opacity: on ? 1 : .6 }, bd: on ? 'var(--ink)' : 'var(--line)', bg: on ? 'var(--surface)' : 'transparent', fg: on ? 'var(--ink)' : 'var(--muted)' }));
+    const WB = { 12: today.map(e => e), 13: [ent('10:00', 'Dentista', 'evento', 'a'), ent('14:30', 'Tacos de pollo', 'comida', 'b')], 15: [ent('Día', 'Pagar la luz', 'pendiente', 'both')], 16: [ent('9:00', 'Vacuna refuerzo de Emilia', 'ninos', 'b')], 17: [ent('Día', 'Cumpleaños de Mamá', 'fecha', 'both'), ent('17:00', 'Clase de natación', 'ninos', 'a')] };
+    const weekBlocks = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((d, i) => { const n = 12 + i, items = bd(WB[n] || []); return { d, n, items, empty: !items.length, bg: !i ? 'var(--sun)' : 'transparent', fg: !i ? 'var(--sun-ink)' : 'var(--ink)' }; });
+    const IC = { alert: 'M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7.5v5.5M12 16.5h.01', clock: 'M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18zM12 7v5l3 2', rep: 'M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4', check: 'M5 12.5l4.5 4.5L19 7', up: 'M12 19V5M6 11l6-6 6 6', cal: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4' };
+    const ch = (label, o) => ({ label, fw: 600, bg: 'var(--tint)', fg: 'var(--ink)', bs: 'solid', bc: 'transparent', dot: '', ic: '', ...o });
+    const who = w => w === 'none' ? ch('Sin asignar', { bg: 'transparent', bs: 'dashed', bc: 'var(--muted)', fg: 'var(--muted)' }) : ch(N[w], { bg: 'var(--surface)', bc: 'var(--line)', dot: fill(w) });
+    const late = l => ch(l, { bg: 'var(--danger-soft)', fg: 'var(--danger)', fw: 700, ic: IC.alert });
+    const soon = l => ch(l, { bg: 'var(--warn-soft)', fg: 'var(--warn)', fw: 700, ic: IC.clock });
+    const date = l => ch(l, { ic: IC.cal });
+    const rep = l => ch(l, { ic: IC.rep });
+    const done = l => ch(l, { bg: 'var(--ok-soft)', fg: 'var(--ok)', fw: 700, ic: IC.check });
+    const prio = ch('Prioridad alta', { bg: 'transparent', bc: 'var(--danger)', fg: 'var(--danger)', fw: 700, ic: IC.up });
+    const G = (name, n, items, alert) => ({ name, n, alert: !!alert, c: alert ? 'var(--danger)' : 'var(--ink)', bg: alert ? 'var(--danger-soft)' : 'var(--surface)', bdr: alert ? 'transparent' : 'var(--line)', items: bd(items) });
+    const tasks = [
+      G('Atrasados', 1, [{ title: 'Cambiar foco del pasillo', chips: [who('b'), late('Venció 8 oct')] }], 1),
+      G('Hoy', 1, [{ title: 'Revisar colegiatura', chips: [who('b'), soon('Hoy'), rep('Cada mes'), done('Hecho el 12 sep')] }]),
+      G('Esta semana', 1, [{ title: 'Pagar la luz', chips: [who('both'), date('15 oct'), rep('Cada 2 meses'), prio] }]),
+      G('Más adelante', 2, [{ title: 'Renovar seguro del coche', chips: [who('a'), date('24 oct'), prio] }, { title: 'Llevar el coche al servicio', chips: [who('a'), date('20 nov'), rep('Cada 6 meses'), done('Hecho el 20 may')] }]),
+      G('Sin fecha', 1, [{ title: 'Arreglar la puerta del clóset', chips: [who('none')] }])
+    ];
+    const filters = ['Todos', 'Míos', 'De Malu', 'Sin asignar', 'Rutinas'].map((label, i) => ({ label, on: !i, bg: !i ? 'var(--ink)' : 'var(--surface)', fg: !i ? 'var(--bg)' : 'var(--ink)', bd: !i ? 'var(--ink)' : 'var(--line)', fw: !i ? 600 : 500 }));
+    const S = [['Frutas y verduras', [['Jitomate 1 kg', 'a', 1], ['Aguacate', 'b', 0], ['Cebolla', 'a', 1], ['Limón', 'b', 0]]], ['Carnes y pescado', [['Pechuga de pollo', 'b', 0]]], ['Lácteos y huevo', [['Leche entera 2 L', 'a', 1], ['Huevo', 'b', 1], ['Queso Oaxaca', 'b', 0]]], ['Pan y tortillas', [['Tortillas de maíz', 'a', 0], ['Bolillos', 'a', 1]]], ['Despensa', [['Frijoles', 'b', 0], ['Aceite', 'a', 1], ['Café', 'a', 0]]], ['Bebidas', [['Agua 20 L', 'a', 0]]], ['Limpieza y hogar', [['Fabuloso', 'b', 1], ['Papel de baño', 'b', 0]]], ['Cuidado personal y bebé', [['Shampoo', 'b', 0]]]];
+    const superList = S.map(([name, items]) => { const left = items.filter(i => !i[2]).length; return { name, count: left ? `Faltan ${left}` : 'Completo', items: bd(items.map(([n, w, d]) => ({ name: n, done: !!d, ini: w === 'a' ? 'J' : 'M', av: `var(--person-${w})`, deco: d ? 'line-through' : 'none', fg: d ? 'var(--muted)' : 'var(--ink)', boxBd: d ? 'var(--accent)' : 'var(--muted)', boxBg: d ? 'var(--accent)' : 'transparent' }))) }; });
+    const PR = { Alta: ['danger-soft', 'danger'], Media: ['warn-soft', 'warn'], Baja: ['tint', 'muted'] };
+    const compras = bd([['Licuadora', 'Liverpool', '$1,250', 'Alta', 0], ['Tenis para correr', 'liverpool.com.mx', '$2,400', 'Media', 1], ['Regalo de cumpleaños de Mamá', 'Por definir', '$600', 'Alta', 0]].map(([title, where, cost, p, link]) => ({ title, where, cost, prio: p, link: !!link, pbg: `var(--${PR[p][0]})`, pfg: `var(--${PR[p][1]})` })));
+    const MG = (name, pill, bg, fg, items) => ({ name, pill, n: items.length, pbg: `var(--${bg})`, pfg: `var(--${fg})`, items: bd(items.map(([title, area, cost]) => ({ title, area, cost, deco: name === 'Listo' ? 'line-through' : 'none' }))) });
+    const mejoras = [MG('En proceso', 'En proceso', 'warn-soft', 'warn', [['Pintar la sala', 'Sala y comedor', '$8,000']]), MG('Planeado', 'Planeado', 'info-soft', 'info', [['Cambiar el calentador', 'Toda la casa', '$6,500'], ['Impermeabilizar', 'Toda la casa', '$9,500']]), MG('Idea', 'Idea', 'tint', 'ink', [['Persianas en recámaras', 'Recámaras', '$12,000'], ['Huerto en la terraza', 'Terraza o jardín', '$6,000']]), MG('Listo', 'Listo', 'ok-soft', 'ok', [['Cambiar la llave de la cocina', 'Cocina', '$1,800']])];
+    return { modes, today, upcoming, dates, cal, week, shortcuts, starters, layers, weekBlocks, tasks, filters, superList, compras, mejoras, lateNode: node('pendiente', 'b'), wk: ['L', 'M', 'M', 'J', 'V', 'S', 'D'], navInicio: nav('inicio'), navInicioVacio: nav('inicio', true), navCal: nav('cal'), navPend: nav('pend'), navList: nav('list') };
+  }
+}
+</script>
+</body>
+</html>

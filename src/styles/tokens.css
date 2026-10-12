@@ -1,77 +1,210 @@
-/*
- * Tokens de diseño: fuente de verdad de colores, tipografía y medidas.
- * PROVISIONALES hasta recibir design/tokens.css de Claude Design; al llegar, se reemplaza
- * este archivo conservando los nombres o se ajusta el mapeo de src/styles/index.css.
- *
- * Tema: por defecto sigue al sistema (prefers-color-scheme). <html data-theme="light|dark">
- * lo fija a mano.
- */
+/* Copia de design/tokens.css (entrega de Claude Design, dirección 2b "Jardín de cempasúchil").
+   Las fuentes se cargan en index.html con <link> para no bloquear el CSS. */
+
 :root {
-  color-scheme: light;
+  /* Tipografía */
+  --font-display: 'Young Serif', Georgia, 'Times New Roman', serif;
+  --font-body: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --text-display-xl: 400 38px/1.05 var(--font-display);
+  --text-display-l: 400 30px/1.1 var(--font-display);
+  --text-display-m: 400 24px/1.15 var(--font-display);
+  --text-display-s: 400 20px/1.2 var(--font-display);
+  --text-item: 500 17px/1.3 var(--font-body);
+  --text-body: 400 16px/1.4 var(--font-body);
+  --text-body-strong: 600 16px/1.35 var(--font-body);
+  --text-small: 400 14px/1.4 var(--font-body);
+  --text-meta: 400 13px/1.35 var(--font-body);
+  --text-eyebrow: 700 12px/1.3 var(--font-body); /* + letter-spacing .08em, uppercase */
+  --text-nav: 500 11px/1.2 var(--font-body);
 
-  --bg: #f7f5f0;
-  --surface: #ffffff;
-  --surface-2: #efece4;
-  --text: #1c1b18;
-  --text-muted: #5f5c54;
-  --border: #e2ded4;
-  --accent: #0a6b58;
-  --accent-contrast: #ffffff;
-  --danger: #b42318;
-  --ok: #157f3c;
-  --warn: #a15c07;
-  --focus: #2563eb;
+  /* Espaciado (base 4) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --gutter: 16px; /* margen lateral de pantalla */
+  --row-min: 54px; /* alto mínimo de fila con casilla */
+  --tap: 44px; /* objetivo táctil mínimo */
+  --content-max: 720px;
 
-  --person-a: #0a6b58;
-  --person-b: #c2410c;
+  /* Radios */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius: 18px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
 
-  --font-sans:
-    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --radius-sm: 8px;
-  --radius: 12px;
-  --radius-lg: 20px;
-  --tap: 44px;
-  --header-h: 56px;
-  --nav-h: 64px;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 4px 16px rgb(0 0 0 / 0.06);
+  /* Elevación (casi plana: se usa borde, no sombra) */
+  --elev-0: none;
+  --elev-sheet: 0 -8px 32px rgba(19, 37, 28, 0.18);
+  --elev-toast: 0 8px 24px rgba(19, 37, 28, 0.22);
+  --scrim: rgba(12, 25, 20, 0.45);
+
+  /* Movimiento */
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-sheet: 280ms;
+  --dur-toast: 4000ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  color-scheme: light dark;
 }
 
+/* ---------- Claro ---------- */
+:root,
+[data-theme='light'] {
+  --bg: #f1f5f1;
+  --surface: #ffffff;
+  --tint: #e8efe9;
+  --ink: #13251c;
+  --muted: #4a5e54;
+  --line: #d4e0d7;
+  --accent: #1e6b4a;
+  --accent-ink: #ffffff;
+  --accent-soft: #dceee3;
+  --sun: #f2a23a;
+  --sun-ink: #13251c;
+  --sun-soft: #fce2b0; /* cempasúchil: solo "hoy" y cierre */
+  --warn: #8a5300;
+  --warn-soft: #fbeacb;
+  --danger: #b3261e;
+  --danger-soft: #fbe4e1;
+  --info: #2c5da8;
+  --info-soft: #e0e9f7;
+  --ok: #1f7046;
+  --ok-soft: #ddf0e4;
+  --focus: #1e6b4a;
+  --person-a: #2b62c4;
+  --person-a-soft: #e1eafa;
+  --person-b: #b8401f;
+  --person-b-soft: #f8e2da;
+  --person-both: #13251c;
+}
+
+/* ---------- Oscuro (diseñado, no invertido) ---------- */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --bg: #141412;
-    --surface: #1d1c19;
-    --surface-2: #272622;
-    --text: #f1efe9;
-    --text-muted: #a7a398;
-    --border: #34322d;
-    --accent: #3fb59a;
-    --accent-contrast: #0b1f1a;
-    --danger: #f97066;
-    --ok: #47cd89;
-    --warn: #fdb022;
-    --focus: #84adff;
-    --person-a: #3fb59a;
-    --person-b: #f38744;
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.3);
+    --bg: #0c1914;
+    --surface: #132620;
+    --tint: #1a3128;
+    --ink: #eef2ea;
+    --muted: #a7baaf;
+    --line: #263e33;
+    --accent: #7fd3a8;
+    --accent-ink: #0c1914;
+    --accent-soft: #1d3d2f;
+    --sun: #f5ae45;
+    --sun-ink: #1a1205;
+    --sun-soft: #3a2c12;
+    --warn: #f0c066;
+    --warn-soft: #352a12;
+    --danger: #ff9c92;
+    --danger-soft: #3b1c1a;
+    --info: #9dbdf5;
+    --info-soft: #1c2a44;
+    --ok: #86d6a5;
+    --ok-soft: #173826;
+    --focus: #7fd3a8;
+    --person-a: #82aeff;
+    --person-a-soft: #1c2b47;
+    --person-b: #ff8f6e;
+    --person-b-soft: #40221a;
+    --person-both: #eef2ea;
+    --elev-sheet: 0 -8px 32px rgba(0, 0, 0, 0.5);
+    --elev-toast: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --scrim: rgba(0, 0, 0, 0.6);
+  }
+}
+[data-theme='dark'] {
+  --bg: #0c1914;
+  --surface: #132620;
+  --tint: #1a3128;
+  --ink: #eef2ea;
+  --muted: #a7baaf;
+  --line: #263e33;
+  --accent: #7fd3a8;
+  --accent-ink: #0c1914;
+  --accent-soft: #1d3d2f;
+  --sun: #f5ae45;
+  --sun-ink: #1a1205;
+  --sun-soft: #3a2c12;
+  --warn: #f0c066;
+  --warn-soft: #352a12;
+  --danger: #ff9c92;
+  --danger-soft: #3b1c1a;
+  --info: #9dbdf5;
+  --info-soft: #1c2a44;
+  --ok: #86d6a5;
+  --ok-soft: #173826;
+  --focus: #7fd3a8;
+  --person-a: #82aeff;
+  --person-a-soft: #1c2b47;
+  --person-b: #ff8f6e;
+  --person-b-soft: #40221a;
+  --person-both: #eef2ea;
+  --elev-sheet: 0 -8px 32px rgba(0, 0, 0, 0.5);
+  --elev-toast: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --scrim: rgba(0, 0, 0, 0.6);
+}
+
+/* ---------- Paleta de persona (6, intercambiables) ----------
+   Asigna una a --person-a y otra a --person-b. Para deuteranopía,
+   elegir una de grupo FRÍO y una de grupo CÁLIDO. */
+:root,
+[data-theme='light'] {
+  --pc-azul: #2b62c4;
+  --pc-azul-soft: #e1eafa; /* frío  */
+  --pc-ciruela: #7a3a9e;
+  --pc-ciruela-soft: #efe2f6; /* frío  */
+  --pc-jade: #0e7368;
+  --pc-jade-soft: #d8efec; /* frío  */
+  --pc-teja: #b8401f;
+  --pc-teja-soft: #f8e2da; /* cálido */
+  --pc-ocre: #8a5d00;
+  --pc-ocre-soft: #f6e8c6; /* cálido */
+  --pc-rosa: #b0306a;
+  --pc-rosa-soft: #f8deea; /* cálido */
+}
+[data-theme='dark'] {
+  --pc-azul: #82aeff;
+  --pc-azul-soft: #1c2b47;
+  --pc-ciruela: #d3a2f2;
+  --pc-ciruela-soft: #2e1f3a;
+  --pc-jade: #5fd3c3;
+  --pc-jade-soft: #123532;
+  --pc-teja: #ff8f6e;
+  --pc-teja-soft: #40221a;
+  --pc-ocre: #ebc35c;
+  --pc-ocre-soft: #352a10;
+  --pc-rosa: #ff8dbc;
+  --pc-rosa-soft: #42192b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --pc-azul: #82aeff;
+    --pc-azul-soft: #1c2b47;
+    --pc-ciruela: #d3a2f2;
+    --pc-ciruela-soft: #2e1f3a;
+    --pc-jade: #5fd3c3;
+    --pc-jade-soft: #123532;
+    --pc-teja: #ff8f6e;
+    --pc-teja-soft: #40221a;
+    --pc-ocre: #ebc35c;
+    --pc-ocre-soft: #352a10;
+    --pc-rosa: #ff8dbc;
+    --pc-rosa-soft: #42192b;
   }
 }
 
-:root[data-theme='dark'] {
-  color-scheme: dark;
-  --bg: #141412;
-  --surface: #1d1c19;
-  --surface-2: #272622;
-  --text: #f1efe9;
-  --text-muted: #a7a398;
-  --border: #34322d;
-  --accent: #3fb59a;
-  --accent-contrast: #0b1f1a;
-  --danger: #f97066;
-  --ok: #47cd89;
-  --warn: #fdb022;
-  --focus: #84adff;
-  --person-a: #3fb59a;
-  --person-b: #f38744;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.3);
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur: 0ms;
+    --dur-sheet: 0ms;
+  }
 }

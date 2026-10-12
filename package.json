@@ -14,7 +14,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:sql": "bash tests/sql/run.sh",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "sync:shared": "node scripts/sync-shared.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

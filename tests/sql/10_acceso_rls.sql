@@ -13,6 +13,7 @@ do $$ begin
   assert (select name from public.members where email ilike 'juanjogamur@gmail.com') = 'Juanjo G', 'nombre desde Google';
   assert (select name from public.members where email = 'm.rm91@hotmail.com') = 'm.rm91', 'nombre desde el correo';
   assert (select count(distinct color) from public.members) = 2, 'colores distintos';
+  assert (select color from public.members where email = 'm.rm91@hotmail.com') = 'teja', 'persona B = teja';
 end $$;
 
 do $$ begin
@@ -163,6 +164,12 @@ do $$ declare n int; begin
     raise exception 'FALLO: los dos quedaron con el mismo color';
   exception when unique_violation then null;
   end;
+  begin
+    update public.members set color = '#ff0000' where id = auth.uid();
+    raise exception 'FALLO: aceptó un color fuera de la paleta';
+  exception when check_violation then null;
+  end;
+  update public.members set color = 'jade' where id = auth.uid();
   begin
     insert into public.members (id, email) values (gen_random_uuid(), 'x@x.com');
     raise exception 'FALLO: insertó en members';

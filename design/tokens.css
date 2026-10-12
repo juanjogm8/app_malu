@@ -1,0 +1,132 @@
+/* Casa en Orden · Dirección 2b "Jardín de cempasúchil"
+   Uso: <html data-theme="light|dark"> o sin atributo (sigue al sistema). */
+@import url('https://fonts.googleapis.com/css2?family=Young+Serif&family=Instrument+Sans:wght@400..700&display=swap');
+
+:root {
+  /* Tipografía */
+  --font-display: 'Young Serif', Georgia, 'Times New Roman', serif;
+  --font-body: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --text-display-xl: 400 38px/1.05 var(--font-display);
+  --text-display-l: 400 30px/1.1 var(--font-display);
+  --text-display-m: 400 24px/1.15 var(--font-display);
+  --text-display-s: 400 20px/1.2 var(--font-display);
+  --text-item: 500 17px/1.3 var(--font-body);
+  --text-body: 400 16px/1.4 var(--font-body);
+  --text-body-strong: 600 16px/1.35 var(--font-body);
+  --text-small: 400 14px/1.4 var(--font-body);
+  --text-meta: 400 13px/1.35 var(--font-body);
+  --text-eyebrow: 700 12px/1.3 var(--font-body); /* + letter-spacing .08em, uppercase */
+  --text-nav: 500 11px/1.2 var(--font-body);
+
+  /* Espaciado (base 4) */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+  --gutter: 16px;            /* margen lateral de pantalla */
+  --row-min: 54px;           /* alto mínimo de fila con casilla */
+  --tap: 44px;               /* objetivo táctil mínimo */
+  --content-max: 720px;
+
+  /* Radios */
+  --radius-xs: 8px; --radius-sm: 12px; --radius: 18px; --radius-lg: 22px; --radius-pill: 999px;
+
+  /* Elevación (casi plana: se usa borde, no sombra) */
+  --elev-0: none;
+  --elev-sheet: 0 -8px 32px rgba(19, 37, 28, .18);
+  --elev-toast: 0 8px 24px rgba(19, 37, 28, .22);
+  --scrim: rgba(12, 25, 20, .45);
+
+  /* Movimiento */
+  --dur-fast: 120ms; --dur: 200ms; --dur-sheet: 280ms; --dur-toast: 4000ms;
+  --ease-out: cubic-bezier(.2, .8, .2, 1);
+  --ease-in: cubic-bezier(.4, 0, 1, 1);
+
+  color-scheme: light dark;
+}
+
+/* ---------- Claro ---------- */
+:root, [data-theme="light"] {
+  --bg: #F1F5F1; --surface: #FFFFFF; --tint: #E8EFE9;
+  --ink: #13251C; --muted: #4A5E54; --line: #D4E0D7;
+  --accent: #1E6B4A; --accent-ink: #FFFFFF; --accent-soft: #DCEEE3;
+  --sun: #F2A23A; --sun-ink: #13251C; --sun-soft: #FCE2B0;   /* cempasúchil: solo "hoy" y cierre */
+  --warn: #8A5300; --warn-soft: #FBEACB;
+  --danger: #B3261E; --danger-soft: #FBE4E1;
+  --info: #2C5DA8; --info-soft: #E0E9F7;
+  --ok: #1F7046; --ok-soft: #DDF0E4;
+  --focus: #1E6B4A;
+  --person-a: #2B62C4; --person-a-soft: #E1EAFA;
+  --person-b: #B8401F; --person-b-soft: #F8E2DA;
+  --person-both: #13251C;
+}
+
+/* ---------- Oscuro (diseñado, no invertido) ---------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0C1914; --surface: #132620; --tint: #1A3128;
+    --ink: #EEF2EA; --muted: #A7BAAF; --line: #263E33;
+    --accent: #7FD3A8; --accent-ink: #0C1914; --accent-soft: #1D3D2F;
+    --sun: #F5AE45; --sun-ink: #1A1205; --sun-soft: #3A2C12;
+    --warn: #F0C066; --warn-soft: #352A12;
+    --danger: #FF9C92; --danger-soft: #3B1C1A;
+    --info: #9DBDF5; --info-soft: #1C2A44;
+    --ok: #86D6A5; --ok-soft: #173826;
+    --focus: #7FD3A8;
+    --person-a: #82AEFF; --person-a-soft: #1C2B47;
+    --person-b: #FF8F6E; --person-b-soft: #40221A;
+    --person-both: #EEF2EA;
+    --elev-sheet: 0 -8px 32px rgba(0, 0, 0, .5);
+    --elev-toast: 0 8px 24px rgba(0, 0, 0, .5);
+    --scrim: rgba(0, 0, 0, .6);
+  }
+}
+[data-theme="dark"] {
+  --bg: #0C1914; --surface: #132620; --tint: #1A3128;
+  --ink: #EEF2EA; --muted: #A7BAAF; --line: #263E33;
+  --accent: #7FD3A8; --accent-ink: #0C1914; --accent-soft: #1D3D2F;
+  --sun: #F5AE45; --sun-ink: #1A1205; --sun-soft: #3A2C12;
+  --warn: #F0C066; --warn-soft: #352A12;
+  --danger: #FF9C92; --danger-soft: #3B1C1A;
+  --info: #9DBDF5; --info-soft: #1C2A44;
+  --ok: #86D6A5; --ok-soft: #173826;
+  --focus: #7FD3A8;
+  --person-a: #82AEFF; --person-a-soft: #1C2B47;
+  --person-b: #FF8F6E; --person-b-soft: #40221A;
+  --person-both: #EEF2EA;
+  --elev-sheet: 0 -8px 32px rgba(0, 0, 0, .5);
+  --elev-toast: 0 8px 24px rgba(0, 0, 0, .5);
+  --scrim: rgba(0, 0, 0, .6);
+}
+
+/* ---------- Paleta de persona (6, intercambiables) ----------
+   Asigna una a --person-a y otra a --person-b. Para deuteranopía,
+   elegir una de grupo FRÍO y una de grupo CÁLIDO. */
+:root, [data-theme="light"] {
+  --pc-azul: #2B62C4;   --pc-azul-soft: #E1EAFA;     /* frío  */
+  --pc-ciruela: #7A3A9E; --pc-ciruela-soft: #EFE2F6; /* frío  */
+  --pc-jade: #0E7368;   --pc-jade-soft: #D8EFEC;     /* frío  */
+  --pc-teja: #B8401F;   --pc-teja-soft: #F8E2DA;     /* cálido */
+  --pc-ocre: #8A5D00;   --pc-ocre-soft: #F6E8C6;     /* cálido */
+  --pc-rosa: #B0306A;   --pc-rosa-soft: #F8DEEA;     /* cálido */
+}
+[data-theme="dark"] {
+  --pc-azul: #82AEFF;   --pc-azul-soft: #1C2B47;
+  --pc-ciruela: #D3A2F2; --pc-ciruela-soft: #2E1F3A;
+  --pc-jade: #5FD3C3;   --pc-jade-soft: #123532;
+  --pc-teja: #FF8F6E;   --pc-teja-soft: #40221A;
+  --pc-ocre: #EBC35C;   --pc-ocre-soft: #352A10;
+  --pc-rosa: #FF8DBC;   --pc-rosa-soft: #42192B;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --pc-azul: #82AEFF;   --pc-azul-soft: #1C2B47;
+    --pc-ciruela: #D3A2F2; --pc-ciruela-soft: #2E1F3A;
+    --pc-jade: #5FD3C3;   --pc-jade-soft: #123532;
+    --pc-teja: #FF8F6E;   --pc-teja-soft: #40221A;
+    --pc-ocre: #EBC35C;   --pc-ocre-soft: #352A10;
+    --pc-rosa: #FF8DBC;   --pc-rosa-soft: #42192B;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0ms; --dur: 0ms; --dur-sheet: 0ms; }
+}
