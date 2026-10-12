@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { useEscritura, useRows } from '@/app/datos'
+import { useEscritura, usePorEnviar, useRows } from '@/app/datos'
 import type { Row } from '@/app/datos'
 import { usePersonas } from '@/app/personas'
 import { usePreferencia } from '@/app/preferencias'
 import { Avatar } from '@/components/Avatar'
 import { Esqueleto } from '@/components/Esqueleto'
 import { Icon } from '@/components/Icon'
-import { Boton, Casilla, Confirmar, Interruptor, Tarjeta, Vacio } from '@/components/ui'
+import { Boton, Casilla, PorEnviar, Confirmar, Interruptor, Tarjeta, Vacio } from '@/components/ui'
 import { fila } from '@/components/estilos'
 import { useHojas } from '@/features/hojas'
 import { es } from '@/i18n/es'
@@ -116,6 +116,7 @@ export function SuperPage() {
 
 function FilaProducto({ it, i }: { it: Row<'shopping_items'>; i: number }) {
   const w = useEscritura()
+  const porEnviar = usePorEnviar()
   const p = usePersonas()
   const hojas = useHojas()
   return (
@@ -132,6 +133,7 @@ function FilaProducto({ it, i }: { it: Row<'shopping_items'>; i: number }) {
       >
         {it.text}
       </span>
+      {porEnviar.has(it.id) && <PorEnviar />}
       {it.created_by && (
         <Avatar member={p.byId(it.created_by)} slot={p.slot(it.created_by)} size={24} />
       )}

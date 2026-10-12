@@ -4,6 +4,7 @@ import { Icon } from '@/components/Icon'
 import type { IconName } from '@/components/Icon'
 import { fillPersona } from '@/components/estilos'
 import type { QuienSlot } from '@/components/estilos'
+import { es } from '@/i18n/es'
 import type { EntryKind } from '@/lib/calendario'
 
 const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ')
@@ -511,5 +512,15 @@ export function Confirmar({
         </button>
       </span>
     </div>
+  )
+}
+
+/** Cambio hecho sin conexión que aún no llega al servidor. */
+export function PorEnviar() {
+  return (
+    <span className="inline-flex h-6 flex-none items-center gap-1 rounded-xl bg-warn-soft px-2 text-[12px] font-bold whitespace-nowrap text-warn">
+      <Icon name="reloj" size={11} stroke={2.8} />
+      {es.conexion.porEnviar}
+    </span>
   )
 }

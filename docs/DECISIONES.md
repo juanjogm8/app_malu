@@ -158,3 +158,20 @@ Verificado con la documentación vigente de Google:
 - **Capa "Google" en la app:** solo lectura, círculo hueco del color de la persona dueña de la cuenta.
   Al tocar un evento se abre en Google Calendar. En los resúmenes de Telegram, a cada quien le llegan
   solo sus eventos de Google.
+
+## 2026-10-12 · Fase 4 · Escritura sin conexión
+
+- Sin señal (o si la red falla a medio camino) cada cambio se aplica al instante en pantalla y se
+  guarda en una cola en IndexedDB (`casa-en-orden:cola`), que sobrevive a cerrar la app. Al volver la
+  conexión se envía en orden y después se vuelve a leer todo.
+- **Conflictos:** gana la última escritura por registro. Un cambio hecho sin conexión se aplica solo
+  si el registro no cambió en el servidor después (se compara la hora local del cambio con
+  `updated_at`). Si el registro ya no existe, se descarta. Altas, restauraciones y borrados son
+  idempotentes (upsert por `id`).
+- Completar una rutina sin conexión se calcula en el dispositivo con la misma regla que
+  `complete_task` (`completarLocal`) y viaja como un cambio normal.
+- Lo que solo funciona en línea (vincular Telegram o Google) sigue pidiendo conexión.
+- Los registros con cambios pendientes muestran "Por enviar" (diseño 7.13) en Súper y Pendientes. El
+  aviso sin conexión vuelve al texto del diseño: "Pueden seguir anotando; se envía solo al volver la
+  señal".
+- La cola se borra al cerrar sesión, junto con la caché.

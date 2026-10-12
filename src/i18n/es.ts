@@ -157,10 +157,15 @@ export const es = {
     conectando: 'Conectando…',
     sinConexion: 'Sin conexión',
     avisoSinConexion: 'Sin conexión.',
-    avisoSinConexionTexto: 'Pueden ver todo; para guardar cambios esperen a que vuelva la señal.',
+    avisoSinConexionTexto: 'Pueden seguir anotando; se envía solo al volver la señal.',
+    porEnviar: 'Por enviar',
   },
   datos: {
-    sinConexion: 'Sin conexión: no se guardó. Inténtalo cuando vuelva la señal.',
+    requiereConexion: 'Para esto hace falta conexión.',
+    noSeEnvio: (n: number) =>
+      n === 1
+        ? 'Un cambio hecho sin conexión no se pudo guardar.'
+        : `${n} cambios hechos sin conexión no se pudieron guardar.`,
     noSeGuardo: 'No se pudo guardar',
     eliminado: 'Eliminado',
     deshacer: 'Deshacer',

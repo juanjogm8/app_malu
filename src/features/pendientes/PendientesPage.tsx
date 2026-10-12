@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
-import { useEscritura, useRows } from '@/app/datos'
+import { useEscritura, usePorEnviar, useRows } from '@/app/datos'
 import type { Row } from '@/app/datos'
 import { usePersonas } from '@/app/personas'
 import { Icon } from '@/components/Icon'
@@ -12,6 +12,7 @@ import {
   ChipFiltro,
   Confirmar,
   GrupoTitulo,
+  PorEnviar,
   PuntoPersona,
   Tarjeta,
   Vacio,
@@ -157,6 +158,7 @@ function FilaTarea({ task, i, hoy }: { task: Row<'tasks'>; i: number; hoy: strin
   const p = usePersonas()
   const hojas = useHojas()
   const completar = useCompletarPendiente()
+  const porEnviar = usePorEnviar()
   const hecho = task.done && !task.repeat
   const atrasada = !!task.due_date && task.due_date < hoy && !hecho
   const slot = slotDe(p, task.assignee_id, task.is_shared)
@@ -206,6 +208,7 @@ function FilaTarea({ task, i, hoy }: { task: Row<'tasks'>; i: number; hoy: strin
         {t.prioridadAlta}
       </Chip>,
     )
+  if (porEnviar.has(task.id)) chips.push(<PorEnviar key="e" />)
   if (task.repeat && task.last_done_on)
     chips.push(
       <Chip key="h" tono="hecho" icon="palomita">

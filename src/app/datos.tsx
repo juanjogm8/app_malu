@@ -9,9 +9,13 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { QueryClient } from '@tanstack/react-query'
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { del, get, set } from 'idb-keyval'
 import { useAuth } from '@/app/auth-context'
 import { useToast } from '@/components/Toast'
 import { es } from '@/i18n/es'
+import { completarLocal, debeAplicarse, idsPendientes } from '@/lib/cola'
+import type { EnCola, Operacion } from '@/lib/cola'
+import { today } from '@/lib/fechas'
 import { supabase } from '@/lib/supabase'
 import type { Database } from '@/types/db'
 
@@ -127,13 +131,98 @@ export function DatosProvider({ children }: { children: ReactNode }) {
   }, [qc, session])
 
   const estado: Conexion = !online ? 'sin-conexion' : canal
-  return <ConexionContext.Provider value={estado}>{children}</ConexionContext.Provider>
+  return (
+    <ConexionContext.Provider value={estado}>
+      <ColaProvider conexion={estado}>{children}</ColaProvider>
+    </ConexionContext.Provider>
+  )
+}
+
+/* ---------- Cola de escrituras sin conexión ---------- */
+
+const CLAVE_COLA = 'casa-en-orden:cola'
+
+interface ColaApi {
+  encolar: (op: Operacion) => void
+  /** Ids con cambios por enviar ("Por enviar"). */
+  pendientes: Set<string>
+}
+const ColaContext = createContext<ColaApi>({ encolar: () => {}, pendientes: new Set() })
+export const usePorEnviar = () => useContext(ColaContext).pendientes
+
+/** Error de red (sin señal), a diferencia de un rechazo del servidor. */
+export const esErrorDeRed = (e: { message?: string; code?: string } | null) =>
+  !!e && (!navigator.onLine || (!e.code && /fetch|network|load failed/i.test(e.message ?? '')))
+
+function ColaProvider({ conexion, children }: { conexion: Conexion; children: ReactNode }) {
+  const qc = useQueryClient()
+  const toast = useToast()
+  const [cola, setCola] = useState<EnCola[]>([])
+  const [cargada, setCargada] = useState(false)
+  const enviando = useRef(false)
+
+  useEffect(() => {
+    void get<EnCola[]>(CLAVE_COLA)
+      .then((c) => setCola((actual) => [...(c ?? []), ...actual]))
+      .catch(() => undefined)
+      .finally(() => setCargada(true))
+  }, [])
+  useEffect(() => {
+    if (cargada) void set(CLAVE_COLA, cola).catch(() => undefined)
+  }, [cola, cargada])
+
+  const encolar = useCallback((op: Operacion) => {
+    setCola((c) => [...c, { op_id: crypto.randomUUID(), ts: new Date().toISOString(), op }])
+  }, [])
+
+  // Al volver la señal se envía todo, en orden. Si una operación falla por red, se espera a la
+  // siguiente reconexión; si el servidor la rechaza, se descarta y se avisa.
+  useEffect(() => {
+    if (conexion !== 'en-vivo' || !cargada || !cola.length || enviando.current) return
+    enviando.current = true
+    void (async () => {
+      const hechas = new Set<string>()
+      let rechazadas = 0
+      for (const item of cola) {
+        const r = await aplicar(item)
+        if (r === 'red') break
+        if (r === 'rechazada') rechazadas++
+        hechas.add(item.op_id)
+      }
+      setCola((c) => c.filter((x) => !hechas.has(x.op_id)))
+      enviando.current = false
+      if (hechas.size) void qc.invalidateQueries({ queryKey: ['tabla'] })
+      if (rechazadas) toast.error(es.datos.noSeEnvio(rechazadas))
+    })()
+  }, [conexion, cargada, cola, qc, toast])
+
+  const valor = useMemo(() => ({ encolar, pendientes: idsPendientes(cola) }), [encolar, cola])
+  return <ColaContext.Provider value={valor}>{children}</ColaContext.Provider>
+}
+
+async function aplicar({ op, ts }: EnCola): Promise<'ok' | 'red' | 'rechazada'> {
+  const t = from(op.tabla as TableName)
+  let error: { message?: string; code?: string } | null
+  if (op.tipo === 'insert') ({ error } = await t.upsert(op.fila as never))
+  else if (op.tipo === 'upsert') ({ error } = await t.upsert(op.filas as never))
+  else if (op.tipo === 'delete') ({ error } = await t.delete().in('id', op.ids))
+  else {
+    // Gana la última escritura: si alguien cambió el registro después, el cambio local se descarta.
+    const actual = await t.select('updated_at').eq('id', op.id).maybeSingle()
+    if (actual.error) error = actual.error
+    else if (!actual.data)
+      return 'ok' // ya no existe
+    else if (!debeAplicarse(ts, (actual.data as { updated_at?: string }).updated_at)) return 'ok'
+    else ({ error } = await t.update(op.patch as never).eq('id', op.id))
+  }
+  if (!error) return 'ok'
+  return esErrorDeRed(error) ? 'red' : 'rechazada'
 }
 
 /* ---------- Escritura ---------- */
 
 export interface Escritura {
-  /** false si no hay conexión (y avisa). */
+  /** Para lo que solo se puede hacer en línea (Telegram, Google): false y aviso si no hay señal. */
   puedeEscribir: () => boolean
   insert: <T extends TableName>(
     table: T,
@@ -148,19 +237,20 @@ export interface Escritura {
 export function useEscritura(): Escritura {
   const qc = useQueryClient()
   const conexion = useConexion()
+  const { encolar } = useContext(ColaContext)
   const toast = useToast()
   const { member } = useAuth()
+  // Los reintentos llaman a la versión vigente de la API (evita que una función se cite a sí misma).
+  const api = useRef<Escritura | null>(null)
+  const sinSenal = conexion === 'sin-conexion'
 
   const puedeEscribir = useCallback(() => {
-    if (conexion === 'sin-conexion') {
-      toast.show(es.datos.sinConexion)
+    if (sinSenal) {
+      toast.show(es.datos.requiereConexion)
       return false
     }
     return true
-  }, [conexion, toast])
-
-  // Los reintentos llaman a la versión vigente de la API (evita que una función se cite a sí misma).
-  const api = useRef<Escritura | null>(null)
+  }, [sinSenal, toast])
 
   const fallo = useCallback(
     (reintentar?: () => void) => toast.error(es.datos.noSeGuardo, reintentar),
@@ -177,12 +267,40 @@ export function useEscritura(): Escritura {
     [qc],
   )
 
+  /**
+   * Manda una operación: sin señal (o si la red falla a medio camino) la deja en la cola y conserva
+   * el cambio optimista; si el servidor la rechaza, revierte y avisa.
+   */
+  const enviar = useCallback(
+    async (
+      op: Operacion,
+      remoto: () => PromiseLike<{ error: { message?: string; code?: string } | null }>,
+      revertir: () => void,
+      reintentar?: () => void,
+    ): Promise<boolean> => {
+      if (sinSenal) {
+        encolar(op)
+        return true
+      }
+      const { error } = await remoto()
+      if (!error) return true
+      if (esErrorDeRed(error)) {
+        encolar(op)
+        return true
+      }
+      revertir()
+      fallo(reintentar)
+      return false
+    },
+    [sinSenal, encolar, fallo],
+  )
+
   const insert = useCallback<Escritura['insert']>(
     async (table, row) => {
-      if (!puedeEscribir()) return null
       const now = new Date().toISOString()
+      const id = (row as Partial<WithId>).id ?? crypto.randomUUID()
       const optimista = {
-        id: crypto.randomUUID(),
+        id,
         created_by: member?.id ?? null,
         created_at: now,
         updated_at: now,
@@ -190,85 +308,101 @@ export function useEscritura(): Escritura {
       } as unknown as Row<typeof table>
       const prev = snapshot(table)
       setRows(table, (rows) => [...rows, optimista])
-      const { data, error } = await from(table)
-        .insert({ ...row, id: (optimista as WithId).id } as never)
-        .select()
-        .single()
-      if (error) {
-        qc.setQueryData(tableKey(table), prev)
-        fallo(() => void api.current?.insert(table, row))
-        return null
+      const fila = { ...row, id, created_by: member?.id ?? null }
+      let guardado: Row<typeof table> | null = null
+      const ok = await enviar(
+        { tipo: 'insert', tabla: table, fila },
+        async () => {
+          const r = await from(table)
+            .insert(fila as never)
+            .select()
+            .single()
+          if (!r.error) guardado = r.data as unknown as Row<typeof table>
+          return r
+        },
+        () => qc.setQueryData(tableKey(table), prev),
+        () => void api.current?.insert(table, row),
+      )
+      if (!ok) return null
+      if (guardado) {
+        const g: Row<typeof table> = guardado
+        setRows(table, (rows) => rows.map((r) => ((r as WithId).id === id ? g : r)))
       }
-      const guardado = data as unknown as Row<typeof table>
-      setRows(table, (rows) => rows.map((r) => ((r as WithId).id === guardado.id ? guardado : r)))
-      return guardado
+      return guardado ?? optimista
     },
-    [puedeEscribir, member, snapshot, setRows, qc, fallo],
+    [member, snapshot, setRows, enviar, qc],
   )
 
   const update = useCallback<Escritura['update']>(
     async (table, id, patch) => {
-      if (!puedeEscribir()) return false
       const prev = snapshot(table)
       setRows(table, (rows) => rows.map((r) => ((r as WithId).id === id ? { ...r, ...patch } : r)))
-      const { error } = await from(table)
-        .update(patch as never)
-        .eq('id', id)
-      if (error) {
-        qc.setQueryData(tableKey(table), prev)
-        fallo(() => void api.current?.update(table, id, patch))
-        return false
-      }
-      return true
+      return enviar(
+        { tipo: 'update', tabla: table, id, patch: patch as Record<string, unknown> },
+        () =>
+          from(table)
+            .update(patch as never)
+            .eq('id', id),
+        () => qc.setQueryData(tableKey(table), prev),
+        () => void api.current?.update(table, id, patch),
+      )
     },
-    [puedeEscribir, snapshot, setRows, qc, fallo],
+    [snapshot, setRows, enviar, qc],
   )
 
   const restaurar = useCallback(
     async <T extends TableName>(table: T, rows: Row<T>[]) => {
-      if (!puedeEscribir()) return
       setRows(table, (cur) => [...cur.filter((r) => !rows.some((x) => x.id === r.id)), ...rows])
-      const { error } = await from(table).upsert(rows as never)
-      if (error) {
-        void qc.invalidateQueries({ queryKey: tableKey(table) })
-        fallo()
-      }
+      await enviar(
+        { tipo: 'upsert', tabla: table, filas: rows as never },
+        () => from(table).upsert(rows as never),
+        () => void qc.invalidateQueries({ queryKey: tableKey(table) }),
+      )
     },
-    [puedeEscribir, setRows, qc, fallo],
+    [setRows, enviar, qc],
   )
 
   const remove = useCallback<Escritura['remove']>(
     async (table, rows, mensaje) => {
-      if (!rows.length || !puedeEscribir()) return false
+      if (!rows.length) return false
       const ids = rows.map((r) => r.id)
       const prev = snapshot(table)
       setRows(table, (cur) => cur.filter((r) => !ids.includes((r as WithId).id)))
-      const { error } = await from(table).delete().in('id', ids)
-      if (error) {
-        qc.setQueryData(tableKey(table), prev)
-        fallo()
-        return false
-      }
+      const ok = await enviar(
+        { tipo: 'delete', tabla: table, ids },
+        () => from(table).delete().in('id', ids),
+        () => qc.setQueryData(tableKey(table), prev),
+      )
+      if (!ok) return false
       toast.show(mensaje ?? es.datos.eliminado, {
         action: { label: es.datos.deshacer, fn: () => void restaurar(table, rows) },
       })
       return true
     },
-    [puedeEscribir, snapshot, setRows, qc, fallo, toast, restaurar],
+    [snapshot, setRows, enviar, qc, toast, restaurar],
   )
 
   const completeTask = useCallback<Escritura['completeTask']>(
     async (id) => {
-      if (!puedeEscribir()) return null
+      const task = snapshot('tasks')?.find((t) => t.id === id)
+      // Sin señal se calcula igual que complete_task y se manda como cambio normal.
+      const local = async () => {
+        if (!task) return null
+        const members = qc.getQueryData<Row<'members'>[]>(tableKey('members')) ?? []
+        const patch = completarLocal(task, today(), member?.id ?? null, members)
+        return (await api.current?.update('tasks', id, patch)) ? { ...task, ...patch } : null
+      }
+      if (sinSenal) return local()
       const { data, error } = await supabase.rpc('complete_task', { p_id: id })
       if (error) {
+        if (esErrorDeRed(error)) return local()
         fallo(() => void api.current?.completeTask(id))
         return null
       }
       setRows('tasks', (rows) => rows.map((r) => (r.id === id ? data : r)))
       return data
     },
-    [puedeEscribir, fallo, setRows],
+    [snapshot, qc, member, sinSenal, fallo, setRows],
   )
 
   const valor = useMemo(
@@ -280,3 +414,6 @@ export function useEscritura(): Escritura {
   }, [valor])
   return valor
 }
+
+/** Borra la cola guardada (al cerrar sesión). */
+export const borrarCola = () => del(CLAVE_COLA)

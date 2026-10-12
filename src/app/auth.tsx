@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { persister } from '@/app/cache'
+import { borrarCola } from '@/app/datos'
 import { supabase } from '@/lib/supabase'
 import { AuthContext } from '@/app/auth-context'
 import type { AuthState } from '@/app/auth-context'
@@ -53,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryClient.clear()
     // Lo guardado en el dispositivo es de la casa: no se queda al cerrar sesión.
     await persister.removeClient()
+    await borrarCola()
   }, [queryClient])
 
   const value = useMemo<AuthState>(

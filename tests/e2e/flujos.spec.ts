@@ -243,7 +243,7 @@ test('planes: sorpréndeme y notas: búsqueda sin acentos', async ({ page }) => 
   await expect(page.getByText('55 8765 4321')).toBeVisible()
 })
 
-test('sin conexión: muestra lo guardado y bloquea la escritura con aviso', async ({
+test('sin conexión: muestra lo guardado, anota en cola y envía al volver la señal', async ({
   page,
   context,
 }) => {
@@ -261,13 +261,43 @@ test('sin conexión: muestra lo guardado y bloquea la escritura con aviso', asyn
 
   await context.setOffline(true)
   await expect(page.getByText('Sin conexión', { exact: true })).toBeVisible()
+  await expect(page.getByText(/se envía solo al volver la señal/)).toBeVisible()
   await page.getByRole('checkbox', { name: 'Aguacate' }).click()
-  await expect(page.getByText(/no se guardó/)).toBeVisible()
+  await page.getByLabel('Agregar al súper…').fill('Servilletas')
+  await page.getByLabel('Agregar al súper…').press('Enter')
   await expect(page.getByRole('checkbox', { name: 'Aguacate' })).toHaveAttribute(
     'aria-checked',
-    'false',
+    'true',
   )
+  await expect(page.getByText('Por enviar')).toHaveCount(2)
+  expect(sb.db.shopping_items!.find((i) => i.text === 'Aguacate')!.done).toBe(false)
+
+  // Vuelve la señal: se envía la cola en orden.
+  sb.caido = false
   await context.setOffline(false)
+  await expect.poll(() => sb.db.shopping_items!.find((i) => i.text === 'Aguacate')!.done).toBe(true)
+  await expect.poll(() => sb.db.shopping_items!.some((i) => i.text === 'Servilletas')).toBe(true)
+  await expect(page.getByText('Por enviar')).toHaveCount(0)
+})
+
+test('sin conexión: gana la última escritura por registro', async ({ page, context }) => {
+  const sb = new SupabaseFalso()
+  await sb.instalar(page)
+  await iniciarSesion(page)
+  await page.goto('/listas/compras')
+  await expect(page.getByRole('checkbox', { name: 'Licuadora' })).toBeVisible()
+  await context.setOffline(true)
+  await page.getByRole('checkbox', { name: 'Licuadora' }).click()
+  await page.getByRole('checkbox', { name: 'Tenis para correr' }).click()
+  // Mientras tanto, la otra persona cambió la licuadora después (su cambio es más reciente).
+  const lic = sb.db.purchases!.find((p) => p.text === 'Licuadora')!
+  const tenis = sb.db.purchases!.find((p) => p.text === 'Tenis para correr')!
+  lic.updated_at = new Date(Date.now() + 60_000).toISOString()
+  await context.setOffline(false)
+  // El cambio sin conflicto se aplica (prueba que la cola ya se envió)…
+  await expect.poll(() => tenis.done).toBe(true)
+  // …y el que tenía un cambio posterior en el servidor se descarta.
+  expect(lic.done).toBe(false)
 })
 
 test('cerrar sesión borra la caché del dispositivo', async ({ page }) => {
