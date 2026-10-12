@@ -1,0 +1,67 @@
+/** Todos los textos de la interfaz (español de México). */
+export const es = {
+  app: { name: 'Casa en Orden' },
+  nav: {
+    inicio: 'Inicio',
+    calendario: 'Calendario',
+    pendientes: 'Pendientes',
+    listas: 'Listas',
+    casa: 'Casa',
+    mas: 'Más',
+    principal: 'Navegación principal',
+  },
+  titulos: {
+    inicio: 'Inicio',
+    calendario: 'Calendario',
+    pendientes: 'Pendientes',
+    listas: 'Listas',
+    super: 'Súper',
+    compras: 'Compras',
+    casa: 'Mejoras del hogar',
+    mas: 'Más',
+    comidas: 'Comidas',
+    ninos: 'Niños',
+    fechas: 'Fechas importantes',
+    planes: 'Planes',
+    notas: 'Notas y contactos',
+    revision: 'Revisión de la semana',
+  },
+  mas: {
+    volver: '‹ Más',
+    descripcion: {
+      comidas: 'Menú de la semana e ingredientes',
+      ninos: 'Citas, vacunas, escuela y actividades',
+      fechas: 'Cumpleaños, aniversarios y vencimientos',
+      planes: 'Restaurantes, fines de semana y viajes',
+      notas: 'Datos útiles y teléfonos',
+      revision: 'Diez minutos para dejar la semana en orden',
+    },
+  },
+  auth: {
+    tagline: 'La casa, los pendientes y la semana, en un solo lugar.',
+    entrarGoogle: 'Entrar con Google',
+    entrando: 'Abriendo Google…',
+    errorGenerico: 'No se pudo iniciar sesión. Intenta de nuevo.',
+    sinAccesoTitulo: 'Esta cuenta no está autorizada',
+    sinAccesoTexto:
+      'Casa en Orden es privada. Si crees que es un error, entra con la cuenta de Google que se dio de alta.',
+    otraCuenta: 'Entrar con otra cuenta',
+    cerrarSesion: 'Cerrar sesión',
+  },
+  menu: {
+    cuenta: 'Cuenta',
+    tema: 'Tema',
+    temaSistema: 'Automático',
+    temaClaro: 'Claro',
+    temaOscuro: 'Oscuro',
+  },
+  config: {
+    faltaTitulo: 'Falta configurar Supabase',
+    faltaTexto:
+      'Copia .env.example a .env.local y llena VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY. Luego reinicia el servidor.',
+  },
+  enConstruccion: 'Esta vista llega en la fase 1.',
+  cargando: 'Cargando…',
+  noEncontrado: 'Esta página no existe.',
+  irInicio: 'Ir a Inicio',
+} as const

@@ -1,0 +1,2 @@
+-- Semillas SOLO para el entorno local (`supabase db reset`). Nunca se aplican en producción.
+-- Vacío por ahora: los datos de ejemplo llegan con la fase 1.

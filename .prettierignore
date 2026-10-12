@@ -1,0 +1,6 @@
+dist
+dev-dist
+pnpm-lock.yaml
+docs
+design
+supabase/.temp

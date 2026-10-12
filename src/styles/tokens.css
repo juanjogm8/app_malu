@@ -1,0 +1,77 @@
+/*
+ * Tokens de diseño: fuente de verdad de colores, tipografía y medidas.
+ * PROVISIONALES hasta recibir design/tokens.css de Claude Design; al llegar, se reemplaza
+ * este archivo conservando los nombres o se ajusta el mapeo de src/styles/index.css.
+ *
+ * Tema: por defecto sigue al sistema (prefers-color-scheme). <html data-theme="light|dark">
+ * lo fija a mano.
+ */
+:root {
+  color-scheme: light;
+
+  --bg: #f7f5f0;
+  --surface: #ffffff;
+  --surface-2: #efece4;
+  --text: #1c1b18;
+  --text-muted: #5f5c54;
+  --border: #e2ded4;
+  --accent: #0a6b58;
+  --accent-contrast: #ffffff;
+  --danger: #b42318;
+  --ok: #157f3c;
+  --warn: #a15c07;
+  --focus: #2563eb;
+
+  --person-a: #0a6b58;
+  --person-b: #c2410c;
+
+  --font-sans:
+    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --tap: 44px;
+  --header-h: 56px;
+  --nav-h: 64px;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 4px 16px rgb(0 0 0 / 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #141412;
+    --surface: #1d1c19;
+    --surface-2: #272622;
+    --text: #f1efe9;
+    --text-muted: #a7a398;
+    --border: #34322d;
+    --accent: #3fb59a;
+    --accent-contrast: #0b1f1a;
+    --danger: #f97066;
+    --ok: #47cd89;
+    --warn: #fdb022;
+    --focus: #84adff;
+    --person-a: #3fb59a;
+    --person-b: #f38744;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.3);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #141412;
+  --surface: #1d1c19;
+  --surface-2: #272622;
+  --text: #f1efe9;
+  --text-muted: #a7a398;
+  --border: #34322d;
+  --accent: #3fb59a;
+  --accent-contrast: #0b1f1a;
+  --danger: #f97066;
+  --ok: #47cd89;
+  --warn: #fdb022;
+  --focus: #84adff;
+  --person-a: #3fb59a;
+  --person-b: #f38744;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.3);
+}
