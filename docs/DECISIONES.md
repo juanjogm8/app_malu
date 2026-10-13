@@ -25,7 +25,7 @@ Registro de decisiones relevantes: qué, por qué y qué alternativas había.
 - **Por qué:** el usuario quiere decidir después; el flag ya existe para no necesitar una migración al encenderlo.
 
 ### Correos autorizados en una migración
-- **Qué:** `20261012000001_acceso.sql` inserta `juanjogamur@gmail.com` y `m.rm91@hotmail.com` en `allowed_emails`.
+- **Qué:** `20261012000001_acceso.sql` inserta `juanjogamur@gmail.com` y `m.rm91@hotmail.com` en `allowed_emails`; `…14_correo_malu.sql` cambia el segundo por `maria.rodriguez@gmail.com`.
 - **Por qué:** el usuario dio los correos; así la base queda lista al aplicar migraciones, sin pasos manuales. No son datos de ejemplo: son la lista de acceso real. Cambiarla después requiere una migración nueva (o un `insert` desde el editor SQL de Supabase).
 
 ### Registro abierto en Supabase: orden de configuración
