@@ -6,23 +6,23 @@
 -- Alta: los dos correos autorizados entran (sin importar mayúsculas), un tercero es rechazado.
 insert into auth.users (id, email, raw_user_meta_data) values
   (:'A', 'JuanJoGamur@gmail.com', '{"full_name":"Juanjo G"}'),
-  (:'B', 'maria.rodriguez.91@gmail.com', '{}');
+  (:'B', 'maria.rodriguezm.91@gmail.com', '{}');
 
 do $$ begin
   assert (select count(*) from public.members) = 2, 'deben existir 2 miembros';
   assert (select name from public.members where email ilike 'juanjogamur@gmail.com') = 'Juanjo G', 'nombre desde Google';
-  assert (select name from public.members where email = 'maria.rodriguez.91@gmail.com') = 'maria.rodriguez.91', 'nombre desde el correo';
+  assert (select name from public.members where email = 'maria.rodriguezm.91@gmail.com') = 'maria.rodriguezm.91', 'nombre desde el correo';
   assert (select count(distinct color) from public.members) = 2, 'colores distintos';
-  assert (select color from public.members where email = 'maria.rodriguez.91@gmail.com') = 'teja', 'persona B = teja';
+  assert (select color from public.members where email = 'maria.rodriguezm.91@gmail.com') = 'teja', 'persona B = teja';
 end $$;
 
 -- Si la primera persona ya eligió teja, la segunda recibe otro color libre y sí puede entrar.
 begin;
 delete from auth.users where id = :'B';
 update public.members set color = 'teja' where id = :'A';
-insert into auth.users (id, email, raw_user_meta_data) values (:'B', 'maria.rodriguez.91@gmail.com', '{}');
+insert into auth.users (id, email, raw_user_meta_data) values (:'B', 'maria.rodriguezm.91@gmail.com', '{}');
 do $$ begin
-  assert (select color from public.members where email = 'maria.rodriguez.91@gmail.com') = 'ocre',
+  assert (select color from public.members where email = 'maria.rodriguezm.91@gmail.com') = 'ocre',
          'persona B recibe un color libre';
 end $$;
 rollback;
@@ -190,6 +190,6 @@ end $$;
 reset role;
 
 do $$ begin
-  assert (select name from public.members where id = '00000000-0000-0000-0000-00000000000b') = 'maria.rodriguez.91',
+  assert (select name from public.members where id = '00000000-0000-0000-0000-00000000000b') = 'maria.rodriguezm.91',
     'la fila del otro no cambió';
 end $$;
