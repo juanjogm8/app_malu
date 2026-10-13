@@ -49,7 +49,7 @@ export function dbVacia(): Db {
       },
       {
         id: MALU,
-        email: 'maria.rodriguez@gmail.com',
+        email: 'maria.rodriguez.91@gmail.com',
         name: 'Malu Ramírez',
         color: 'teja',
         avatar_url: null,

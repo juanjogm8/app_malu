@@ -65,7 +65,7 @@ Valores que vas a ir juntando (guárdalos en un lugar seguro, **nunca** en el re
 
 ## 3. Cerrar la puerta: correos autorizados y registro
 
-Los dos correos (`juanjogamur@gmail.com` y `maria.rodriguez@gmail.com`) ya vienen en las migraciones; se
+Los dos correos (`juanjogamur@gmail.com` y `maria.rodriguez.91@gmail.com`) ya vienen en las migraciones; se
 cargan en el paso 4. Aquí solo apagas lo que sobra:
 
 1. **Authentication → Sign In / Providers → Email**: desactívalo (solo queda Google).
@@ -113,7 +113,7 @@ pnpm dlx supabase db push                     # muestra las migraciones y pide c
 
 **Comprobación:**
 - Entra a `URL_VERCEL` con `juanjogamur@gmail.com`: llegas a Inicio.
-- Que la otra persona entre con `maria.rodriguez@gmail.com`: llega a Inicio.
+- Que la otra persona entre con `maria.rodriguez.91@gmail.com`: llega a Inicio.
 - Entra con cualquier otra cuenta de Google: ves "Esta cuenta no está autorizada".
 
 ## 7. Apagar el registro

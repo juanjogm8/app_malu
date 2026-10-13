@@ -5,8 +5,8 @@ describe('firstName', () => {
     expect(firstName({ name: 'Juan José Gómez', email: 'x@y.com' })).toBe('Juan')
   })
   it('usa el correo si no hay nombre', () => {
-    expect(firstName({ name: '', email: 'maria.rodriguez@gmail.com' })).toBe(
-      'maria.rodriguez@gmail.com',
+    expect(firstName({ name: '', email: 'maria.rodriguez.91@gmail.com' })).toBe(
+      'maria.rodriguez.91@gmail.com',
     )
   })
 })
