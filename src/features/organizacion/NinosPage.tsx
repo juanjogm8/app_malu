@@ -3,12 +3,12 @@ import { usePersonas } from '@/app/personas'
 import { usePreferencia } from '@/app/preferencias'
 import { Esqueleto } from '@/components/Esqueleto'
 import { fila } from '@/components/estilos'
-import { Chip, ChipFiltro, GrupoTitulo, Marcador, Tarjeta, Vacio } from '@/components/ui'
+import { Boton, Chip, ChipFiltro, GrupoTitulo, Marcador, Tarjeta, Vacio } from '@/components/ui'
 import { slotDe } from '@/features/entradas'
 import { useHojas } from '@/features/hojas'
 import { es } from '@/i18n/es'
 import { addDays, fShort, fTime, fWdShort, today } from '@/lib/fechas'
-import { KID_KIND_NAME, kidNames, kidView } from '@/lib/organizacion'
+import { KID_KIND_NAME, kidView } from '@/lib/organizacion'
 import type { EventoNino } from '@/lib/organizacion'
 import { REPEAT_NAME } from '@/lib/recurrencia'
 import type { KidKind } from '@/types/db'
@@ -19,12 +19,14 @@ const t = es.ninos
 /** Niños: vista de los eventos del calendario que tienen niño. */
 export function NinosPage() {
   const { rows: events, loading } = useRows('events')
+  const { rows: kids, loading: cargandoNinos } = useRows('kids')
   const hojas = useHojas()
   const [tipo, setTipo] = usePreferencia<KidKind | null>('ninos:tipo', null)
   const [nino, setNino] = usePreferencia<string | null>('ninos:nino', null)
   const hoy = today()
-  const nombres = kidNames(events)
-  const ninoActivo = nino && nombres.includes(nino) ? nino : null
+  const ordenados = [...kids].sort((a, b) => a.name.localeCompare(b.name, 'es'))
+  const kidActivo = ordenados.find((k) => k.name === nino) ?? null
+  const ninoActivo = kidActivo?.name ?? null
   const { proximos, pasados } = kidView(events, hoy, ninoActivo, tipo)
 
   return (
@@ -32,30 +34,56 @@ export function NinosPage() {
       <TituloConAgregar
         titulo={es.titulos.ninos}
         // Un evento nuevo con el niño (y el tipo) del filtro ya puestos.
+        // Sin niños dados de alta, primero se agrega uno.
         onAgregar={() =>
-          hojas.nuevoEvento(undefined, {
-            kid: ninoActivo ?? (nombres.length === 1 ? nombres[0]! : ''),
-            kid_kind: tipo ?? '',
-          })
+          ordenados.length
+            ? hojas.nuevoEvento(undefined, {
+                kid: ninoActivo ?? (ordenados.length === 1 ? ordenados[0]!.name : ''),
+                kid_kind: tipo ?? '',
+              })
+            : hojas.nuevoNino(setNino)
         }
       />
-      {loading ? (
+      {loading || cargandoNinos ? (
         <Esqueleto />
-      ) : !nombres.length ? (
-        <Vacio icon="ninos" titulo={t.vacioTitulo} texto={t.vacioTexto} />
+      ) : !ordenados.length ? (
+        <Vacio
+          icon="ninos"
+          titulo={t.vacioTitulo}
+          texto={t.vacioTexto}
+          chips={[t.agregarNino]}
+          onChip={() => hojas.nuevoNino(setNino)}
+        />
       ) : (
         <>
-          {nombres.length > 1 && (
-            <Filtros label={t.filtroNino}>
+          <Filtros label={t.filtroNino}>
+            {ordenados.length > 1 && (
               <ChipFiltro activo={!ninoActivo} onClick={() => setNino(null)}>
                 {t.todos}
               </ChipFiltro>
-              {nombres.map((k) => (
-                <ChipFiltro key={k} activo={ninoActivo === k} onClick={() => setNino(k)}>
-                  {k}
-                </ChipFiltro>
-              ))}
-            </Filtros>
+            )}
+            {ordenados.map((k) => (
+              <ChipFiltro
+                key={k.id}
+                activo={ninoActivo === k.name}
+                onClick={() => setNino(ninoActivo === k.name ? null : k.name)}
+              >
+                {k.name}
+              </ChipFiltro>
+            ))}
+            <ChipFiltro activo={false} onClick={() => hojas.nuevoNino(setNino)}>
+              {t.agregarNino}
+            </ChipFiltro>
+          </Filtros>
+          {kidActivo && (
+            <Boton
+              variante="enlace"
+              chico
+              className="self-start"
+              onClick={() => hojas.editarNino(kidActivo, setNino)}
+            >
+              {t.editarNino(kidActivo.name)}
+            </Boton>
           )}
           <Filtros label={t.filtroTipo}>
             <ChipFiltro activo={!tipo} onClick={() => setTipo(null)}>

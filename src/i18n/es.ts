@@ -61,10 +61,13 @@ export const es = {
     todos: 'Los dos',
     proximos: 'Próximos',
     pasaron: 'Ya pasaron',
+    agregarNino: '+ Niño',
+    editarNino: (n: string) => `Editar a ${n}`,
+    borrado: (n: string) => `Se borró a ${n}; sus eventos se quedaron sin niño.`,
     sinFiltro: 'No hay nada con este filtro.',
     vacioTitulo: 'Todo de los niños, en un lugar',
     vacioTexto:
-      'Citas del pediatra, vacunas, clases y fiestas: son eventos del calendario con el nombre del niño. Agrega uno aquí o pon "Niño" al crear un evento.',
+      'Primero agrega a los niños. Luego sus citas, vacunas, clases y fiestas son eventos del calendario: elige al niño al crearlos y aparecen aquí.',
   },
   fechas: {
     titulo: 'Fechas',

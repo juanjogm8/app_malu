@@ -375,36 +375,40 @@ test('google: la capa Google muestra los eventos y Ajustes manda a conectar', as
   await expect(page).toHaveURL(/accounts\.google\.com/)
 })
 
-test('niños: vista de eventos con niño; agregar desde Niños trae el niño y el tipo', async ({
+test('niños: dar de alta un niño, agregar su evento desde Niños y elegirlo en eventos', async ({
   page,
 }) => {
   const sb = new SupabaseFalso(dbVacia())
   await sb.instalar(page)
   await iniciarSesion(page)
-  await page.goto('/calendario')
-  await page.getByRole('button', { name: '+ Evento' }).click()
-  await page.getByLabel('Título').fill('Natación')
-  // El tipo solo aparece cuando hay niño.
-  await expect(page.getByLabel('Tipo')).toHaveCount(0)
-  await page.getByLabel('Niño (opcional)').fill('Sofi')
-  await page.getByLabel('Tipo').selectOption('actividad')
+  await page.goto('/mas/ninos')
+  await page.getByRole('button', { name: '+ Niño' }).click()
+  await page.getByLabel('Nombre').fill('Sofi')
   await page.getByRole('button', { name: 'Guardar' }).click()
   await expect(page.getByRole('dialog')).toBeHidden()
-  await expect(page.getByText('Evento · Ambos · Sofi')).toBeVisible()
-  expect(sb.db.events![0]).toMatchObject({ title: 'Natación', kid: 'Sofi', kid_kind: 'actividad' })
+  expect(sb.db.kids).toMatchObject([{ name: 'Sofi' }])
+  await expect(page.getByRole('button', { name: 'Sofi', pressed: true })).toBeVisible()
 
-  await page.getByRole('link', { name: 'Más' }).click()
-  await page.getByRole('link', { name: /Niños/ }).click()
+  // + Agregar abre "Nuevo evento" con el niño del filtro; el tipo solo aparece si hay niño.
+  await page.getByRole('button', { name: '+ Agregar' }).click()
+  const hoja = page.getByRole('dialog', { name: 'Nuevo evento' })
+  await expect(hoja.getByLabel('Niño')).toHaveValue('Sofi')
+  await hoja.getByLabel('Título').fill('Natación')
+  await hoja.getByLabel('Tipo', { exact: true }).selectOption('actividad')
+  await hoja.getByRole('button', { name: 'Guardar' }).click()
+  await expect(hoja).toBeHidden()
+  expect(sb.db.events![0]).toMatchObject({ title: 'Natación', kid: 'Sofi', kid_kind: 'actividad' })
   await expect(page.getByRole('heading', { name: 'Próximos' })).toBeVisible()
   await page.getByRole('button', { name: 'Escuela' }).click()
   await expect(page.getByText('No hay nada con este filtro.')).toBeVisible()
   await page.getByRole('button', { name: 'Actividad' }).click()
   await expect(page.getByRole('button', { name: /Natación/ })).toBeVisible()
 
-  await page.getByRole('button', { name: '+ Agregar' }).click()
-  await expect(page.getByRole('dialog', { name: 'Nuevo evento' })).toBeVisible()
-  await expect(page.getByLabel('Niño (opcional)')).toHaveValue('Sofi')
-  await expect(page.getByRole('dialog').getByLabel('Tipo', { exact: true })).toHaveValue(
-    'actividad',
-  )
+  // En el calendario, el niño se elige de la lista.
+  await page.getByRole('link', { name: 'Calendario' }).click()
+  await expect(page.getByText('Evento · Ambos · Sofi')).toBeVisible()
+  await page.getByRole('button', { name: '+ Evento' }).click()
+  const nueva = page.getByRole('dialog', { name: 'Nuevo evento' })
+  await expect(nueva.getByLabel('Tipo', { exact: true })).toHaveCount(0)
+  await expect(nueva.getByLabel('Niño').locator('option')).toHaveText(['Ninguno', 'Sofi'])
 })

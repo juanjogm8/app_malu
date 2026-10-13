@@ -209,3 +209,8 @@ Verificado con la documentación vigente de Google:
   (lo ya hecho sin fecha se descartó) y eliminó `kid_items`.
 - Se quitaron la capa "Niños" del calendario y la parte de niños de "Lo que se atoró" en la Revisión
   (los eventos no se atrasan).
+- **Lista de niños** (`kids`): se dan de alta en Niños ("+ Niño") y en el evento el campo "Niño" es
+  un selector con esa lista (sin errores de dedo). `events.kid` sigue guardando el nombre: renombrar
+  a un niño actualiza sus eventos (y Google), y borrarlo los deja en el calendario sin niño; Deshacer
+  regresa al niño y se lo vuelve a poner a sus eventos. Los nombres que ya se usaban quedaron dados
+  de alta en la migración.

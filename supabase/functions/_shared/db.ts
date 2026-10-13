@@ -82,6 +82,9 @@ export type CalendarEvent = Audit & {
 
 export type KidKind = 'cita' | 'vacuna' | 'actividad' | 'escuela' | 'fiesta' | 'otro'
 
+/** Niños dados de alta en la vista Niños; los eventos guardan el nombre en events.kid. */
+export type Kid = Audit & { name: string }
+
 export type ImportantDate = Audit & {
   name: string
   kind: 'cumple' | 'aniversario' | 'vence' | 'otro'
@@ -200,6 +203,7 @@ export type Database = {
       app_settings: Table<AppSettings>
       tasks: Table<Task, 'text'>
       events: Table<CalendarEvent, 'title' | 'date'>
+      kids: Table<Kid, 'name'>
       important_dates: Table<ImportantDate, 'name' | 'date'>
       meals: Table<Meal, 'date' | 'meal'>
       plans: Table<Plan, 'text'>

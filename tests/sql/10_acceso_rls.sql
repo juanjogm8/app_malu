@@ -31,6 +31,7 @@ create temp table casos (tbl text primary key, ins text not null);
 insert into casos values
   ('tasks',            $$insert into public.tasks (text) values ('t')$$),
   ('events',           $$insert into public.events (title, date) values ('e', '2026-10-12')$$),
+  ('kids',             $$insert into public.kids (name) values ('k' || gen_random_uuid())$$),
   ('important_dates',  $$insert into public.important_dates (name, date) values ('f', '1990-05-01')$$),
   ('meals',            $$insert into public.meals (date, meal, text) values ('2026-10-13', 'cena', 'm')$$),
   ('plans',            $$insert into public.plans (text) values ('p')$$),

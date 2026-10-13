@@ -67,6 +67,7 @@ export function dbVacia(): Db {
     google_events: [],
     tasks: [],
     events: [],
+    kids: [],
     important_dates: [],
     meals: [],
     plans: [],
@@ -198,6 +199,7 @@ export function dbEjemplo(): Db {
       notes: null,
     },
   ]
+  db.kids = [{ id: uid(), ...audit(MALU), name: 'Emilia' }]
   db.events.push(
     {
       id: uid(),

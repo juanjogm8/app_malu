@@ -13,7 +13,6 @@ import { parsePrice } from '@/lib/dinero'
 import { fLong, today } from '@/lib/fechas'
 import { defaultRemind, defaultYearly, KIND_NAME } from '@/lib/fechas-importantes'
 import { AREAS, STATUS_NAME, STATUS_ORDER } from '@/lib/listas'
-import { kidNames } from '@/lib/organizacion'
 import { whoFrom, whoToEvent, whoToTask } from '@/lib/personas'
 import type { WhoValue } from '@/lib/personas'
 import { REPEAT_NAME, REPEATS } from '@/lib/recurrencia'
@@ -83,6 +82,7 @@ export function useHojas() {
   const p = usePersonas()
   const { rows: tasks } = useRows('tasks')
   const { rows: events } = useRows('events')
+  const { rows: kids } = useRows('kids')
   const { rows: dates } = useRows('important_dates')
   const { rows: plans } = useRows('plans')
   const { rows: meals } = useRows('meals')
@@ -172,7 +172,7 @@ export function useHojas() {
 
   /* ---------- Eventos ---------- */
   const camposEvento = useCallback(
-    (): Campo[] => [
+    (actual?: string | null): Campo[] => [
       {
         k: 'title',
         label: 'Título',
@@ -186,11 +186,16 @@ export function useHojas() {
       { k: 'repeat', label: 'Repetir', t: 'select', opts: REP_OPTS, mitad: true },
       {
         k: 'kid',
-        label: 'Niño (opcional)',
-        t: 'text',
-        ph: 'Nombre',
+        label: 'Niño',
+        t: 'select',
         mitad: true,
-        sugerencias: kidNames(events),
+        // Los niños se dan de alta en Más → Niños; un nombre viejo que ya no está se conserva.
+        opts: [
+          ['', kids.length ? 'Ninguno' : 'Ninguno (agrégalos en Niños)'],
+          ...[...new Set([...kids.map((k) => k.name), ...(actual ? [actual] : [])])]
+            .sort((a, b) => a.localeCompare(b, 'es'))
+            .map((n): [string, string] => [n, n]),
+        ],
       },
       {
         k: 'kid_kind',
@@ -202,7 +207,7 @@ export function useHojas() {
       { k: 'place', label: 'Lugar', t: 'text' },
       { k: 'notes', label: 'Notas', t: 'area' },
     ],
-    [quien, events],
+    [quien, kids],
   )
   const packEvento = (v: Valores) => ({
     title: s(v, 'title'),
@@ -229,7 +234,7 @@ export function useHojas() {
     (e: Row<'events'>) =>
       hoja.abrir({
         titulo: 'Editar evento',
-        campos: camposEvento(),
+        campos: camposEvento(e.kid),
         valores: {
           title: e.title,
           date: e.date,
@@ -307,6 +312,55 @@ export function useHojas() {
         onDelete: () => void w.remove('important_dates', [f]),
       }),
     [hoja, camposFecha, w],
+  )
+
+  /* ---------- Niños ---------- */
+  const camposNino: Campo[] = useMemo(
+    () => [{ k: 'name', label: 'Nombre', t: 'text', req: true, ph: 'Sofi, Mateo…' }],
+    [],
+  )
+  const mismoNombre = (a: string, b: string) =>
+    a.trim().toLocaleLowerCase('es') === b.trim().toLocaleLowerCase('es')
+  const nuevoNino = useCallback(
+    (alGuardar?: (nombre: string) => void) =>
+      hoja.abrir({
+        titulo: 'Nuevo niño',
+        campos: camposNino,
+        valores: {},
+        onSave: async (v) => {
+          const name = s(v, 'name').slice(0, 40)
+          const ya = kids.find((k) => mismoNombre(k.name, name))
+          if (!ya && !(await w.insert('kids', { name }))) return false
+          alGuardar?.(ya?.name ?? name)
+          return true
+        },
+      }),
+    [hoja, camposNino, kids, w],
+  )
+  const editarNino = useCallback(
+    (k: Row<'kids'>, alGuardar?: (nombre: string | null) => void) =>
+      hoja.abrir({
+        titulo: 'Editar niño',
+        campos: camposNino,
+        valores: { name: k.name },
+        onSave: async (v) => {
+          const name = s(v, 'name').slice(0, 40)
+          if (kids.some((x) => x.id !== k.id && mismoNombre(x.name, name))) return false
+          if (!(await w.update('kids', k.id, { name }))) return false
+          alGuardar?.(name)
+          return true
+        },
+        onDelete: () => {
+          // Sus eventos se quedan sin niño (lo hace la base); Deshacer se los regresa.
+          const suyos = events.filter((e) => e.kid === k.name)
+          alGuardar?.(null)
+          void w.remove('kids', [k], es.ninos.borrado(k.name), () => {
+            for (const e of suyos)
+              void w.update('events', e.id, { kid: e.kid, kid_kind: e.kid_kind ?? null })
+          })
+        },
+      }),
+    [hoja, camposNino, kids, events, w],
   )
 
   /* ---------- Planes ---------- */
@@ -596,6 +650,8 @@ export function useHojas() {
     editarEvento,
     nuevaFecha,
     editarFecha,
+    nuevoNino,
+    editarNino,
     nuevoPlan,
     editarPlan,
     nuevaNota,

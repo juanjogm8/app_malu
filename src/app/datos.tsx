@@ -33,6 +33,7 @@ const TABLES: TableName[] = [
   'members',
   'tasks',
   'events',
+  'kids',
   'important_dates',
   'meals',
   'plans',
@@ -232,7 +233,13 @@ export interface Escritura {
   ) => Promise<Row<T> | null>
   update: <T extends TableName>(table: T, id: string, patch: Update<T>) => Promise<boolean>
   /** Elimina con aviso "Eliminado" y Deshacer (vuelve a insertar con el mismo id). */
-  remove: <T extends TableName>(table: T, rows: Row<T>[], mensaje?: string) => Promise<boolean>
+  remove: <T extends TableName>(
+    table: T,
+    rows: Row<T>[],
+    mensaje?: string,
+    /** Además de reinsertar, al tocar Deshacer (p. ej. regresar el niño a sus eventos). */
+    alDeshacer?: () => void,
+  ) => Promise<boolean>
   completeTask: (id: string) => Promise<Row<'tasks'> | null>
 }
 
@@ -365,7 +372,7 @@ export function useEscritura(): Escritura {
   )
 
   const remove = useCallback<Escritura['remove']>(
-    async (table, rows, mensaje) => {
+    async (table, rows, mensaje, alDeshacer) => {
       if (!rows.length) return false
       const ids = rows.map((r) => r.id)
       const prev = snapshot(table)
@@ -377,7 +384,10 @@ export function useEscritura(): Escritura {
       )
       if (!ok) return false
       toast.show(mensaje ?? es.datos.eliminado, {
-        action: { label: es.datos.deshacer, fn: () => void restaurar(table, rows) },
+        action: {
+          label: es.datos.deshacer,
+          fn: () => void restaurar(table, rows).then(() => alDeshacer?.()),
+        },
       })
       return true
     },

@@ -1,7 +1,6 @@
 import { dateGroups, whenLabel } from '@/lib/fechas-importantes'
 import {
   isHttpLink,
-  kidNames,
   kidView,
   planGroups,
   plannedMeals,
@@ -170,9 +169,5 @@ describe('niños: vista de los eventos con niño', () => {
     expect(titulos(kidView(events, T, 'Santi', null).proximos)).toEqual(['festival'])
     expect(titulos(kidView(events, T, null, 'cita').proximos)).toEqual(['pediatra'])
     expect(titulos(kidView(events, T, 'Santi', 'vacuna').pasados)).toEqual(['vacuna'])
-  })
-
-  it('los nombres salen de los eventos, sin repetir ni espacios', () => {
-    expect(kidNames([...events, ev({ kid: ' Emilia ' })])).toEqual(['Emilia', 'Santi'])
   })
 })

@@ -20,12 +20,6 @@ export const KID_KIND_NAME: Record<KidKind, string> = {
   otro: 'Otro',
 }
 
-/** Nombres de niños ya usados en Niños y en eventos (para filtros y sugerencias). */
-export const kidNames = (items: { kid?: string | null }[]) =>
-  [...new Set(items.map((i) => i.kid?.trim()).filter((k): k is string => !!k))].sort((a, b) =>
-    a.localeCompare(b, 'es'),
-  )
-
 export interface EventoNino {
   event: CalendarEvent
   /** Próxima fecha (o la última, si ya pasó). */
