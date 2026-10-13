@@ -13,6 +13,16 @@ test('un rechazo del alta muestra "no autorizada"', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Esta cuenta no está autorizada' })).toBeVisible()
 })
 
+test('al volver de Google a la raíz con un rechazo, avisa y muestra el detalle', async ({
+  page,
+}) => {
+  await page.goto('/?error=server_error&error_description=Database+error+saving+new+user')
+  await expect(page).toHaveURL(/\/sin-acceso$/)
+  await expect(page.getByRole('heading', { name: 'Esta cuenta no está autorizada' })).toBeVisible()
+  await expect(page.getByRole('alert')).toContainText('No se pudo dar de alta esta cuenta.')
+  await expect(page.getByRole('alert')).toContainText('Database error saving new user')
+})
+
 test('el aviso de privacidad es público', async ({ page }) => {
   await page.goto('/privacidad')
   await expect(page.getByRole('heading', { name: 'Aviso de privacidad' })).toBeVisible()

@@ -13,8 +13,10 @@ import { es } from '@/i18n/es'
 /** Layout de las vistas privadas: exige sesión y que la cuenta esté en `members`. */
 export function Layout() {
   const { loading, session, member } = useAuth()
+  const { search, hash } = useLocation()
   if (loading) return <Cargando />
-  if (!session) return <Navigate to="/login" replace />
+  // Conserva ?error=… / #error=… del regreso de Google para que el login muestre el rechazo.
+  if (!session) return <Navigate to={{ pathname: '/login', search, hash }} replace />
   if (!member) return <Navigate to="/sin-acceso" replace />
 
   return (

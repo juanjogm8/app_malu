@@ -23,7 +23,8 @@ export function LoginPage() {
   if (loading) return <Cargando />
   if (session && member) return <Navigate to="/" replace />
   if (session && !member) return <Navigate to="/sin-acceso" replace />
-  if (oauthError()) return <Navigate to="/sin-acceso" replace />
+  const rechazo = oauthError()
+  if (rechazo) return <Navigate to="/sin-acceso" replace state={{ error: rechazo }} />
 
   const entrar = async () => {
     setBusy(true)

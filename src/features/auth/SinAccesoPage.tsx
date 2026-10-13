@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router'
+import { Navigate, useLocation } from 'react-router'
 import { useAuth } from '@/app/auth-context'
 import { Icon } from '@/components/Icon'
 import { Pantalla } from '@/components/Pantalla'
@@ -7,6 +7,8 @@ import { Cargando } from './Cargando'
 
 export function SinAccesoPage() {
   const { loading, session, member, signOut, signInWithGoogle } = useAuth()
+  // Lo que respondió Supabase si el alta falló al volver de Google (p. ej. otra cuenta).
+  const error = (useLocation().state as { error?: string } | null)?.error
 
   if (loading) return <Cargando />
   if (session && member) return <Navigate to="/" replace />
@@ -29,6 +31,18 @@ export function SinAccesoPage() {
           )}
           {es.auth.sinAccesoTexto}
         </p>
+        {error && (
+          <div
+            role="alert"
+            className="rounded-[16px] bg-warn-soft px-4 py-3 text-[14px] leading-[1.45]"
+          >
+            <p className="font-semibold">{es.auth.altaFallo}</p>
+            <p className="text-muted">{es.auth.altaFalloTexto}</p>
+            <p className="mt-1 text-[12.5px] text-muted">
+              {es.auth.detalle} {error}
+            </p>
+          </div>
+        )}
         <button
           type="button"
           onClick={async () => {

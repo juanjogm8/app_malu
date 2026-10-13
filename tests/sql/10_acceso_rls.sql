@@ -16,6 +16,17 @@ do $$ begin
   assert (select color from public.members where email = 'maria.rodriguez.91@gmail.com') = 'teja', 'persona B = teja';
 end $$;
 
+-- Si la primera persona ya eligió teja, la segunda recibe otro color libre y sí puede entrar.
+begin;
+delete from auth.users where id = :'B';
+update public.members set color = 'teja' where id = :'A';
+insert into auth.users (id, email, raw_user_meta_data) values (:'B', 'maria.rodriguez.91@gmail.com', '{}');
+do $$ begin
+  assert (select color from public.members where email = 'maria.rodriguez.91@gmail.com') = 'ocre',
+         'persona B recibe un color libre';
+end $$;
+rollback;
+
 do $$ begin
   insert into auth.users (email) values ('intruso@example.com');
   raise exception 'FALLO: un correo no autorizado pudo registrarse';

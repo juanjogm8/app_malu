@@ -335,6 +335,10 @@ export const es = {
     sinAccesoTitulo: 'Esta cuenta no está autorizada',
     sinAccesoTexto: 'Casa en Orden solo abre con las dos cuentas de la casa.',
     entrasteComo: 'Entraste como',
+    altaFallo: 'No se pudo dar de alta esta cuenta.',
+    altaFalloTexto:
+      'Revisa que en Google elegiste el correo autorizado (no otra cuenta abierta en el navegador). Si sí era, avísale a quien instaló la app.',
+    detalle: 'Detalle:',
     otraCuenta: 'Usar otra cuenta',
     cerrarSesion: 'Cerrar sesión',
   },
