@@ -30,5 +30,11 @@ Deno.serve((req) =>
         .insert({ event_id, fecha, hora, member_id })
       return !error // la llave primaria rechaza el segundo envío
     },
+    marcarPendiente: async (task_id, due_date, tipo, member_id) => {
+      const { error } = await admin
+        .from('task_reminder_log')
+        .insert({ task_id, due_date, tipo, member_id })
+      return !error
+    },
   }),
 )

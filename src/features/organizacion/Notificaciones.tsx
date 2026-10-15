@@ -128,6 +128,15 @@ export function Notificaciones() {
               <span className="text-[13px]">{t.recordatoriosTexto}</span>
             </span>
           </Interruptor>
+          <Interruptor
+            checked={yo.task_reminders !== false}
+            onChange={(v) => void w.update('members', yo.id, { task_reminders: v })}
+          >
+            <span className="flex flex-col">
+              <span className="text-[15px] font-semibold text-ink">{t.pendientes}</span>
+              <span className="text-[13px]">{t.pendientesTexto}</span>
+            </span>
+          </Interruptor>
         </div>
       )}
     </div>

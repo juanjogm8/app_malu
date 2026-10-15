@@ -28,5 +28,13 @@ do $$ declare n int; begin
   update public.members set event_reminders = false where id = auth.uid();
   assert (select event_reminders from public.members where id = auth.uid()) = false, 'apaga sus recordatorios';
   update public.members set event_reminders = true where id = auth.uid();
+  begin
+    select count(*) into n from public.task_reminder_log;
+    raise exception 'FALLO: leyó la bitácora de pendientes';
+  exception when insufficient_privilege then null;
+  end;
+  update public.members set task_reminders = false where id = auth.uid();
+  assert (select task_reminders from public.members where id = auth.uid()) = false, 'apaga pendientes';
+  update public.members set task_reminders = true where id = auth.uid();
 end $$;
 reset role;

@@ -227,3 +227,9 @@ Verificado con la documentación vigente de Google:
   (`casa-en-orden-recordatorios`). `event_reminder_log` evita duplicados (si cambia la hora del
   evento, se vuelve a avisar) y se limpia sola a los 3 días. Un evento creado con menos de 30 min de
   anticipación avisa en el siguiente minuto con los minutos que falten.
+- **Pendientes con fecha** también avisan: la víspera a las 20:00 ("Mañana: Pagar predial"), el
+  día a las 9:00 ("Hoy: …", después del resumen de las 8) y, si nadie lo marcó, al día siguiente a
+  las 9:00 ("Se pasó: …", una sola vez). Al responsable; a los dos si es de "Ambos" o sin asignar.
+  Varios del mismo tipo van en una sola notificación con la lista. Las rutinas avisan con su
+  próxima fecha. A quien creó el pendiente hace menos de una hora no se le avisa. Interruptor
+  propio en Ajustes (`members.task_reminders`); bitácora `task_reminder_log` (se limpia a los 7 días).

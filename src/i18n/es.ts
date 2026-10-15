@@ -409,10 +409,13 @@ export const es = {
   notificaciones: {
     titulo: 'Notificaciones en este teléfono',
     explicacion:
-      'El resumen del día, el de la semana y los recordatorios de tus eventos, como notificación del teléfono. Se activan en cada dispositivo.',
+      'El resumen del día, el de la semana y los recordatorios de tus eventos y pendientes, como notificación del teléfono. Se activan en cada dispositivo.',
     recordatorios: 'Recordarme mis eventos 30 min antes',
     recordatoriosTexto:
       'Los tuyos y los de "Ambos". Llega a todos tus dispositivos con notificaciones.',
+    pendientes: 'Recordarme mis pendientes',
+    pendientesTexto:
+      'La víspera a las 8 p. m., el día a las 9 a. m. y, si se pasa, al día siguiente. Los tuyos, los de "Ambos" y los sin asignar.',
     activar: 'Activar notificaciones',
     desactivar: 'Desactivar en este teléfono',
     activadas: 'Notificaciones activadas.',

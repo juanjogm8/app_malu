@@ -347,6 +347,8 @@ test('ajustes: conectar Telegram y el flag de resúmenes por persona', async ({ 
   await recordatorios.click()
   await expect.poll(() => sb.db.members![0]!.event_reminders).toBe(false)
   await expect(recordatorios).toHaveAttribute('aria-checked', 'false')
+  await page.getByRole('switch', { name: /Recordarme mis pendientes/ }).click()
+  await expect.poll(() => sb.db.members![0]!.task_reminders).toBe(false)
 })
 
 test('google: la capa Google muestra los eventos y Ajustes manda a conectar', async ({ page }) => {

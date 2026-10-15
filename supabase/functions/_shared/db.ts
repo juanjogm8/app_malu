@@ -38,6 +38,8 @@ export type Member = {
   digest_weekly: boolean
   /** Recordatorio de sus eventos 30 min antes (push y Telegram). */
   event_reminders?: boolean
+  /** Recordatorio de sus pendientes: la víspera, el día y si se pasan. */
+  task_reminders?: boolean
 }
 
 export type AppSettings = {

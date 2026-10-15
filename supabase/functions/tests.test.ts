@@ -195,6 +195,7 @@ Deno.test('digest: manda a cada quien lo suyo y no repite el mismo día', async 
     push: async (id: string, aviso: { title: string; body: string }) =>
       void avisos.push([id, aviso.title]),
     marcarRecordatorio: async () => true,
+    marcarPendiente: async () => true,
   }
   const pedir = (secreto = 'k') =>
     manejarDigest(
@@ -221,7 +222,7 @@ Deno.test('digest: manda a cada quien lo suyo y no repite el mismo día', async 
 import { firmar, verificar } from './_shared/firma.ts'
 import { publicar, sincronizarLectura } from './_shared/gcal-sync-core.ts'
 import { conNino, eventoAGoogle } from './_shared/gcal.ts'
-import type { CalendarEvent } from './_shared/db.ts'
+import type { CalendarEvent, Task } from './_shared/db.ts'
 import type { FilaGoogle, GoogleEvent } from './_shared/gcal.ts'
 import { GoogleError } from './_shared/google-api.ts'
 import type { CalendarApi, PaginaEventos } from './_shared/google-api.ts'
@@ -424,6 +425,12 @@ Deno.test('recordatorios: 30 min antes, a quien le toca, sin repetir', async () 
       log.add(k)
       return true
     },
+    marcarPendiente: async (t: string, f: string, tipo: string, m: string) => {
+      const k = `${t}:${f}:${tipo}:${m}`
+      if (log.has(k)) return false
+      log.add(k)
+      return true
+    },
   }
   const pedir = () =>
     manejarDigest(
@@ -455,4 +462,74 @@ Deno.test('recordatorios: 30 min antes, a quien le toca, sin repetir', async () 
     new Date('2026-10-12T15:45:00Z'),
   ).filter((x) => x.event.id === 'e4')
   assertEquals(avisoRecordatorio(nat!), { title: 'En 30 min: Natación · Sofi', body: '10:15' })
+})
+
+Deno.test('recordatorios: pendientes agrupados por persona, sin repetir', async () => {
+  const tarea = (id: string, text: string, o: Partial<Task> = {}): Task => ({
+    ...a,
+    id,
+    text,
+    assignee_id: null,
+    is_shared: true,
+    due_date: '2026-10-12',
+    priority: 'media',
+    category: 'Casa',
+    repeat: null,
+    rotate: false,
+    notes: null,
+    done: false,
+    done_on: null,
+    last_done_on: null,
+    last_done_by: null,
+    ...o,
+  })
+  const data: CalendarData = {
+    ...vacio,
+    tasks: [
+      tarea('t1', 'Pagar predial'),
+      tarea('t2', 'Verificación', { assignee_id: 'malu', is_shared: false }),
+      tarea('t3', 'Luz', { due_date: '2026-10-11' }),
+    ],
+  }
+  const log = new Set<string>()
+  const avisos: [string, string, string][] = []
+  const deps = {
+    secreto: 'k',
+    ahora: () => new Date('2026-10-12T15:05:00Z'), // 9:05 en la Ciudad de México
+    appUrl: '',
+    ajustes: async () => null,
+    miembros: async () => [YO, MALU],
+    calendario: async () => data,
+    marcar: async () => true,
+    enviar: async () => {},
+    conPush: async () => new Set(['yo', 'malu']),
+    push: async (id: string, aviso: { title: string; body: string; url: string }) =>
+      void avisos.push([id, aviso.title, aviso.url]),
+    marcarRecordatorio: async () => true,
+    marcarPendiente: async (t: string, f: string, tipo: string, m: string) => {
+      const k = `${t}:${f}:${tipo}:${m}`
+      if (log.has(k)) return false
+      log.add(k)
+      return true
+    },
+  }
+  const pedir = () =>
+    manejarDigest(
+      new Request('https://x/digest', {
+        method: 'POST',
+        headers: { 'x-digest-secret': 'k' },
+        body: JSON.stringify({ tipo: 'recordatorios' }),
+      }),
+      deps,
+    )
+  await pedir()
+  assertEquals(avisos.map(([id, t]) => `${id}|${t}`).sort(), [
+    'malu|Hoy vencen 2 pendientes',
+    'malu|Se pasó: Luz',
+    'yo|Hoy: Pagar predial',
+    'yo|Se pasó: Luz',
+  ])
+  assert(avisos.every(([, , url]) => url === '/pendientes'))
+  await pedir()
+  assertEquals(avisos.length, 4, 'no se repite')
 })

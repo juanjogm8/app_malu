@@ -1,5 +1,10 @@
-import { avisoRecordatorio, recordatoriosPorEnviar } from '@/lib/recordatorios'
-import type { CalendarEvent } from '@/types/db'
+import {
+  avisoPendientes,
+  avisoRecordatorio,
+  pendientesPorRecordar,
+  recordatoriosPorEnviar,
+} from '@/lib/recordatorios'
+import type { CalendarEvent, Task } from '@/types/db'
 
 const ev = (o: Partial<CalendarEvent>): CalendarEvent => ({
   id: 'e',
@@ -69,5 +74,85 @@ describe('recordatorios de eventos', () => {
       title: 'En 30 min: Pediatra · Sofi',
       body: '16:30 · Consultorio Roma',
     })
+  })
+})
+
+describe('recordatorios de pendientes', () => {
+  const tarea = (o: Partial<Task>): Task => ({
+    id: 't',
+    created_by: null,
+    created_at: '2026-10-01T00:00:00Z',
+    updated_at: '',
+    text: 'Pagar predial',
+    assignee_id: null,
+    is_shared: false,
+    due_date: '2026-10-13',
+    priority: 'media',
+    category: 'Pagos',
+    repeat: null,
+    rotate: false,
+    notes: null,
+    done: false,
+    done_on: null,
+    last_done_on: null,
+    last_done_by: null,
+    ...o,
+  })
+  const yo = { id: 'yo', task_reminders: true }
+  const malu = { id: 'malu', task_reminders: true }
+  const tipos = (r: ReturnType<typeof pendientesPorRecordar>) =>
+    r.map((g) => `${g.memberId}:${g.tipo}:${g.tasks.map((t) => t.id).join(',')}`)
+
+  it('víspera desde las 20:00; el día y "se pasó" desde las 9:00', () => {
+    const tareas = [
+      tarea({ id: 'manana', due_date: '2026-10-13' }),
+      tarea({ id: 'hoy', due_date: '2026-10-12' }),
+      tarea({ id: 'ayer', due_date: '2026-10-11' }),
+      tarea({ id: 'antier', due_date: '2026-10-10' }),
+    ]
+    expect(tipos(pendientesPorRecordar(tareas, [yo], a('2026-10-12T08:59')))).toEqual([])
+    expect(tipos(pendientesPorRecordar(tareas, [yo], a('2026-10-12T09:00')))).toEqual([
+      'yo:hoy:hoy',
+      'yo:tarde:ayer',
+    ])
+    expect(tipos(pendientesPorRecordar(tareas, [yo], a('2026-10-12T20:00')))).toEqual([
+      'yo:antes:manana',
+      'yo:hoy:hoy',
+      'yo:tarde:ayer',
+    ])
+  })
+
+  it('al responsable; Ambos o sin asignar a los dos; hechos, apagados y recién creados no', () => {
+    const ahora = a('2026-10-12T21:00')
+    const r = pendientesPorRecordar(
+      [
+        tarea({ id: 'de-malu', assignee_id: 'malu' }),
+        tarea({ id: 'ambos', is_shared: true }),
+        tarea({ id: 'libre' }),
+        tarea({ id: 'hecho', done: true }),
+        tarea({ id: 'rutina', done: true, repeat: 'mensual' }),
+        tarea({ id: 'recien', created_by: 'yo', created_at: '2026-10-13T02:30:00Z' }),
+      ],
+      [yo, malu, { id: 'callado', task_reminders: false }],
+      ahora,
+    )
+    expect(tipos(r)).toEqual([
+      'yo:antes:ambos,libre,rutina',
+      'malu:antes:de-malu,ambos,libre,rutina,recien',
+    ])
+  })
+
+  it('texto: uno con su nombre; varios con la lista', () => {
+    expect(avisoPendientes('hoy', [{ text: 'Pagar predial' }]).title).toBe('Hoy: Pagar predial')
+    expect(avisoPendientes('tarde', [{ text: 'Pagar predial' }])).toEqual({
+      title: 'Se pasó: Pagar predial',
+      body: 'Sigue sin marcarse como hecho.',
+    })
+    const varios = avisoPendientes(
+      'antes',
+      ['a', 'b', 'c', 'd', 'e'].map((text) => ({ text })),
+    )
+    expect(varios.title).toBe('Mañana vencen 5 pendientes')
+    expect(varios.body).toBe('• a\n• b\n• c\n• d\n…y 1 más')
   })
 })
