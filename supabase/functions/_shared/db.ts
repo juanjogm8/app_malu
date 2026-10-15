@@ -36,6 +36,8 @@ export type Member = {
   digest_daily: boolean
   digest_daily_hour: number
   digest_weekly: boolean
+  /** Recordatorio de sus eventos 30 min antes (push y Telegram). */
+  event_reminders?: boolean
 }
 
 export type AppSettings = {

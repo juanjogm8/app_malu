@@ -214,3 +214,16 @@ Verificado con la documentación vigente de Google:
   a un niño actualiza sus eventos (y Google), y borrarlo los deja en el calendario sin niño; Deshacer
   regresa al niño y se lo vuelve a poner a sus eventos. Los nombres que ya se usaban quedaron dados
   de alta en la migración.
+
+## Recordatorios de eventos (después de la entrega)
+
+- **30 min antes** de cada evento con hora (también los que se repiten) llega un aviso: "En 30 min:
+  Dentista" · "10:00 · Consultorio". Al dueño del evento; a los dos si es de "Ambos" o no tiene
+  dueño. Los de todo el día y los de Google Calendar no avisan (Google ya avisa los suyos).
+- Canales: push en todos los dispositivos de la persona y Telegram si lo tiene conectado.
+- Cada quien lo apaga en **Ajustes → Notificaciones** ("Recordarme mis eventos 30 min antes",
+  `members.event_reminders`, encendido por omisión).
+- La función `digest` los manda con `{ "tipo": "recordatorios" }`; pg_cron la llama cada minuto
+  (`casa-en-orden-recordatorios`). `event_reminder_log` evita duplicados (si cambia la hora del
+  evento, se vuelve a avisar) y se limpia sola a los 3 días. Un evento creado con menos de 30 min de
+  anticipación avisa en el siguiente minuto con los minutos que falten.

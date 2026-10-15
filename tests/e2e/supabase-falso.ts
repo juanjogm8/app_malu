@@ -46,6 +46,7 @@ export function dbVacia(): Db {
         digest_daily: true,
         digest_daily_hour: 8,
         digest_weekly: true,
+        event_reminders: true,
       },
       {
         id: MALU,
@@ -58,6 +59,7 @@ export function dbVacia(): Db {
         digest_daily: true,
         digest_daily_hour: 8,
         digest_weekly: true,
+        event_reminders: true,
       },
     ],
     app_settings: [

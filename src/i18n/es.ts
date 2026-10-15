@@ -409,7 +409,10 @@ export const es = {
   notificaciones: {
     titulo: 'Notificaciones en este teléfono',
     explicacion:
-      'Los mismos resúmenes de Telegram, como notificación del teléfono. Se activan por dispositivo.',
+      'El resumen del día, el de la semana y los recordatorios de tus eventos, como notificación del teléfono. Se activan en cada dispositivo.',
+    recordatorios: 'Recordarme mis eventos 30 min antes',
+    recordatoriosTexto:
+      'Los tuyos y los de "Ambos". Llega a todos tus dispositivos con notificaciones.',
     activar: 'Activar notificaciones',
     desactivar: 'Desactivar en este teléfono',
     activadas: 'Notificaciones activadas.',

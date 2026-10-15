@@ -4,7 +4,8 @@ import type { CalendarData } from '../_shared/calendario.ts'
 import type { AppSettings, Member } from '../_shared/db.ts'
 import { dow, today, ZONA } from '../_shared/fechas.ts'
 import { mismoSecreto } from '../_shared/telegram-api.ts'
-import { avisoPush, resumenDiario, resumenSemanal } from '../_shared/telegram-texto.ts'
+import { avisoPush, esc, resumenDiario, resumenSemanal } from '../_shared/telegram-texto.ts'
+import { avisoRecordatorio, recordatoriosPorEnviar } from '../_shared/recordatorios.ts'
 
 export type Tipo = 'diario' | 'semanal'
 
@@ -24,6 +25,13 @@ export interface Deps {
     memberId: string,
     aviso: { title: string; body: string; url: string; tag: string },
   ) => Promise<unknown>
+  /** Registra un recordatorio; devuelve false si ya se había mandado (evita duplicados). */
+  marcarRecordatorio: (
+    eventId: string,
+    fecha: string,
+    hora: string,
+    memberId: string,
+  ) => Promise<boolean>
 }
 
 export const HORA_SEMANAL = 19
@@ -67,12 +75,15 @@ export async function manejarDigest(req: Request, d: Deps): Promise<Response> {
   }
   // { "forzar": "diario" | "semanal" } manda ya, a todos los vinculados (para probar).
   let forzar: Tipo | null = null
+  let recordatorios = false
   try {
     const body = await req.json()
     if (body?.forzar === 'diario' || body?.forzar === 'semanal') forzar = body.forzar
+    recordatorios = body?.tipo === 'recordatorios'
   } catch {
     /* sin cuerpo */
   }
+  if (recordatorios) return manejarRecordatorios(d)
 
   const ahora = d.ahora()
   const dia = today(ahora)
@@ -114,4 +125,24 @@ export async function manejarDigest(req: Request, d: Deps): Promise<Response> {
     }
   }
   return Response.json({ enviados })
+}
+
+/** Recordatorios de eventos (pg_cron cada minuto con { "tipo": "recordatorios" }). */
+export async function manejarRecordatorios(d: Deps): Promise<Response> {
+  const [miembros, push, data] = await Promise.all([d.miembros(), d.conPush(), d.calendario()])
+  const enviados: string[] = []
+  for (const r of recordatoriosPorEnviar(data.events, miembros, d.ahora())) {
+    const aviso = avisoRecordatorio(r)
+    for (const id of r.para) {
+      const m = miembros.find((x) => x.id === id)!
+      if (!m.telegram_chat_id && !push.has(id)) continue
+      if (!(await d.marcarRecordatorio(r.event.id, r.date, r.time, id))) continue
+      if (m.telegram_chat_id)
+        await d.enviar(m.telegram_chat_id, `⏰ <b>${esc(aviso.title)}</b>\n${esc(aviso.body)}`)
+      if (push.has(id))
+        await d.push(id, { ...aviso, url: '/calendario', tag: `evento-${r.event.id}-${r.date}` })
+      enviados.push(`${r.event.id}:${r.date}:${id}`)
+    }
+  }
+  return Response.json({ recordatorios: enviados })
 }

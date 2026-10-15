@@ -3,6 +3,7 @@ import { assert, assertEquals, assertStringIncludes } from 'jsr:@std/assert@1'
 import type { CalendarData } from './_shared/calendario.ts'
 import type { AppSettings, Member } from './_shared/db.ts'
 import { horaLocal, manejarDigest, quienRecibe } from './digest/manejar.ts'
+import { avisoRecordatorio, recordatoriosPorEnviar } from './_shared/recordatorios.ts'
 import type { Tipo } from './digest/manejar.ts'
 import { manejar } from './telegram-webhook/manejar.ts'
 import type { Deps } from './telegram-webhook/manejar.ts'
@@ -193,6 +194,7 @@ Deno.test('digest: manda a cada quien lo suyo y no repite el mismo día', async 
     conPush: async () => new Set(['malu', 'sinTelegram']),
     push: async (id: string, aviso: { title: string; body: string }) =>
       void avisos.push([id, aviso.title]),
+    marcarRecordatorio: async () => true,
   }
   const pedir = (secreto = 'k') =>
     manejarDigest(
@@ -372,4 +374,85 @@ Deno.test('google: un evento con niño se publica con su nombre en el título', 
     notes: null,
   })
   assertEquals(g.summary, 'Vacuna · Mateo')
+})
+
+// ---------- Recordatorios de eventos ----------
+Deno.test('recordatorios: 30 min antes, a quien le toca, sin repetir', async () => {
+  const ev = (id: string, title: string, time: string, o: Partial<CalendarEvent> = {}) => ({
+    ...a,
+    id,
+    title,
+    date: '2026-10-12',
+    time,
+    repeat: null,
+    owner_id: null,
+    is_shared: true,
+    place: null,
+    notes: null,
+    ...o,
+  })
+  const data: CalendarData = {
+    ...vacio,
+    events: [
+      ev('e1', 'Dentista', '10:00:00', { owner_id: 'malu', is_shared: false, place: 'Roma' }),
+      ev('e2', 'Junta', '08:30:00'), // ya pasó
+      ev('e3', 'Cena', '10:00:00'), // de los dos
+      ev('e4', 'Natación', '10:15:00', { kid: 'Sofi', repeat: 'semanal', date: '2026-10-05' }),
+      ev('e5', 'Todo el día', null as unknown as string),
+      ev('e6', 'Más tarde', '11:00:00'),
+    ],
+  }
+  const log = new Set<string>()
+  const enviados: [number, string][] = []
+  const avisos: [string, string][] = []
+  const callado = miembro('callado', 'Sin avisos', 333, { event_reminders: false })
+  const deps = {
+    secreto: 'k',
+    ahora: () => new Date('2026-10-12T15:31:00Z'), // 9:31 en la Ciudad de México
+    appUrl: '',
+    ajustes: async () => null,
+    miembros: async () => [YO, MALU, callado],
+    calendario: async () => data,
+    marcar: async () => true,
+    enviar: async (c: number, h: string) => void enviados.push([c, h]),
+    conPush: async () => new Set(['malu']),
+    push: async (id: string, aviso: { title: string; body: string }) =>
+      void avisos.push([id, aviso.title]),
+    marcarRecordatorio: async (e: string, f: string, h: string, m: string) => {
+      const k = `${e}:${f}:${h}:${m}`
+      if (log.has(k)) return false
+      log.add(k)
+      return true
+    },
+  }
+  const pedir = () =>
+    manejarDigest(
+      new Request('https://x/digest', {
+        method: 'POST',
+        headers: { 'x-digest-secret': 'k' },
+        body: JSON.stringify({ tipo: 'recordatorios' }),
+      }),
+      deps,
+    )
+  const r = (await (await pedir()).json()) as { recordatorios: string[] }
+  assertEquals(r.recordatorios.sort(), [
+    'e1:2026-10-12:malu',
+    'e3:2026-10-12:malu',
+    'e3:2026-10-12:yo',
+  ])
+  assertEquals(avisos.map(([, t]) => t).sort(), ['En 29 min: Cena', 'En 29 min: Dentista'])
+  assert(
+    enviados.every(([c]) => c !== 333),
+    'quien los apagó no recibe',
+  )
+  assertStringIncludes(enviados.find(([c]) => c === 111)![1], 'Cena')
+  assertEquals(((await (await pedir()).json()) as { recordatorios: string[] }).recordatorios, [])
+
+  // La natación semanal (10:15) entra a las 9:45 y lleva el nombre del niño.
+  const [nat] = recordatoriosPorEnviar(
+    data.events,
+    [YO, MALU],
+    new Date('2026-10-12T15:45:00Z'),
+  ).filter((x) => x.event.id === 'e4')
+  assertEquals(avisoRecordatorio(nat!), { title: 'En 30 min: Natación · Sofi', body: '10:15' })
 })

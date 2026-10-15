@@ -281,3 +281,6 @@ resúmenes.
 
 **Comprobación:** con el `curl` de prueba del paso 9.6 (`{"forzar":"diario"}`) llega una notificación
 "Revisa tu día". Al tocarla se abre la app.
+
+**Recordatorios de eventos:** la migración ya programó la llamada de cada minuto. Crea un evento
+tuyo (o de "Ambos") que empiece en 20 minutos: en menos de un minuto llega "En 20 min: …".

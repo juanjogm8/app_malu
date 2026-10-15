@@ -15,3 +15,18 @@ do $$ begin
   end;
 end $$;
 reset role;
+
+-- Bitácora de recordatorios: solo funciones; cada quien puede apagar sus recordatorios.
+set role authenticated;
+select set_config('request.jwt.claims', json_build_object('sub', '00000000-0000-0000-0000-00000000000a')::text, false);
+do $$ declare n int; begin
+  begin
+    select count(*) into n from public.event_reminder_log;
+    raise exception 'FALLO: leyó la bitácora de recordatorios';
+  exception when insufficient_privilege then null;
+  end;
+  update public.members set event_reminders = false where id = auth.uid();
+  assert (select event_reminders from public.members where id = auth.uid()) = false, 'apaga sus recordatorios';
+  update public.members set event_reminders = true where id = auth.uid();
+end $$;
+reset role;

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useEscritura } from '@/app/datos'
+import { usePersonas } from '@/app/personas'
 import { useToast } from '@/components/Toast'
-import { Boton } from '@/components/ui'
+import { Boton, Interruptor } from '@/components/ui'
 import { es } from '@/i18n/es'
 import { supabase } from '@/lib/supabase'
 
@@ -29,6 +30,9 @@ const instalada = () =>
 export function Notificaciones() {
   const w = useEscritura()
   const toast = useToast()
+  const p = usePersonas()
+  // La fila viva (se actualiza al cambiar el interruptor), no la de la sesión.
+  const yo = p.me ? (p.byId(p.me.id) ?? p.me) : null
   const [activa, setActiva] = useState<boolean | null>(() => (soportado() ? null : false))
   const [ocupado, setOcupado] = useState(false)
 
@@ -113,6 +117,19 @@ export function Notificaciones() {
       <h2 className="font-display text-[22px] font-normal">{t.titulo}</h2>
       <p className="text-[14px] leading-[1.45] text-muted">{t.explicacion}</p>
       {cuerpo}
+      {yo && (
+        <div className="border-t border-tint pt-2">
+          <Interruptor
+            checked={yo.event_reminders !== false}
+            onChange={(v) => void w.update('members', yo.id, { event_reminders: v })}
+          >
+            <span className="flex flex-col">
+              <span className="text-[15px] font-semibold text-ink">{t.recordatorios}</span>
+              <span className="text-[13px]">{t.recordatoriosTexto}</span>
+            </span>
+          </Interruptor>
+        </div>
+      )}
     </div>
   )
 }

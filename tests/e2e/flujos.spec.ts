@@ -341,6 +341,12 @@ test('ajustes: conectar Telegram y el flag de resúmenes por persona', async ({ 
   await expect.poll(() => sb.db.app_settings![0]!.telegram_digest_per_person).toBe(true)
   await page.getByRole('switch', { name: /Resumen semanal/ }).click()
   await expect.poll(() => sb.db.members![0]!.digest_weekly).toBe(false)
+
+  const recordatorios = page.getByRole('switch', { name: /Recordarme mis eventos 30 min antes/ })
+  await expect(recordatorios).toHaveAttribute('aria-checked', 'true')
+  await recordatorios.click()
+  await expect.poll(() => sb.db.members![0]!.event_reminders).toBe(false)
+  await expect(recordatorios).toHaveAttribute('aria-checked', 'false')
 })
 
 test('google: la capa Google muestra los eventos y Ajustes manda a conectar', async ({ page }) => {

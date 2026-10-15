@@ -1,4 +1,4 @@
-// Resúmenes programados por Telegram y notificaciones push.
+// Resúmenes programados y recordatorios de eventos por Telegram y notificaciones push.
 // Secretos: DIGEST_SECRET, APP_URL; TELEGRAM_BOT_TOKEN y/o VAPID_* según los canales que usen.
 import { cargarAjustes, cargarCalendario, cargarMiembros, clienteAdmin } from '../_shared/admin.ts'
 import { conPush, enviarPush } from '../_shared/push.ts'
@@ -24,5 +24,11 @@ Deno.serve((req) =>
       token ? enviarTelegram(token, chatId, html) : Promise.resolve(false),
     conPush: () => conPush(admin),
     push: (memberId, aviso) => enviarPush(admin, memberId, aviso),
+    marcarRecordatorio: async (event_id, fecha, hora, member_id) => {
+      const { error } = await admin
+        .from('event_reminder_log')
+        .insert({ event_id, fecha, hora, member_id })
+      return !error // la llave primaria rechaza el segundo envío
+    },
   }),
 )
