@@ -115,11 +115,29 @@ describe('recordatorios de pendientes', () => {
       'yo:hoy:hoy',
       'yo:tarde:ayer',
     ])
-    expect(tipos(pendientesPorRecordar(tareas, [yo], a('2026-10-12T20:00')))).toEqual([
-      'yo:antes:manana',
-      'yo:hoy:hoy',
+    expect(tipos(pendientesPorRecordar(tareas, [yo], a('2026-10-12T14:00')))).toEqual([
+      'yo:hoy2:hoy',
       'yo:tarde:ayer',
     ])
+    // A las 20:00 toca la víspera y, del día, solo el último aviso (no los tres juntos).
+    expect(tipos(pendientesPorRecordar(tareas, [yo], a('2026-10-12T20:00')))).toEqual([
+      'yo:antes:manana',
+      'yo:hoy3:hoy',
+      'yo:tarde:ayer',
+    ])
+  })
+
+  it('el día llegan tres avisos y paran al marcarlo como hecho', () => {
+    const t = tarea({ id: 'hoy', due_date: '2026-10-12' })
+    const vistos = ['09:00', '14:00', '19:00'].flatMap((h) =>
+      tipos(pendientesPorRecordar([t], [yo], a(`2026-10-12T${h}`))),
+    )
+    expect(vistos).toEqual(['yo:hoy:hoy', 'yo:hoy2:hoy', 'yo:hoy3:hoy'])
+    expect(pendientesPorRecordar([{ ...t, done: true }], [yo], a('2026-10-12T14:00'))).toEqual([])
+    expect(avisoPendientes('hoy2', [{ text: 'Luz' }]).title).toBe('Sigue pendiente hoy: Luz')
+    expect(avisoPendientes('hoy3', [{ text: 'Luz' }, { text: 'Gas' }]).title).toBe(
+      'Último aviso: 2 pendientes de hoy',
+    )
   })
 
   it('al responsable; Ambos o sin asignar a los dos; hechos, apagados y recién creados no', () => {

@@ -69,10 +69,17 @@ export function avisoRecordatorio(r: Recordatorio): { title: string; body: strin
 
 /* ---------- Pendientes ---------- */
 
-/** antes: la víspera a las 20:00 · hoy: el día a las 9:00 · tarde: al día siguiente a las 9:00. */
-export type TipoPendiente = 'antes' | 'hoy' | 'tarde'
+/**
+ * antes: la víspera a las 20:00 · hoy, hoy2, hoy3: el día a las 9:00, 14:00 y 19:00 ·
+ * tarde: al día siguiente a las 9:00. Dejan de llegar en cuanto se marca como hecho.
+ */
+export type TipoPendiente = 'antes' | 'hoy' | 'hoy2' | 'hoy3' | 'tarde'
 export const HORA_VISPERA = 20
-export const HORA_DIA = 9
+export const HORAS_DIA: [TipoPendiente, number][] = [
+  ['hoy', 9],
+  ['hoy2', 14],
+  ['hoy3', 19],
+]
 
 export interface RecordatorioPendientes {
   memberId: string
@@ -95,7 +102,9 @@ export function pendientesPorRecordar(
   const hora = Number(local.time.slice(0, 2))
   const toca: [TipoPendiente, string][] = []
   if (hora >= HORA_VISPERA) toca.push(['antes', addDays(hoy, 1)])
-  if (hora >= HORA_DIA) toca.push(['hoy', hoy], ['tarde', addDays(hoy, -1)])
+  // Del día solo el aviso más reciente que ya tocó: si se crea a las 20:00, no llegan los tres juntos.
+  const delDia = HORAS_DIA.filter(([, h]) => hora >= h).pop()
+  if (delDia) toca.push([delDia[0], hoy], ['tarde', addDays(hoy, -1)])
   const recien = ahora.getTime() - 60 * 60 * 1000
   const out: RecordatorioPendientes[] = []
   for (const m of members) {
@@ -117,6 +126,8 @@ export function pendientesPorRecordar(
 const TITULO_PENDIENTES: Record<TipoPendiente, [string, (n: number) => string]> = {
   antes: ['Mañana', (n) => `Mañana vencen ${n} pendientes`],
   hoy: ['Hoy', (n) => `Hoy vencen ${n} pendientes`],
+  hoy2: ['Sigue pendiente hoy', (n) => `Siguen pendientes ${n} de hoy`],
+  hoy3: ['Último aviso de hoy', (n) => `Último aviso: ${n} pendientes de hoy`],
   tarde: ['Se pasó', (n) => `Se pasaron ${n} pendientes`],
 }
 

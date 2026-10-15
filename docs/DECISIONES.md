@@ -228,7 +228,8 @@ Verificado con la documentación vigente de Google:
   evento, se vuelve a avisar) y se limpia sola a los 3 días. Un evento creado con menos de 30 min de
   anticipación avisa en el siguiente minuto con los minutos que falten.
 - **Pendientes con fecha** también avisan: la víspera a las 20:00 ("Mañana: Pagar predial"), el
-  día a las 9:00 ("Hoy: …", después del resumen de las 8) y, si nadie lo marcó, al día siguiente a
+  día tres veces, a las 9:00, 14:00 y 19:00 ("Hoy: …", "Sigue pendiente hoy: …", "Último aviso de
+  hoy: …"; si se crea tarde solo llega el más reciente) y, si nadie lo marcó, al día siguiente a
   las 9:00 ("Se pasó: …", una sola vez). Al responsable; a los dos si es de "Ambos" o sin asignar.
   Varios del mismo tipo van en una sola notificación con la lista. Las rutinas avisan con su
   próxima fecha. A quien creó el pendiente hace menos de una hora no se le avisa. Interruptor

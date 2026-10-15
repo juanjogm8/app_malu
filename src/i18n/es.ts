@@ -415,7 +415,7 @@ export const es = {
       'Los tuyos y los de "Ambos". Llega a todos tus dispositivos con notificaciones.',
     pendientes: 'Recordarme mis pendientes',
     pendientesTexto:
-      'La víspera a las 8 p. m., el día a las 9 a. m. y, si se pasa, al día siguiente. Los tuyos, los de "Ambos" y los sin asignar.',
+      'La víspera a las 8 p. m., el día a las 9 a. m., 2 p. m. y 7 p. m. (hasta que se marque hecho) y, si se pasa, al día siguiente. Los tuyos, los de "Ambos" y los sin asignar.',
     activar: 'Activar notificaciones',
     desactivar: 'Desactivar en este teléfono',
     activadas: 'Notificaciones activadas.',
